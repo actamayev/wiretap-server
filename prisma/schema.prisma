@@ -12,5 +12,4 @@ model email_update_subscriber {
 	email__encrypted                                            String @unique
 
 	created_at                                                  DateTime  @default(now())
-	is_active                                                   Boolean  @default(true)
 }
