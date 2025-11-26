@@ -1,0 +1,7 @@
+When making changes to tables (or creating new tables), edit the schema.prisma file.
+Then, run the `pnpm prisma migrate dev --name [name_of_operation (ie add_login_history)]`
+If manual changes have been made to the Schema (non-migration), run `pnpm prisma generate`
+
+Might have to restart TS server for the changes to take effect in VS code (ie. autocomplete new table names)
+
+To trim trailing whitespace from the schema.prisma file, run: `./trim-schema-whitespace.sh`

@@ -1,0 +1,16 @@
+generator client {
+	provider = "prisma-client-js"
+}
+
+datasource db {
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
+}
+
+model email_update_subscriber {
+	email_update_subscriber_id									Int       @id @default(autoincrement())
+	email__encrypted                                            String @unique
+
+	created_at                                                  DateTime  @default(now())
+	is_active                                                   Boolean  @default(true)
+}
