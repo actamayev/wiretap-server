@@ -1,0 +1,69 @@
+{
+	"compilerOptions": {
+		/* Language and Environment */
+		"target": "es2022",
+		"lib": ["es2022"],
+		"typeRoots": [
+			"./src/types",
+			"./node_modules/@types"
+		],
+		"types": ["node"],
+
+		/* Modules */
+		"module": "commonjs",
+		"rootDir": "./",
+		"moduleResolution": "Node",
+		"baseUrl": "./src",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+
+		/* Emit */
+		"outDir": "./dist",
+
+		/* Interop Constraints */
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+
+		/* Type Checking - Core Strict Options */
+		"strict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+
+		/* Type Checking - Additional Strict Options */
+		"exactOptionalPropertyTypes": false,        // Set to true if you want maximum strictness (but may cause issues with some libraries)
+		"noImplicitOverride": true,                 // Require explicit override keywords
+		"noImplicitReturns": true,                  // Ensure all code paths return a value
+		"noFallthroughCasesInSwitch": true,        // Prevent fallthrough in switch statements
+		"useUnknownInCatchVariables": true,        // Use unknown instead of any in catch variables
+		"allowUnusedLabels": false,                // Disallow unused labels
+		"allowUnreachableCode": false,             // Disallow unreachable code
+
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
+		/* Completeness */
+		"skipLibCheck": true,
+
+		/* Paths */
+		"paths": {
+			"@/*": ["*"],
+			"@types/*": ["types/*"]
+		}
+	},
+	"include": [
+		"src/**/*",
+		"src/prisma/seed.ts",
+		"prisma.config.ts"
+	],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"eslint.config.mjs",
+	]
+}
