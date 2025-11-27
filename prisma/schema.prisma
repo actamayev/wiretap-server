@@ -7,9 +7,116 @@ datasource db {
 	url      = env("DATABASE_URL")
 }
 
+enum AuthMethods {
+	WIRETAP
+	GOOGLE
+}
+
+model credentials {
+	user_id                                                     Int      @id @default(autoincrement())
+	username                                                    String?     @unique
+
+	password                                                    String?
+	is_active                                                   Boolean  @default(true)
+
+	auth_method                                                 AuthMethods
+
+	email__encrypted                                            String @unique
+
+	created_at                                                  DateTime @default(now())
+	updated_at                                                  DateTime @default(now()) @updatedAt
+
+	login_history                                               login_history[]
+	wiretap_brokerage_account									wiretap_brokerage_account[]
+}
+
+model login_history {
+	login_history_id                                            Int       @id @default(autoincrement())
+	user_id                                                     Int
+	login_time                                                  DateTime  @default(now())
+
+	user                                                        credentials @relation(fields: [user_id], references: [user_id])
+
+	@@index([user_id], name: "login_history__user_id_idx")
+}
+
 model email_update_subscriber {
 	email_update_subscriber_id									Int       @id @default(autoincrement())
 	email__encrypted                                            String @unique
 
 	created_at                                                  DateTime  @default(now())
 }
+
+model wiretap_brokerage_account {
+	wiretap_brokerage_account_id                                Int          @id @default(autoincrement())
+	user_id                                                     Int
+
+	starting_account_balance_usd								Float
+	current_account_balance_usd									Float
+
+	created_at                                                  DateTime     @default(now())
+	updated_at                                                  DateTime     @default(now()) @updatedAt
+
+	user                                                        credentials @relation(fields: [user_id], references: [user_id])
+
+	purchase_orders												purchase_order[]
+	sales_orders												sale_order[]
+	positions													position[]
+}
+
+// 11/27/25 TODO: Figure out what data we should save, and what data we can continually reference Polymarket
+model contract {
+	contract_uuid												String @id
+	polymarket_link												String
+
+	created_at                                                  DateTime     @default(now())
+	updated_at                                                  DateTime     @default(now()) @updatedAt
+
+	purchase_order												purchase_order[]
+	sale_order													sale_order[]
+	position													position[]
+}
+
+// Positions:
+model position {
+	position_id													Int  @id @default(autoincrement())
+	contract_uuid												String
+	number_contracts_held										Int
+
+	wiretap_brokerage_account_id			                    Int
+	created_at                                                  DateTime     @default(now())
+	updated_at                                                  DateTime     @default(now()) @updatedAt
+
+	wiretap_brokerage_account                          			wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	contract                          							contract @relation(fields: [contract_uuid], references: [contract_uuid])
+}
+
+// Transactions:
+model purchase_order {
+	purchase_id					                            	Int  @id @default(autoincrement())
+	contract_uuid                                               String
+	number_of_contracts											Int
+
+	wiretap_brokerage_account_id			                    Int
+
+	created_at                                                  DateTime  @default(now())
+	updated_at                                                  DateTime  @default(now()) @updatedAt
+
+	wiretap_brokerage_account                          			wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	contract                          							contract @relation(fields: [contract_uuid], references: [contract_uuid])
+}
+
+model sale_order {
+	sale_id							                            Int  @id @default(autoincrement())
+	contract_uuid                                               String
+	number_of_contracts											Int
+
+	wiretap_brokerage_account_id			                    Int
+
+	created_at                                                  DateTime  @default(now())
+	updated_at                                                  DateTime  @default(now()) @updatedAt
+
+	wiretap_brokerage_account                          			wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	contract                          							contract @relation(fields: [contract_uuid], references: [contract_uuid])
+}
+

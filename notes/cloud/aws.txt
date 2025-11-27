@@ -1,22 +1,22 @@
-To copy important files to AWS, run the following commands from the lever-labs-server root directory.
+To copy important files to AWS, run the following commands from the wiretap-server root directory.
 Locally, run `sudo pnpm run build`
 
 Production:
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem ./package.json ubuntu@34.203.76.152:/home/ubuntu/wiretap
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem ./pnpm-lock.yaml ubuntu@34.203.76.152:/home/ubuntu/wiretap
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem ./.env.production ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src/.env.production
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem ./ecosystem.config.js ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/index.js ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/classes ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/controllers ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/db-operations ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/middleware ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/prisma ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/routes ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/types ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./dist/src/utils ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem -r ./prisma ubuntu@34.203.76.152:/home/ubuntu/wiretap/
-	scp -i /Users/arieltamayev/Documents/lever-labs-production-ec2-keypair.pem ./prisma.config.ts ubuntu@34.203.76.152:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./package.json ubuntu@34.203.76.152:/home/ubuntu/wiretap
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./pnpm-lock.yaml ubuntu@34.203.76.152:/home/ubuntu/wiretap
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./.env.production ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src/.env.production
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./ecosystem.config.js ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/index.js ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/classes ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/controllers ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/db-operations ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/middleware ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/prisma ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/routes ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/types ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/utils ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./prisma ubuntu@34.203.76.152:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./prisma.config.ts ubuntu@34.203.76.152:/home/ubuntu/wiretap/
 
 To SSH into AWS:
 	aws ec2-instance-connect ssh --instance-id i-0af414ad7e5d89c3e --os-user ubuntu
