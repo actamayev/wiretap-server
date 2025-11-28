@@ -1,4 +1,5 @@
 declare global {
+	type EmailOrUsername = "Email" | "Username"
 	type DeterministicEncryptionKeys =
 		"EMAIL_ENCRYPTION_KEY"
 
@@ -11,6 +12,8 @@ declare global {
 		| "AWS_SECRET_ACCESS_KEY"
 		| "DATABASE_URL"
 		| "JWT_KEY"
+		| "GOOGLE_CLIENT_ID"
+		| "GOOGLE_CLIENT_SECRET"
 
 	type SecretsObject = { [K in SecretKeys]: string }
 }

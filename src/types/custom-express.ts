@@ -3,6 +3,7 @@ declare global {
 	namespace Express {
 		interface Request {
 			userId: number
+			user: ExtendedCredentials
 			wiretapBrokerageAccountId: number
 		}
 	}

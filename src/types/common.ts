@@ -20,7 +20,8 @@ declare global {
 	type ContractUUID = UUID & { readonly __brand: unique symbol }
 
 	interface TransactionResponse {
-		transactions: (PurchaseOrder | SaleOrder)[]
+		purchaseOrders: PurchaseOrder[]
+		saleOrders: SaleOrder[]
 	}
 
 	interface CommonTransactionFields {
@@ -43,6 +44,35 @@ declare global {
 
 	interface PositionsResponse {
 		positions: SinglePosition[]
+	}
+
+	interface IncomingLoginRequest {
+		contact: string
+		password: string
+	}
+
+	interface IncomingRegisterRequest {
+		email: string
+		password: string
+		username: string
+	}
+
+	interface BasicPersonalInfoResponse {
+		username: string
+		email: string | null
+	}
+
+	interface GoogleAuthSuccess {
+		isNewUser: boolean
+		personalInfo?: BasicPersonalInfoResponse
+	}
+
+	interface NewGoogleInfoRequest {
+		username: string
+	}
+
+	interface EmailResponse {
+		email: string
 	}
 }
 
