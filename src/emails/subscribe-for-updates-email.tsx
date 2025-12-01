@@ -22,10 +22,10 @@ export default function WelcomeEmail(): React.ReactNode {
 			<Head />
 			<Preview>Welcome to Wiretap - Paper trading for Polymarket</Preview>
 			<Tailwind>
-				<Body className="bg-white font-sans">
+				<Body className="bg-white" style={{ fontFamily: '"Young Serif", Georgia, "Times New Roman", serif' }}>
 					<Container className="mx-auto py-[20px] pb-[48px] max-w-[560px] text-center">
 						{/* Section 1 */}
-						<Section className="mb-[40px]">
+						<Section className="mb-[40px] border border-[#00001E] rounded-b-[24px] p-6" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
 							<Heading className="text-[#00001E] text-[24px] font-bold p-0">
 								Welcome to <span className="text-[#0041DC]">Wiretap</span>
 							</Heading>
@@ -35,7 +35,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Section 2 */}
-						<Section className="mb-[40px]">
+						<Section className="mb-[40px] border border-[#00001E] rounded-b-[24px] p-6" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
 							<Text className="text-[#00001E] text-[16px] leading-[26px]">
 								Test your forecasting skills
 							</Text>
@@ -48,7 +48,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Section 3 */}
-						<Section className="mb-[40px]">
+						<Section className="mb-[40px] border border-[#00001E] rounded-b-[24px] p-6" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
 							<Text className="text-[#00001E] text-[16px] leading-[26px]">
 								Launching in the next few weeks.
 							</Text>
@@ -62,6 +62,7 @@ export default function WelcomeEmail(): React.ReactNode {
 									<Img
 										alt="Wiretap logo"
 										height="42"
+										width="42"
 										src="https://wiretap.pro/logo512.png"
 									/>
 									<Text className="my-[8px] font-semibold text-[16px] text-[#00001E] leading-[24px]">
