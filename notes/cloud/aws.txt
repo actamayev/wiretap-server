@@ -1,5 +1,6 @@
 To copy important files to AWS, run the following commands from the wiretap-server root directory.
-Locally, run `sudo pnpm run build`
+Locally, run:
+	sudo pnpm run build
 
 Production:
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./package.json ubuntu@100.30.47.213:/home/ubuntu/wiretap
