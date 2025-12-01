@@ -1,7 +1,6 @@
 import React from "react"
 import {
 	Body,
-	Button,
 	Container,
 	Head,
 	Heading,
@@ -24,29 +23,38 @@ export default function WelcomeEmail(): React.ReactNode {
 			<Preview>Welcome to Wiretap - Paper trading for Polymarket</Preview>
 			<Tailwind>
 				<Body className="bg-white font-sans">
-					<Container className="mx-auto py-[20px] pb-[48px] max-w-[560px]">
-						<Heading className="text-[#00001E] text-[24px] font-bold my-[40px] p-0">
-							Welcome to <span className="text-[#0041DC]">Wiretap</span> Paper trading for Polymarket.
-						</Heading>
-						<Text className="text-[#00001E] text-[16px] leading-[26px]">
-							Test your forecasting skills
-						</Text>
-						<Text className="text-[#00001E] text-[16px] leading-[26px]">
-							and see if you can beat the market.
-						</Text>
-						<Text className="text-[#00001E] text-[16px] leading-[26px]">
-							All without putting up real cash.
-						</Text>
-						<Text className="text-[#00001E] text-[16px] leading-[26px]">
-							Launching in the next few weeks.
-						</Text>
-						<Text className="text-[#00001E] text-[16px] leading-[26px]">
-							We'll hit your inbox when we're live.
-						</Text>
-						<Section className="py-[27px]">
-							<Button className="bg-black rounded-lg text-[#00001E] text-[16px] no-underline text-center block px-5 py-3" href="https://wiretap.pro">
-								Get Started
-							</Button>
+					<Container className="mx-auto py-[20px] pb-[48px] max-w-[560px] text-center">
+						{/* Section 1 */}
+						<Section className="mb-[40px]">
+							<Heading className="text-[#00001E] text-[24px] font-bold p-0">
+								Welcome to <span className="text-[#0041DC]">Wiretap</span>
+							</Heading>
+							<Text className="text-[#00001E] text-[16px] leading-[26px]">
+								Paper trading for Polymarket
+							</Text>
+						</Section>
+
+						{/* Section 2 */}
+						<Section className="mb-[40px]">
+							<Text className="text-[#00001E] text-[16px] leading-[26px]">
+								Test your forecasting skills
+							</Text>
+							<Text className="text-[#00001E] text-[16px] leading-[26px]">
+								and see if you can beat the market.
+							</Text>
+							<Text className="text-[#00001E] text-[16px] leading-[26px]">
+								All without putting up real <span className="text-[#55AF55]">cash.</span>
+							</Text>
+						</Section>
+
+						{/* Section 3 */}
+						<Section className="mb-[40px]">
+							<Text className="text-[#00001E] text-[16px] leading-[26px]">
+								Launching in the next few weeks.
+							</Text>
+							<Text className="text-[#00001E] text-[16px] leading-[26px]">
+								We'll hit your inbox when we're live.
+							</Text>
 						</Section>
 						<Section>
 							<Row>
@@ -54,7 +62,7 @@ export default function WelcomeEmail(): React.ReactNode {
 									<Img
 										alt="Wiretap logo"
 										height="42"
-										src="https://react.email/static/logo-without-background.png"
+										src="https://wiretap.pro/logo512.png"
 									/>
 									<Text className="my-[8px] font-semibold text-[16px] text-[#00001E] leading-[24px]">
 										Wiretap
