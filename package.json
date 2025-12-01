@@ -21,7 +21,7 @@
     "watch": [
       "."
     ],
-    "ext": "ts",
+    "ext": "ts, tsx",
     "exec": "ts-node --files ./src/index.ts"
   },
   "keywords": [],
