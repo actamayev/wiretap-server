@@ -5,9 +5,11 @@ import jwtVerifyAttachUserId from "../../middleware/jwt/jwt-verify-attach-user-i
 import transactionsRoutes from "../../routes/transactions"
 import positionsRoutes from "../../routes/positions"
 import authRoutes from "../../routes/auth-routes"
+import checkHealth from "../../controllers/health-checks/check-health"
 
 export default function setupRoutes(app: Express): void {
 	app.use("/auth", authRoutes)
+	app.use("/health", checkHealth)
 	app.use("/misc", miscRoutes)
 	app.use("/trade", jwtVerifyAttachUserId, tradeRoutes)
 	app.use("/transactions", jwtVerifyAttachUserId, transactionsRoutes)

@@ -1,13 +1,12 @@
 import { Response, Request } from "express"
-import addEmailUpdateSubscriber from "../../db-operations/write/email-update-subscriber/add-email-update-subscriber"
 
-export default async function sellContract(req: Request, res: Response): Promise<void> {
+export default function sellContract(req: Request, res: Response): void {
 	try {
 		const { userId } = req
 
 		// TODO:
 		// Update the contracts held record, and the cash held records
-		await addEmailUpdateSubscriber(email)
+		console.log(userId)
 
 		res.status(200).json({ success: "" } satisfies SuccessResponse)
 		return

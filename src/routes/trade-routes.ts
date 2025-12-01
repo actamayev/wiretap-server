@@ -8,6 +8,7 @@ import validateWiretapBrokerageAccountIdInParams from "../middleware/request-val
 
 import buyContract from "../controllers/trade/buy-contract"
 import sellContract from "../controllers/trade/sell-contract"
+import confirmUserHasSufficientFundsToPurchaseContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-funds"
 
 const tradeRoutes = express.Router()
 
@@ -16,9 +17,9 @@ tradeRoutes.post(
 	validateWiretapBrokerageAccountIdInParams,
 	validateBuyContract,
 	confirmWiretapBrokerageAccountIdExistsAndValidId,
-	// attach the user's important brokerage account data ()
+	confirmUserHasSufficientFundsToPurchaseContracts,
 	// confirm polymarket contract still active
-	//confirm user has sufficient funds
+	confirmUserHasSufficientFundsToPurchaseContracts,
 	buyContract
 )
 

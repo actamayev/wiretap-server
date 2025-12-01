@@ -4,14 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && pnpm run copy-seed-data",
-    "copy-seed-data": "cp -r src/db-seed-data dist/src/",
+    "build": "tsc",
     "start": "nodemon",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit --project tsconfig.json",
     "validate": "pnpm run lint && pnpm run type-check",
-    "cloud-seed": "node dist/src/prisma/seed.js",
     "postinstall": "prisma generate"
   },
   "ts-node": {

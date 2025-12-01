@@ -2,29 +2,29 @@ To copy important files to AWS, run the following commands from the wiretap-serv
 Locally, run `sudo pnpm run build`
 
 Production:
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./package.json ubuntu@34.203.76.152:/home/ubuntu/wiretap
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./pnpm-lock.yaml ubuntu@34.203.76.152:/home/ubuntu/wiretap
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./.env.production ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src/.env.production
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./ecosystem.config.js ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/index.js ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/classes ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/controllers ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/db-operations ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/middleware ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/prisma ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/routes ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/types ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/utils ubuntu@34.203.76.152:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./prisma ubuntu@34.203.76.152:/home/ubuntu/wiretap/
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./prisma.config.ts ubuntu@34.203.76.152:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./package.json ubuntu@100.30.47.213:/home/ubuntu/wiretap
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./pnpm-lock.yaml ubuntu@100.30.47.213:/home/ubuntu/wiretap
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./.env.production ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src/.env.production
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./ecosystem.config.js ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/index.js ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/classes ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/controllers ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/db-operations ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/middleware ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/prisma ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/routes ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/types ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/utils ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./prisma ubuntu@100.30.47.213:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./prisma.config.ts ubuntu@100.30.47.213:/home/ubuntu/wiretap/
 
 To SSH into AWS:
-	aws ec2-instance-connect ssh --instance-id i-0af414ad7e5d89c3e --os-user ubuntu
+	export AWS_PROFILE=wiretap
+	aws ec2-instance-connect ssh --instance-id i-0ebab9b5fcec4e7fc --os-user ubuntu
 
 For Database migrations, navigate to /wiretap, and run:
 	pnpm dlx prisma migrate deploy && pnpm dlx prisma generate && pm2 restart 0 && pm2 logs;
 	If nothing is working after doing a migration, try restarting the pm2 `pm2 restart 0`
-	If there is new data to seed, run `pnpm run cloud-seed`
 
 Shortcuts:
 	Restart server after application update:
@@ -78,7 +78,6 @@ Setting up a new instance:
 		cd /home/ubuntu/wiretap
 		pnpm install --prod --frozen-lockfile
 		pnpm dlx prisma migrate deploy && pnpm dlx prisma generate
-		pnpm run cloud-seed
 	6. Go to /wiretap/dist/src:
 		cd /home/ubuntu/wiretap/dist/src
 		pm2 start ecosystem.config.js --env production

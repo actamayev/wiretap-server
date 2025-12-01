@@ -5,12 +5,12 @@ export default async function retrieveUserIdFromBrokerageId(wiretapBrokerageId: 
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
 		const brokerageAccount = await prismaClient.wiretap_brokerage_account.findFirst({
+			where: {
+				wiretap_brokerage_account_id: wiretapBrokerageId
+			},
 			select: {
 				user_id: true
 			},
-			where: {
-				wiretap_brokerage_account_id: wiretapBrokerageId
-			}
 		})
 
 		return brokerageAccount?.user_id
