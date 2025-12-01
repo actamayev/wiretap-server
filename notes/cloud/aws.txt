@@ -11,7 +11,6 @@ Production:
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/controllers ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/db-operations ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/middleware ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/prisma ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/routes ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/types ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/utils ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
