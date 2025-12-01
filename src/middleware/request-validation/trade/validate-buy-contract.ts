@@ -1,0 +1,26 @@
+import Joi from "joi"
+import isUndefined from "lodash/isUndefined"
+import { Request, Response, NextFunction } from "express"
+
+const validateBuyContractSchema = Joi.object({
+	contractUUID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+	numberContractsPurchasing: Joi.number().integer().positive().required(),
+	yesOrNo: Joi.boolean().required() // might need to change this due to non-boolean markets (ie. sports)
+}).required()
+
+export default function validateBuyContract(req: Request, res: Response, next: NextFunction): void {
+	try {
+		const { error } = validateBuyContractSchema.validate(req.body)
+
+		if (!isUndefined(error)) {
+			res.status(400).json({ validationError: error.details[0].message } satisfies ValidationErrorResponse)
+			return
+		}
+
+		next()
+	} catch (error) {
+		console.error(error)
+		res.status(500).json({ error: "Internal Server Error: Unable to validate buy contract" } satisfies ErrorResponse)
+		return
+	}
+}
