@@ -1,6 +1,6 @@
+import { isUndefined } from "lodash"
 import { Request, Response, NextFunction } from "express"
 import retrieveBrokerageAccountBalance from "../../db-operations/read/wiretap-brokerage-account/retrieve-brokerage-account-balance"
-import { isUndefined } from "lodash"
 
 export default async function confirmUserHasSufficientFundsToPurchaseContracts(
 	req: Request,

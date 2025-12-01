@@ -3,6 +3,7 @@
 		/* Language and Environment */
 		"target": "es2022",
 		"lib": ["es2022"],
+		"jsx": "react",
 		"typeRoots": [
 			"./src/types",
 			"./node_modules/@types"
@@ -58,6 +59,8 @@
 	},
 	"include": [
 		"src/**/*",
+		"**.tsx",
+		"**.ts",
 		"src/prisma/seed.ts",
 		"prisma.config.ts"
 	],

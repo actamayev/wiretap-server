@@ -14,6 +14,7 @@ declare global {
 		| "JWT_KEY"
 		| "GOOGLE_CLIENT_ID"
 		| "GOOGLE_CLIENT_SECRET"
+		| "RESEND_API_KEY"
 
 	type SecretsObject = { [K in SecretKeys]: string }
 }

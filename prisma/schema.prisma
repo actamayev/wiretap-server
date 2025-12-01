@@ -95,6 +95,9 @@ model position {
 model purchase_order {
 	purchase_id					                            	Int  @id @default(autoincrement())
 	contract_uuid                                               String
+	// TODO 12/1/25:
+	//Add which binary choice they purchased (YES or NO)
+	// Add Which outcome the user is betting on (for multi-outcome markets, ie elon musk # tweets (multiple ranges))
 	number_of_contracts											Int
 
 	wiretap_brokerage_account_id			                    Int
