@@ -1,5 +1,6 @@
 import isUndefined from "lodash/isUndefined"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "../generated/prisma/client"  // Note new path
+import { PrismaPg } from "@prisma/adapter-pg"
 import SecretsManager from "./aws/secrets-manager"
 
 export default class PrismaClientClass {
@@ -12,13 +13,14 @@ export default class PrismaClientClass {
 		try {
 			if (isUndefined(this.prismaClient)) {
 				const databaseUrl = await SecretsManager.getInstance().getSecret("DATABASE_URL")
-				this.prismaClient = new PrismaClient({
-					datasources: {
-						db: {
-							url: databaseUrl
-						}
-					}
+
+				// Create adapter first
+				const adapter = new PrismaPg({
+					connectionString: databaseUrl
 				})
+
+				// Pass adapter to PrismaClient
+				this.prismaClient = new PrismaClient({ adapter })
 			}
 			return this.prismaClient
 		} catch (error) {
