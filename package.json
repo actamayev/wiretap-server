@@ -9,8 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit --project tsconfig.json",
-    "validate": "pnpm run lint && pnpm run type-check",
-    "postinstall": "prisma generate"
+    "validate": "pnpm run lint && pnpm run type-check"
   },
   "ts-node": {
     "files": true,
