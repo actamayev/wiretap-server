@@ -1,0 +1,45 @@
+This should be done after assign-instance-ec2-instance-connect.txt
+Assign Elastic IP to the EC2 box:
+	1. From your local machine (not SSH'd into the server)
+		aws ec2 allocate-address --domain vpc --profile wiretap
+	2. Note the AllocationId from the response, then:
+		aws ec2 associate-address --instance-id i-0ebab9b5fcec4e7fc --allocation-id <AllocationId> --profile wiretap
+	3. Get your new Elastic IP:
+	4. aws ec2 describe-addresses --profile wiretap
+	5. Go into route53, and create the record:
+		Record type: A Name record
+		Record Name: production-api.wiretap.pro
+		Value: The New elastic IP obtained from above 
+		TTL: 300
+	6. Go back into the server, and run:
+		# Install Nginx and Certbot
+		sudo apt update
+		sudo apt install nginx certbot python3-certbot-nginx -y
+
+		# Create Nginx config
+		sudo nano /etc/nginx/sites-available/wiretap
+	7. Paste:
+		server {
+			listen 80;
+			server_name production-api.wiretap.pro;
+
+			location / {
+				proxy_pass http://localhost:8080;
+				proxy_http_version 1.1;
+				proxy_set_header Upgrade $http_upgrade;
+				proxy_set_header Connection 'upgrade';
+				proxy_set_header Host $host;
+				proxy_set_header X-Real-IP $remote_addr;
+				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+				proxy_set_header X-Forwarded-Proto $scheme;
+				proxy_cache_bypass $http_upgrade;
+			}
+		}
+	8. Save, and run:
+		# Enable the site
+		sudo ln -s /etc/nginx/sites-available/wiretap /etc/nginx/sites-enabled/
+		sudo nginx -t
+		sudo systemctl restart nginx
+
+		# Get SSL certificate
+		sudo certbot --nginx -d production-api.wiretap.pro

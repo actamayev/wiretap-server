@@ -4,14 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && pnpm run copy-seed-data",
-    "copy-seed-data": "cp -r src/db-seed-data dist/src/",
+    "build": "tsc",
     "start": "nodemon",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit --project tsconfig.json",
     "validate": "pnpm run lint && pnpm run type-check",
-    "cloud-seed": "node dist/src/prisma/seed.js",
     "postinstall": "prisma generate"
   },
   "ts-node": {
@@ -33,11 +31,14 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
     "@types/validator": "^13.15.10",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
@@ -52,12 +53,19 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.935.0",
     "@prisma/client": "^6.19.0",
+    "@react-email/components": "^1.0.1",
+    "@react-email/render": "^2.0.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "google-auth-library": "^10.5.0",
     "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "react": "^19.2.0",
+    "resend": "^6.5.2",
     "validator": "^13.15.23"
   }
 }
