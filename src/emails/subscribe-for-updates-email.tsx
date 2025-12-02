@@ -45,6 +45,12 @@ export default function WelcomeEmail(): React.ReactNode {
 							background-color: #FAFAFF !important;
 						}
 					}
+					@media screen and (max-width: 600px) {
+						.footer-section {
+							margin-left: 0 !important;
+							margin-right: 0 !important;
+						}
+					}
 				`}</style>
 			</Head>
 			<Preview>Welcome to Wiretap - Paper trading for Polymarket</Preview>
@@ -88,7 +94,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Footer section - outside the border */}
-						<Section className="text-left mx-16">
+						<Section className="text-left mx-16 footer-section">
 							<Row>
 								<Column colSpan={4}>
 									<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
