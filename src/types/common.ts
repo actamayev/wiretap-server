@@ -25,20 +25,26 @@ declare global {
 	}
 
 	interface CommonTransactionFields {
-		contractUUID: ContractUUID
+		outcomeId: number
 		transactionDate: Date
+		marketQuestion: string
 	}
 
 	interface PurchaseOrder extends CommonTransactionFields {
+		outcomeId: number
 		numberContractsPurchased: number
+		marketQuestion: string
 	}
 
 	interface SaleOrder extends CommonTransactionFields {
+		outcomeId: number
 		numberContractsSold: number
+		marketQuestion: string
 	}
 
 	interface SinglePosition {
-		contractUUID: ContractUUID
+		outcomeId: number
+		marketQuestion: string
 		numberOfContractsHeld: number
 	}
 

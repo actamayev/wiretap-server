@@ -11,8 +11,17 @@ export default async function retrieveAllPositions(wiretapBrokerageAccountId: nu
 			select: {
 				positions: {
 					select: {
-						contract_uuid: true,
-						number_contracts_held: true
+						outcome_id: true,
+						number_contracts_held: true,
+						outcome: {
+							select: {
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
 					}
 				}
 			}

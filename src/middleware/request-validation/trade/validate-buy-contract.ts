@@ -3,9 +3,9 @@ import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 
 const validateBuyContractSchema = Joi.object({
-	contractUUID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+	outcomeId: Joi.number().integer().positive().required(),
 	numberContractsPurchasing: Joi.number().integer().positive().required(),
-	yesOrNo: Joi.boolean().required() // might need to change this due to non-boolean markets (ie. sports)
+	marketId: Joi.number().integer().positive().required()
 }).required()
 
 export default function validateBuyContract(req: Request, res: Response, next: NextFunction): void {

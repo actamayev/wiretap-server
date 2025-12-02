@@ -1,5 +1,6 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
+// eslint-disable-next-line max-lines-per-function
 export default async function retrieveAllContracts(
 	wiretapBrokerageAccountId: number
 ): Promise<RetrievedUserTransactions | null> {
@@ -13,16 +14,34 @@ export default async function retrieveAllContracts(
 			select: {
 				purchase_orders: {
 					select: {
-						contract_uuid: true,
+						outcome_id: true,
 						number_of_contracts: true,
-						created_at: true
+						created_at: true,
+						outcome: {
+							select: {
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
 					}
 				},
 				sales_orders: {
 					select: {
-						contract_uuid: true,
+						outcome_id: true,
 						number_of_contracts: true,
-						created_at: true
+						created_at: true,
+						outcome: {
+							select: {
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
 					}
 				}
 			}
