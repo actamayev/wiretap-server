@@ -22,22 +22,47 @@ export default function WelcomeEmail(): React.ReactNode {
 			<Head>
 				<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet" />
 				<meta name="color-scheme" content="light dark" />
+				<meta name="supported-color-schemes" content="light dark" />
 				<style>{`
+					/* Force colors to stay consistent - works in Gmail */
+					.wiretap-blue {
+						color: #0041DC !important;
+						-webkit-text-fill-color: #0041DC !important;
+					}
+					.cash-green {
+						color: #55AF55 !important;
+						-webkit-text-fill-color: #55AF55 !important;
+					}
+					/* Prevent image color filters in Gmail */
+					img {
+						filter: none !important;
+						-webkit-filter: none !important;
+						opacity: 1 !important;
+					}
 					@media (prefers-color-scheme: dark) {
 						body {
 							background-color: #00001E !important;
 						}
 						.wiretap-blue {
 							color: #0041DC !important;
+							-webkit-text-fill-color: #0041DC !important;
 						}
 						.cash-green {
 							color: #55AF55 !important;
+							-webkit-text-fill-color: #55AF55 !important;
 						}
 						.main-text {
 							color: #FAFAFF !important;
+							-webkit-text-fill-color: #FAFAFF !important;
 						}
 						.bordered-section {
 							border-color: #FAFAFF !important;
+						}
+						/* Prevent image filters in dark mode */
+						img {
+							filter: none !important;
+							-webkit-filter: none !important;
+							opacity: 1 !important;
 						}
 					}
 					@media (prefers-color-scheme: light) {
@@ -47,16 +72,29 @@ export default function WelcomeEmail(): React.ReactNode {
 					}
 					@media screen and (max-width: 600px) {
 						.footer-section {
-							margin-left: 0 !important;
-							margin-right: 0 !important;
+							margin-left: 12px !important;
+							margin-right: 12px !important;
 						}
+					}
+					/* Gmail-specific fixes */
+					u + .body .wiretap-blue {
+						color: #0041DC !important;
+						-webkit-text-fill-color: #0041DC !important;
+					}
+					u + .body .cash-green {
+						color: #55AF55 !important;
+						-webkit-text-fill-color: #55AF55 !important;
+					}
+					u + .body img {
+						filter: none !important;
+						-webkit-filter: none !important;
 					}
 				`}</style>
 			</Head>
 			<Preview>Welcome to Wiretap - Paper trading for Polymarket</Preview>
 			<Tailwind>
 				<Body className="bg-white" style={{ fontFamily: '"Young Serif", Georgia, "Times New Roman", serif', backgroundColor: "#FAFAFF" }}>
-					<Container className="mx-auto py-[20px] pb-[48px] max-w-[560px]">
+					<Container className="mx-auto pb-[20px] pb-[48px] max-w-[560px]">
 						{/* Bordered container for the three sections */}
 						<Section className="mb-[40px] text-center bordered-section" style={{ border: "3px solid #00001E", borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px", padding: "24px" }}>
 							{/* Section 1 */}
