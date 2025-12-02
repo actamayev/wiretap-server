@@ -30,7 +30,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						<Section className="mb-[40px] text-center" style={{ border: "3px solid #00001E", borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px", padding: "24px" }}>
 							{/* Section 1 */}
 							<Section className="mb-[40px]">
-								<Heading className="text-[#00001E] text-[24px] font-bold p-0">
+								<Heading className="text-[#00001E] text-[32px] font-extrabold p-0">
 									Welcome to <span className="text-[#0041DC]">Wiretap</span>
 								</Heading>
 								<Text className="text-[#00001E] text-[16px] leading-[26px] font-semibold">
@@ -63,7 +63,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Footer section - outside the border */}
-						<Section className="text-left mx-4">
+						<Section className="text-left mx-16">
 							<Row>
 								<Column colSpan={4}>
 									<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
