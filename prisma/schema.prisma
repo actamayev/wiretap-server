@@ -65,62 +65,192 @@ model wiretap_brokerage_account {
 	positions													position[]
 }
 
-// 11/27/25 TODO: Figure out what data we should save, and what data we can continually reference Polymarket
-model contract {
-	contract_uuid												String @id
-	polymarket_link												String
+// Events table - one row per event
+model polymarket_event {
+	event_id                    								String    @id  // Polymarket's slug
+	title                       								String
+	description                 								String
 
-	created_at                                                  DateTime     @default(now())
-	updated_at                                                  DateTime     @default(now()) @updatedAt
+	// Market status
+	active                      								Boolean   @default(true)
+	closed                      								Boolean   @default(false)
+	archived                    								Boolean   @default(false)
 
-	purchase_order												purchase_order[]
-	sale_order													sale_order[]
-	position													position[]
+	// Resolution data
+	resolved                    								Boolean   @default(false)
+	resolution_time             								DateTime?
+
+	// Metadata
+	category                    								String?
+	start_date                  								DateTime?
+	end_date                    								DateTime?
+
+	// Event-level financials (aggregated across all markets)
+	liquidity                   								Float?
+	volume                      								Float?
+	volume_24hr                 								Float?
+	volume_1wk                  								Float?
+	volume_1mo                  								Float?
+
+	polymarket_url              								String
+	image_url                   								String?
+	icon_url                    								String?
+
+	// Flags
+	enable_order_book           								Boolean   @default(true)
+	restricted                  								Boolean   @default(false)
+
+	created_at                  								DateTime  @default(now())
+	updated_at                  								DateTime  @default(now()) @updatedAt
+
+	markets                     								polymarket_market[]
 }
 
-// Positions:
+// Markets table - one row per condition_id (the tradeable market itself)
+model polymarket_market {
+	market_id                   								Int       @id @default(autoincrement())
+	condition_id                								String    @unique // Polymarket's condition ID
+	event_id                    								String
+
+	question                    								String    // The market question
+
+	// Market-level metadata
+	active                      								Boolean   @default(true)
+	closed                      								Boolean   @default(false)
+	accepting_orders            								Boolean   @default(true)
+
+	// Aggregate market data (often reflects primary outcome in API)
+	best_bid                    								Float?
+	best_ask                    								Float?
+	last_trade_price            								Float?
+	spread                      								Float?
+
+	// Volume metrics (market-level)
+	volume                      								Float?
+	liquidity                   								Float?
+	volume_24hr                 								Float?
+	volume_1wk                  								Float?
+	volume_1mo                  								Float?
+
+	// Order book settings
+	order_min_size              								Float?
+	order_min_tick_size         								Float?
+
+	// Metadata
+	enable_order_book           								Boolean   @default(true)
+	restricted                  								Boolean   @default(false)
+
+	created_at                  								DateTime  @default(now())
+	updated_at                  								DateTime  @default(now()) @updatedAt
+
+	event                       								polymarket_event @relation(fields: [event_id], references: [event_id])
+	outcomes                    								polymarket_outcome[]
+
+	@@index([event_id])
+}
+
+// Outcomes table - one row per tradeable outcome token
+model polymarket_outcome {
+	outcome_id                  								Int       @id @default(autoincrement())
+	market_id                   								Int
+
+	clob_token_id               								String    @unique // The specific tradeable token ID
+	outcome                     								String    // "Yes", "No", "Trump", "Harris", etc
+	outcome_index               								Int       // Position in outcomes array (0, 1, 2...)
+
+	// Outcome-specific pricing
+	current_price               								Float?    // From outcomePrices array
+
+	// Price changes (if available per-outcome)
+	price_change_24hr           								Float?
+	price_change_1wk            								Float?
+	price_change_1mo            								Float?
+
+	// Resolution
+	winning_outcome             								Boolean   @default(false)
+	payout_per_share            								Float?    // 1.0 if won, 0.0 if lost
+
+	created_at                  								DateTime  @default(now())
+	updated_at                  								DateTime  @default(now()) @updatedAt
+
+	market                      								polymarket_market @relation(fields: [market_id], references: [market_id], onDelete: Cascade)
+
+	purchase_orders             								purchase_order[]
+	sale_orders                 								sale_order[]
+	positions                   								position[]
+
+	@@unique([market_id, outcome_index])
+	@@index([market_id])
+	@@index([clob_token_id])
+}
+
+// Position - references specific outcome
 model position {
-	position_id													Int  @id @default(autoincrement())
-	contract_uuid												String
-	number_contracts_held										Int
+	position_id                 								Int       @id @default(autoincrement())
+	outcome_id                  								Int
 
-	wiretap_brokerage_account_id			                    Int
-	created_at                                                  DateTime     @default(now())
-	updated_at                                                  DateTime     @default(now()) @updatedAt
+	number_contracts_held       								Float
+	average_cost_per_contract   								Float
+	total_cost                  								Float
 
-	wiretap_brokerage_account                          			wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
-	contract                          							contract @relation(fields: [contract_uuid], references: [contract_uuid])
+	wiretap_brokerage_account_id 								Int
+	created_at                  								DateTime  @default(now())
+	updated_at                  								DateTime  @default(now()) @updatedAt
+
+	wiretap_brokerage_account   								wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
+
+	@@unique([wiretap_brokerage_account_id, outcome_id])
+	@@index([wiretap_brokerage_account_id])
 }
 
-// Transactions:
+// Purchase order - references specific outcome
 model purchase_order {
-	purchase_id					                            	Int  @id @default(autoincrement())
-	contract_uuid                                               String
-	// TODO 12/1/25:
-	//Add which binary choice they purchased (YES or NO)
-	// Add Which outcome the user is betting on (for multi-outcome markets, ie elon musk # tweets (multiple ranges))
-	number_of_contracts											Int
+	purchase_id                 								Int       @id @default(autoincrement())
+	outcome_id                  								Int
 
-	wiretap_brokerage_account_id			                    Int
+	number_of_contracts         								Float
+	price_per_contract          								Float
+	total_cost                  								Float
 
-	created_at                                                  DateTime  @default(now())
-	updated_at                                                  DateTime  @default(now()) @updatedAt
+	// Snapshot of market state at execution
+	market_best_bid             								Float?
+	market_best_ask             								Float?
 
-	wiretap_brokerage_account                          			wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
-	contract                          							contract @relation(fields: [contract_uuid], references: [contract_uuid])
+	wiretap_brokerage_account_id 								Int
+
+	created_at                  								DateTime  @default(now())
+	updated_at                  								DateTime  @default(now()) @updatedAt
+
+	wiretap_brokerage_account   								wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
+
+	@@index([wiretap_brokerage_account_id])
+	@@index([outcome_id])
 }
 
+// Sale order - references specific outcome
 model sale_order {
-	sale_id							                            Int  @id @default(autoincrement())
-	contract_uuid                                               String
-	number_of_contracts											Int
+	sale_id                     								Int       @id @default(autoincrement())
+	outcome_id                  								Int
 
-	wiretap_brokerage_account_id			                    Int
+	number_of_contracts         								Float
+	price_per_contract          								Float
+	total_proceeds              								Float
+	realized_pnl                								Float
 
-	created_at                                                  DateTime  @default(now())
-	updated_at                                                  DateTime  @default(now()) @updatedAt
+	// Snapshot of market state at execution
+	market_best_bid             								Float?
+	market_best_ask             								Float?
 
-	wiretap_brokerage_account                          			wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
-	contract                          							contract @relation(fields: [contract_uuid], references: [contract_uuid])
+	wiretap_brokerage_account_id 								Int
+
+	created_at                  								DateTime  @default(now())
+	updated_at                  								DateTime  @default(now()) @updatedAt
+
+	wiretap_brokerage_account   								wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
+
+	@@index([wiretap_brokerage_account_id])
+	@@index([outcome_id])
 }
-
