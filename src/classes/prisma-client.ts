@@ -14,17 +14,22 @@ export default class PrismaClientClass {
 			if (isUndefined(this.prismaClient)) {
 				const databaseUrl = await SecretsManager.getInstance().getSecret("DATABASE_URL")
 
-				// Create adapter first
+				// Add SSL configuration for AWS RDS
+				const cleanUrl = databaseUrl.trim()
+				const urlWithSSL = cleanUrl.includes("?")
+					? `${cleanUrl}&sslmode=no-verify`
+					: `${cleanUrl}?sslmode=no-verify`
+
 				const adapter = new PrismaPg({
-					connectionString: databaseUrl
+					connectionString: urlWithSSL
 				})
 
-				// Pass adapter to PrismaClient
 				this.prismaClient = new PrismaClient({ adapter })
+				await this.prismaClient.$connect()
 			}
 			return this.prismaClient
 		} catch (error) {
-			console.error(error)
+			console.error("[Prisma] Failed to initialize:", error)
 			throw error
 		}
 	}
