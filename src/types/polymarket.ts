@@ -4,183 +4,183 @@ declare global {
 	// ============================================
 
 	interface PolymarketEvent {
-	  // Core identification
-	  id: string
-	  ticker: string
-	  slug: string
-	  title: string
-	  subtitle?: string
-	  description: string
-	  resolutionSource?: string
+		// Core identification
+		id: string
+		ticker: string
+		slug: string
+		title: string
+		subtitle?: string
+		description: string
+		resolutionSource?: string
 
-	  // Dates
-	  startDate: string // ISO date
-	  creationDate: string // ISO date
-	  endDate: string // ISO date
-	  createdAt: string // ISO date
-	  updatedAt: string // ISO date
-	  closedTime?: string // ISO date
+		// Dates
+		startDate: string // ISO date
+		creationDate: string // ISO date
+		endDate: string // ISO date
+		createdAt: string // ISO date
+		updatedAt: string // ISO date
+		closedTime?: string // ISO date
 
-	  // Media
-	  image: string
-	  icon: string
-	  featuredImage?: string
+		// Media
+		image: string
+		icon: string
+		featuredImage?: string
 
-	  // Status flags
-	  active: boolean
-	  closed: boolean
-	  archived: boolean
-	  new: boolean
-	  featured: boolean
-	  restricted: boolean
+		// Status flags
+		active: boolean
+		closed: boolean
+		archived: boolean
+		new: boolean
+		featured: boolean
+		restricted: boolean
 
-	  // Financial metrics
-	  liquidity: number
-	  volume: number
-	  openInterest?: number
-	  liquidityAmm?: number
-	  liquidityClob?: number
+		// Financial metrics
+		liquidity: number
+		volume: number
+		openInterest?: number
+		liquidityAmm?: number
+		liquidityClob?: number
 
-	  // Volume breakdown
-	  volume24hr: number
-	  volume1wk: number
-	  volume1mo: number
-	  volume1yr: number
+		// Volume breakdown
+		volume24hr: number
+		volume1wk: number
+		volume1mo: number
+		volume1yr: number
 
-	  // Metadata
-	  category?: string
-	  subcategory?: string
-	  sortBy?: string
-	  competitive: number
-	  commentCount: number
-	  enableOrderBook: boolean
+		// Metadata
+		category?: string
+		subcategory?: string
+		sortBy?: string
+		competitive: number
+		commentCount: number
+		enableOrderBook: boolean
 
-	  // Relations
-	  markets: PolymarketMarket[]
-	  tags: PolymarketTag[]
-	  series?: PolymarketSeries[]
+		// Relations
+		markets: PolymarketMarket[]
+		tags: PolymarketTag[]
+		series?: PolymarketSeries[]
 
-	  // Template fields
-	  isTemplate?: boolean
-	  templateVariables?: string
+		// Template fields
+		isTemplate?: boolean
+		templateVariables?: string
 
-	  // Additional flags
-	  commentsEnabled?: boolean
-	  cyom?: boolean
-	  showAllOutcomes?: boolean
-	  showMarketImages?: boolean
-	  enableNegRisk?: boolean
-	  automaticallyActive?: boolean
-	  negRiskAugmented?: boolean
-	  pendingDeployment?: boolean
-	  deploying?: boolean
+		// Additional flags
+		commentsEnabled?: boolean
+		cyom?: boolean
+		showAllOutcomes?: boolean
+		showMarketImages?: boolean
+		enableNegRisk?: boolean
+		automaticallyActive?: boolean
+		negRiskAugmented?: boolean
+		pendingDeployment?: boolean
+		deploying?: boolean
 	}
 
 	interface PolymarketMarket {
-	  // Core identification
-	  id: string
-	  question: string
-	  conditionId: string // THIS IS THE KEY FIELD - the tradeable contract ID
-	  slug: string
-	  questionID: string
+		// Core identification
+		id: string
+		question: string
+		conditionId: string // THIS IS THE KEY FIELD - the tradeable contract ID
+		slug: string
+		questionID: string
 
-	  // Dates
-	  startDate: string // ISO date
-	  endDate: string // ISO date
-	  startDateIso?: string
-	  endDateIso?: string
-	  createdAt: string
-	  updatedAt: string
-	  acceptingOrdersTimestamp?: string
+		// Dates
+		startDate: string // ISO date
+		endDate: string // ISO date
+		startDateIso?: string
+		endDateIso?: string
+		createdAt: string
+		updatedAt: string
+		acceptingOrdersTimestamp?: string
 
-	  // Market data - NOTE: These are JSON strings, not arrays!
-	  outcomes: string // JSON string like "[\"Yes\", \"No\"]"
-	  outcomePrices: string // JSON string like "[\"0.007\", \"0.993\"]"
-	  clobTokenIds: string // JSON string like "[\"token1\", \"token2\"]"
+		// Market data - NOTE: These are JSON strings, not arrays!
+		outcomes: string // JSON string like "[\"Yes\", \"No\"]"
+		outcomePrices: string // JSON string like "[\"0.007\", \"0.993\"]"
+		clobTokenIds: string // JSON string like "[\"token1\", \"token2\"]"
 
-	  // Current prices
-	  lastTradePrice?: number
-	  bestBid?: number
-	  bestAsk?: number
-	  spread?: number
+		// Current prices
+		lastTradePrice?: number
+		bestBid?: number
+		bestAsk?: number
+		spread?: number
 
-	  // Price changes
-	  oneDayPriceChange?: number
-	  oneWeekPriceChange?: number
-	  oneMonthPriceChange?: number
+		// Price changes
+		oneDayPriceChange?: number
+		oneWeekPriceChange?: number
+		oneMonthPriceChange?: number
 
-	  // Financial metrics
-	  volume: string // String representation of number
-	  volumeNum?: number
-	  liquidity: string // String representation of number
-	  liquidityNum?: number
-	  liquidityAmm?: number
-	  liquidityClob?: number
+		// Financial metrics
+		volume: string // String representation of number
+		volumeNum?: number
+		liquidity: string // String representation of number
+		liquidityNum?: number
+		liquidityAmm?: number
+		liquidityClob?: number
 
-	  // Volume breakdown
-	  volume24hr?: number
-	  volume1wk?: number
-	  volume1mo?: number
-	  volume1yr?: number
-	  volume24hrClob?: number
-	  volume1wkClob?: number
-	  volume1moClob?: number
-	  volume1yrClob?: number
-	  volumeClob?: number
+		// Volume breakdown
+		volume24hr?: number
+		volume1wk?: number
+		volume1mo?: number
+		volume1yr?: number
+		volume24hrClob?: number
+		volume1wkClob?: number
+		volume1moClob?: number
+		volume1yrClob?: number
+		volumeClob?: number
 
-	  // Order book settings
-	  enableOrderBook: boolean
-	  orderPriceMinTickSize?: number
-	  orderMinSize?: number
-	  acceptingOrders?: boolean
+		// Order book settings
+		enableOrderBook: boolean
+		orderPriceMinTickSize?: number
+		orderMinSize?: number
+		acceptingOrders?: boolean
 
-	  // Status flags
-	  active: boolean
-	  closed: boolean
-	  archived?: boolean
-	  new?: boolean
-	  featured?: boolean
-	  restricted?: boolean
-	  ready?: boolean
-	  funded?: boolean
+		// Status flags
+		active: boolean
+		closed: boolean
+		archived?: boolean
+		new?: boolean
+		featured?: boolean
+		restricted?: boolean
+		ready?: boolean
+		funded?: boolean
 
-	  // Fees
-	  makerBaseFee?: number
-	  takerBaseFee?: number
+		// Fees
+		makerBaseFee?: number
+		takerBaseFee?: number
 
-	  // Resolution
-	  resolvedBy?: string
-	  umaResolutionStatuses?: string
+		// Resolution
+		resolvedBy?: string
+		umaResolutionStatuses?: string
 
-	  // Media
-	  image?: string
-	  icon?: string
-	  description?: string
-	  resolutionSource?: string
+		// Media
+		image?: string
+		icon?: string
+		description?: string
+		resolutionSource?: string
 
-	  // Additional metadata
-	  competitive?: number
-	  negRisk?: boolean
-	  cyom?: boolean
-	  automaticallyActive?: boolean
-	  clearBookOnStart?: boolean
-	  manualActivation?: boolean
-	  pagerDutyNotificationEnabled?: boolean
-	  approved?: boolean
+		// Additional metadata
+		competitive?: number
+		negRisk?: boolean
+		cyom?: boolean
+		automaticallyActive?: boolean
+		clearBookOnStart?: boolean
+		manualActivation?: boolean
+		pagerDutyNotificationEnabled?: boolean
+		approved?: boolean
 
-	  // Rewards
-	  rewardsMinSize?: number
-	  rewardsMaxSpread?: number
+		// Rewards
+		rewardsMinSize?: number
+		rewardsMaxSpread?: number
 
-	  // Market grouping
-	  groupItemTitle?: string
-	  groupItemThreshold?: string
+		// Market grouping
+		groupItemTitle?: string
+		groupItemThreshold?: string
 
-	  // Additional flags
-	  hasReviewedDates?: boolean
-	  feesEnabled?: boolean
-	  holdingRewardsEnabled?: boolean
-	  rfqEnabled?: boolean
+		// Additional flags
+		hasReviewedDates?: boolean
+		feesEnabled?: boolean
+		holdingRewardsEnabled?: boolean
+		rfqEnabled?: boolean
 	}
 
 	interface PolymarketTag {
