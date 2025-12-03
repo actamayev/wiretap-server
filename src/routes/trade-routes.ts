@@ -11,6 +11,7 @@ import sellContract from "../controllers/trade/sell-contract"
 import confirmUserHasSufficientFundsToPurchaseContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-funds"
 import validateBuyOrderAndFetchPrice from "../middleware/request-validation/trade/validate-buy-order-and-fetch-price"
 import validateSellOrderAndFetchPrice from "../middleware/request-validation/trade/validate-sell-order-and-fetch-price"
+import validateOutcomeValid from "../middleware/request-validation/trade/validate-outcome-valid"
 
 const tradeRoutes = express.Router()
 
@@ -18,10 +19,9 @@ tradeRoutes.post(
 	"/buy/:wiretapBrokerageAccountId",
 	validateWiretapBrokerageAccountIdInParams,
 	validateBuyContract,
-	validateBuyOrderAndFetchPrice,
 	confirmWiretapBrokerageAccountIdExistsAndValidId,
-	confirmUserHasSufficientFundsToPurchaseContracts,
-	// confirm polymarket contract still active
+	validateOutcomeValid,
+	validateBuyOrderAndFetchPrice,
 	confirmUserHasSufficientFundsToPurchaseContracts,
 	buyContract
 )
@@ -30,9 +30,9 @@ tradeRoutes.post(
 	"/sell/:wiretapBrokerageAccountId",
 	validateWiretapBrokerageAccountIdInParams,
 	validateSellContract,
-	validateSellOrderAndFetchPrice,
 	confirmWiretapBrokerageAccountIdExistsAndValidId,
-	//confirm user has enough shares in the contract
+	validateOutcomeValid,
+	validateSellOrderAndFetchPrice,
 	sellContract
 )
 

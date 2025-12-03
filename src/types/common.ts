@@ -80,6 +80,24 @@ declare global {
 	interface EmailResponse {
 		email: string
 	}
+
+	interface SuccessBuyOrderResponse {
+		success: "Buy order executed successfully"
+		pricePerContract: number
+		totalCost: number
+		newAccountBalance: number
+	}
+
+	interface SuccessSellOrderResponse {
+		success: "Sell order executed successfully"
+		saleId: number
+		positionClosed: boolean
+		contractsSold: number
+		pricePerContract: number
+		totalProceeds: number
+		realizedPnl: number
+		newAccountBalance: number
+	}
 }
 
 export {}

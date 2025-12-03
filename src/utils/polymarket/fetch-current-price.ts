@@ -1,3 +1,5 @@
+import axios from "axios"
+
 interface PolymarketMidpointResponse {
 	mid?: string
 	price?: string
@@ -7,19 +9,11 @@ export default async function fetchPolymarketPrice(clobTokenId: string): Promise
 	try {
 		const midpointUrl = `https://clob.polymarket.com/midpoint?token_id=${clobTokenId}`
 
-		const response = await fetch(midpointUrl, {
-			method: "GET",
+		const { data } = await axios.get<PolymarketMidpointResponse>(midpointUrl, {
 			headers: {
 				"Content-Type": "application/json"
 			}
 		})
-
-		if (!response.ok) {
-			console.error(`Polymarket API returned ${response.status}`)
-			return null
-		}
-
-		const data = await response.json() as PolymarketMidpointResponse
 
 		const priceString = data.mid || data.price
 
@@ -36,7 +30,6 @@ export default async function fetchPolymarketPrice(clobTokenId: string): Promise
 		}
 
 		return price
-
 	} catch (error) {
 		console.error("Failed to fetch price from Polymarket:", error)
 		return null
