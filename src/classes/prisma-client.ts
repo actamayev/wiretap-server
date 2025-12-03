@@ -1,5 +1,5 @@
 import isUndefined from "lodash/isUndefined"
-import { PrismaClient } from "../generated/prisma/client"  // Note new path
+import { PrismaClient } from "../generated/prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import SecretsManager from "./aws/secrets-manager"
 

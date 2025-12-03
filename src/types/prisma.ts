@@ -1,4 +1,4 @@
-import { credentials } from "@prisma/client"
+import { credentials } from "../generated/prisma/client"
 
 declare global {
 	type ExtendedCredentials = credentials & {

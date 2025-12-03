@@ -1,4 +1,4 @@
-import { AuthMethods } from "@prisma/client"
+import { AuthMethods } from "../generated/prisma/client"
 
 declare global {
 	interface NewLocalUserFields {

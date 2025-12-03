@@ -1,4 +1,7 @@
 import PrismaClientClass from "../../../classes/prisma-client"
+import type { PrismaClient } from "../../../generated/prisma/client"
+
+type TransactionClient = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0]
 
 interface ExecuteSellOrderParams {
 	wiretapBrokerageAccountId: number
@@ -41,7 +44,7 @@ export default async function executeSellOrder(
 
 	// Execute all operations in a transaction
 	// eslint-disable-next-line max-lines-per-function
-	const result = await prismaClient.$transaction(async (tx) => {
+	const result = await prismaClient.$transaction(async (tx: TransactionClient) => {
 		// ============================================
 		// STEP 1: Fetch Current Account Balance
 		// ============================================
