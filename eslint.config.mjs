@@ -28,11 +28,6 @@ export default [
 			},
 			ecmaVersion: "latest",
 			sourceType: "module",
-			parserOptions: {
-				ecmaFeatures: {
-					jsx: true,
-				}
-			}
 		},
 		rules: {
 			indent: ["error", "tab"],
@@ -127,8 +122,8 @@ export default [
 			parserOptions: {
 				project: ["./tsconfig.json"],
 				ecmaFeatures: {
-					jsx: true  // Add this
-				}
+					jsx: true,
+				},
 			},
 		},
 		rules: {

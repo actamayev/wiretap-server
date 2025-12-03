@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from "react"
 import {
 	Body,
@@ -15,7 +16,7 @@ import {
 	Tailwind,
 } from "@react-email/components"
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// eslint-disable-next-line @typescript-eslint/naming-convention, max-lines-per-function
 export default function WelcomeEmail(): React.ReactNode {
 	return (
 		<Html>
@@ -93,7 +94,7 @@ export default function WelcomeEmail(): React.ReactNode {
 			</Head>
 			<Preview>Welcome to Wiretap - Paper trading for Polymarket</Preview>
 			<Tailwind>
-				<Body className="bg-white" style={{ fontFamily: '"Young Serif", Georgia, "Times New Roman", serif', backgroundColor: "#FAFAFF" }}>
+				<Body className="bg-white" style={{ fontFamily: "\"Young Serif\", Georgia, \"Times New Roman\", serif", backgroundColor: "#FAFAFF" }}>
 					<Container className="mx-auto pb-[20px] pb-[48px] max-w-[560px]">
 						{/* Bordered container for the three sections */}
 						<Section className="mb-[40px] text-center bordered-section" style={{ border: "3px solid #00001E", borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px", padding: "24px" }}>
