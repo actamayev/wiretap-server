@@ -135,8 +135,8 @@ export default function WelcomeEmail(): React.ReactNode {
 									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										Wiretap
 									</Text>
-									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										Paper trade on Polymarket
+									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E", visibility: "hidden" }}>
+										&nbsp;
 									</Text>
 								</Column>
 								<Column colSpan={4}>
