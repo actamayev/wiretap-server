@@ -14,14 +14,19 @@ export default class PrismaClientClass {
 			if (isUndefined(this.prismaClient)) {
 				const databaseUrl = await SecretsManager.getInstance().getSecret("DATABASE_URL")
 
-				// Add SSL configuration for AWS RDS
 				const cleanUrl = databaseUrl.trim()
-				const urlWithSSL = cleanUrl.includes("?")
-					? `${cleanUrl}&sslmode=no-verify`
-					: `${cleanUrl}?sslmode=no-verify`
+
+				// Only add SSL configuration for production (AWS RDS)
+				const isProduction = process.env.NODE_ENV === "production"
+				// eslint-disable-next-line no-nested-ternary
+				const connectionString = isProduction
+					? (cleanUrl.includes("?")
+						? `${cleanUrl}&sslmode=no-verify`
+						: `${cleanUrl}?sslmode=no-verify`)
+					: cleanUrl
 
 				const adapter = new PrismaPg({
-					connectionString: urlWithSSL
+					connectionString
 				})
 
 				this.prismaClient = new PrismaClient({ adapter })
