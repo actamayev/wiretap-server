@@ -8,13 +8,7 @@ export default async function confirmWiretapBrokerageHasSufficientFunds(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { validatedBuyOrder } = req
-
-		const {
-			wiretapBrokerageAccountId,
-			numberOfContractsPurchasing,
-			currentPrice
-		} = validatedBuyOrder
+		const { wiretapBrokerageAccountId, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
 
 		// Calculate total cost
 		const totalCost = currentPrice * numberOfContractsPurchasing
@@ -30,17 +24,15 @@ export default async function confirmWiretapBrokerageHasSufficientFunds(
 		// Check if user has sufficient funds
 		if (currentAccountBalance < totalCost) {
 			res.status(400).json({
-				error: `Insufficient funds. Balance: $${currentAccountBalance.toFixed(2)}, Required: $${totalCost.toFixed(2)}`
-			} satisfies ErrorResponse)
+				message: `Insufficient funds. Balance: $${currentAccountBalance.toFixed(2)}, Required: $${totalCost.toFixed(2)}`
+			} satisfies MessageResponse)
 			return
 		}
 
 		next()
 	} catch (error: unknown) {
 		console.error("Error in confirmWiretapBrokerageHasSufficientFunds middleware:", error)
-		res.status(500).json({
-			error: "Internal Server Error: Unable to verify account balance"
-		} satisfies ErrorResponse)
+		res.status(500).json({ error: "Internal Server Error: Unable to verify account balance" } satisfies ErrorResponse)
 		return
 	}
 }

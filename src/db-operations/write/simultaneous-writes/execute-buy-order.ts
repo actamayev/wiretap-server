@@ -22,9 +22,7 @@ interface ExecuteBuyOrderResult {
  * 3. Upserts position (adds contracts, updates average cost)
  */
 // eslint-disable-next-line max-lines-per-function
-export default async function executeBuyOrder(
-	params: ExecuteBuyOrderParams
-): Promise<ExecuteBuyOrderResult> {
+export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Promise<ExecuteBuyOrderResult> {
 	const {
 		wiretapBrokerageAccountId,
 		outcomeId,

@@ -1,17 +1,14 @@
 import { Response, Request } from "express"
 import executeBuyOrder from "../../db-operations/write/simultaneous-writes/execute-buy-order"
 
-
 export default async function buyContract(req: Request, res: Response): Promise<void> {
 	try {
-		const { validatedBuyOrder } = req
-
 		const {
 			wiretapBrokerageAccountId,
 			outcomeId,
 			numberOfContractsPurchasing,
 			currentPrice
-		} = validatedBuyOrder
+		} = req.validatedBuyOrder
 
 		// Execute buy order in database transaction
 		const result = await executeBuyOrder({
@@ -28,7 +25,6 @@ export default async function buyContract(req: Request, res: Response): Promise<
 			newAccountBalance: result.newAccountBalance
 		} satisfies SuccessBuyOrderResponse)
 		return
-
 	} catch (error: unknown) {
 		console.error("Error executing buy order:", error)
 
