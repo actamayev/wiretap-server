@@ -31,8 +31,8 @@ export default function WelcomeEmail(): React.ReactNode {
 						-webkit-text-fill-color: #0041DC !important;
 					}
 					.cash-green {
-						color: #55AF55 !important;
-						-webkit-text-fill-color: #55AF55 !important;
+						color: #4BC84B !important;
+						-webkit-text-fill-color: #4BC84B !important;
 					}
 					/* Prevent image color filters in Gmail */
 					img {
@@ -49,26 +49,14 @@ export default function WelcomeEmail(): React.ReactNode {
 							-webkit-text-fill-color: #0041DC !important;
 						}
 						.cash-green {
-							color: #55AF55 !important;
-							-webkit-text-fill-color: #55AF55 !important;
-						}
-						.main-text {
-							color: #FAFAFF !important;
-							-webkit-text-fill-color: #FAFAFF !important;
-						}
-						.bordered-section {
-							border-color: #FAFAFF !important;
+							color: #4BC84B !important;
+							-webkit-text-fill-color: #4BC84B !important;
 						}
 						/* Prevent image filters in dark mode */
 						img {
 							filter: none !important;
 							-webkit-filter: none !important;
 							opacity: 1 !important;
-						}
-					}
-					@media (prefers-color-scheme: light) {
-						body {
-							background-color: #FAFAFF !important;
 						}
 					}
 					@media screen and (max-width: 600px) {
@@ -83,8 +71,8 @@ export default function WelcomeEmail(): React.ReactNode {
 						-webkit-text-fill-color: #0041DC !important;
 					}
 					u + .body .cash-green {
-						color: #55AF55 !important;
-						-webkit-text-fill-color: #55AF55 !important;
+						color: #4BC84B !important;
+						-webkit-text-fill-color: #4BC84B !important;
 					}
 					u + .body img {
 						filter: none !important;
@@ -92,19 +80,19 @@ export default function WelcomeEmail(): React.ReactNode {
 					}
 				`}</style>
 			</Head>
-			<Preview>Welcome to Wiretap - Paper trading on Polymarket</Preview>
+			<Preview>Welcome to Wiretap - Paper trade on Polymarket</Preview>
 			<Tailwind>
-				<Body className="bg-white" style={{ fontFamily: "\"Young Serif\", Georgia, \"Times New Roman\", serif", backgroundColor: "#FAFAFF" }}>
+				<Body className="bg-white" style={{ fontFamily: "\"Young Serif\", Georgia, \"Times New Roman\", serif" }}>
 					<Container className="mx-auto pb-[20px] pb-[48px] max-w-[560px]">
 						{/* Bordered container for the three sections */}
-						<Section className="mb-[40px] text-center bordered-section" style={{ border: "3px solid #00001E", borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px", padding: "24px" }}>
+						<Section className="mb-[40px] text-center bordered-section">
 							{/* Section 1 */}
 							<Section className="mb-[40px]">
 								<Heading className="main-text text-[32px] font-extrabold p-0" style={{ color: "#00001E" }}>
 									Welcome to <span className="wiretap-blue" style={{ color: "#0041DC" }}>Wiretap</span>
 								</Heading>
 								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
-									Paper trading on Polymarket
+									Paper trade on Polymarket
 								</Text>
 							</Section>
 
@@ -117,7 +105,7 @@ export default function WelcomeEmail(): React.ReactNode {
 									and see if you can beat the market.
 								</Text>
 								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
-									All without putting up real <span className="cash-green" style={{ color: "#55AF55" }}>cash.</span>
+									All without putting up real <span className="cash-green" style={{ color: "#4BC84B" }}>cash.</span>
 								</Text>
 							</Section>
 
@@ -148,7 +136,7 @@ export default function WelcomeEmail(): React.ReactNode {
 										Wiretap
 									</Text>
 									<Text className="mt-[4px] mb-[0px] text-[16px] text-[#00001E] leading-[24px] main-text" style={{ color: "#00001E" }}>
-										Paper trading on Polymarket
+										Paper trade on Polymarket
 									</Text>
 								</Column>
 								<Column colSpan={4}>
