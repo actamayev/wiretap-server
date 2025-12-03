@@ -5,7 +5,12 @@ import { defineConfig } from "prisma/config"
 config({ path: ".env.local" })
 
 export default defineConfig({
+	schema: "prisma/schema.prisma",  // Add this
 	migrations: {
+		path: "prisma/migrations",      // Add this
 		seed: "ts-node --files src/prisma/seed.ts",
+	},
+	datasource: {
+		url: process.env.DATABASE_URL,  // Add this if needed for migrations
 	},
 })

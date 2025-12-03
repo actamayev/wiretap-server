@@ -5,6 +5,10 @@ declare global {
 			userId: number
 			user: ExtendedCredentials
 			wiretapBrokerageAccountId: number
+
+			clobTokenId: string
+			validatedBuyOrder: ValidatedBuyOrder
+			validatedSellOrder: ValidatedSellOrder
 		}
 	}
 }

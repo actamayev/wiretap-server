@@ -1,4 +1,4 @@
-import { credentials } from "@prisma/client"
+import { credentials } from "../../generated/prisma/client"
 import Encryptor from "../../classes/encryptor"
 
 export function validateExtendedCredentials(data: credentials): data is ExtendedCredentials {
