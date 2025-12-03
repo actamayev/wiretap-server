@@ -92,7 +92,7 @@ export default function WelcomeEmail(): React.ReactNode {
 					}
 				`}</style>
 			</Head>
-			<Preview>Welcome to Wiretap - Paper trading for Polymarket</Preview>
+			<Preview>Welcome to Wiretap - Paper trading on Polymarket</Preview>
 			<Tailwind>
 				<Body className="bg-white" style={{ fontFamily: "\"Young Serif\", Georgia, \"Times New Roman\", serif", backgroundColor: "#FAFAFF" }}>
 					<Container className="mx-auto pb-[20px] pb-[48px] max-w-[560px]">
@@ -104,7 +104,7 @@ export default function WelcomeEmail(): React.ReactNode {
 									Welcome to <span className="wiretap-blue" style={{ color: "#0041DC" }}>Wiretap</span>
 								</Heading>
 								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
-									Paper trading for Polymarket
+									Paper trading on Polymarket
 								</Text>
 							</Section>
 
@@ -148,7 +148,7 @@ export default function WelcomeEmail(): React.ReactNode {
 										Wiretap
 									</Text>
 									<Text className="mt-[4px] mb-[0px] text-[16px] text-[#00001E] leading-[24px] main-text" style={{ color: "#00001E" }}>
-										Paper trading for Polymarket
+										Paper trading on Polymarket
 									</Text>
 								</Column>
 								<Column colSpan={4}>
