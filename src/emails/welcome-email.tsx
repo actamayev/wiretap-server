@@ -61,8 +61,9 @@ export default function WelcomeEmail(): React.ReactNode {
 					}
 					@media screen and (max-width: 600px) {
 						.footer-section {
-							margin-left: 12px !important;
-							margin-right: 12px !important;
+							margin-left: auto !important;
+							margin-right: auto !important;
+							max-width: 90% !important;
 						}
 					}
 					/* Gmail-specific fixes */
@@ -121,7 +122,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Footer section - outside the border */}
-						<Section className="text-left mx-16 footer-section mt-[40px]" style={{ marginTop: "100px" }}>
+						<Section className="text-left mx-auto footer-section mt-[40px]" style={{ marginTop: "100px", maxWidth: "400px" }}>
 							<Row>
 								<Column colSpan={4}>
 									<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
@@ -133,10 +134,10 @@ export default function WelcomeEmail(): React.ReactNode {
 										/>
 									</Link>
 									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										Wiretap
+				Wiretap
 									</Text>
 									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E", visibility: "hidden" }}>
-										&nbsp;
+				&nbsp;
 									</Text>
 								</Column>
 								<Column colSpan={4}>
@@ -144,11 +145,11 @@ export default function WelcomeEmail(): React.ReactNode {
 										<Img alt="X" height="36" width="36" src="https://react.email/static/x-logo.png" />
 									</Link>
 									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										New York, NY
+				New York, NY
 									</Text>
 									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										<Link href="mailto:hello@wiretap.pro" className="text-[#00001E] no-underline main-text" style={{ color: "#00001E" }}>
-											hello@wiretap.pro
+					hello@wiretap.pro
 										</Link>
 									</Text>
 								</Column>
