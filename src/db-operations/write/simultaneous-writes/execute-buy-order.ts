@@ -1,7 +1,8 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 import type { PrismaClient } from "../../../generated/prisma/client"
+import type * as runtime from "@prisma/client/runtime/client"
 
-type TransactionClient = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0]
+type TransactionClient = Omit<PrismaClient, runtime.ITXClientDenyList>
 
 interface ExecuteBuyOrderParams {
 	wiretapBrokerageAccountId: number
