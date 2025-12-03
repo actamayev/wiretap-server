@@ -85,36 +85,36 @@ export default function WelcomeEmail(): React.ReactNode {
 				<Body className="bg-white" style={{ fontFamily: "\"Young Serif\", Georgia, \"Times New Roman\", serif" }}>
 					<Container className="mx-auto pb-[20px] pb-[48px] max-w-[560px]">
 						{/* Bordered container for the three sections */}
-						<Section className="mb-[40px] text-center bordered-section">
+						<Section className="mb-[16px] text-center bordered-section">
 							{/* Section 1 */}
-							<Section className="mb-[40px]">
+							<Section className="mb-[16px]">
 								<Heading className="main-text text-[32px] font-extrabold p-0" style={{ color: "#00001E" }}>
 									Welcome to <span className="wiretap-blue" style={{ color: "#0041DC" }}>Wiretap</span>
 								</Heading>
-								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
+								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									Paper trade on Polymarket
 								</Text>
 							</Section>
 
 							{/* Section 2 */}
-							<Section className="mb-[40px]">
-								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
+							<Section className="mb-[16px]">
+								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									Test your forecasting skills
 								</Text>
-								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
+								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									and see if you can beat the market.
 								</Text>
-								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
+								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									All without putting up real <span className="cash-green" style={{ color: "#4BC84B" }}>cash.</span>
 								</Text>
 							</Section>
 
 							{/* Section 3 */}
 							<Section>
-								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
+								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									Launching in the next few weeks.
 								</Text>
-								<Text className="main-text text-[16px] leading-[26px] font-semibold" style={{ color: "#00001E" }}>
+								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									We'll hit your inbox when we're live.
 								</Text>
 							</Section>
@@ -132,10 +132,10 @@ export default function WelcomeEmail(): React.ReactNode {
 											src="https://wiretap.pro/logo512.png"
 										/>
 									</Link>
-									<Text className="my-[8px] font-semibold text-[16px] text-[#00001E] leading-[24px] main-text" style={{ color: "#00001E" }}>
+									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										Wiretap
 									</Text>
-									<Text className="mt-[4px] mb-[0px] text-[16px] text-[#00001E] leading-[24px] main-text" style={{ color: "#00001E" }}>
+									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										Paper trade on Polymarket
 									</Text>
 								</Column>
@@ -143,10 +143,10 @@ export default function WelcomeEmail(): React.ReactNode {
 									<Link href="https://x.com/wiretap_pro" style={{ display: "inline-block", width: "36px" }}>
 										<Img alt="X" height="36" width="36" src="https://react.email/static/x-logo.png" />
 									</Link>
-									<Text className="my-[8px] font-semibold text-[16px] text-[#00001E] leading-[24px] main-text" style={{ color: "#00001E" }}>
+									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										New York, NY
 									</Text>
-									<Text className="mt-[4px] mb-[0px] text-[16px] text-[#00001E] leading-[24px] main-text" style={{ color: "#00001E" }}>
+									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										<Link href="mailto:hello@wiretap.pro" className="text-[#00001E] no-underline main-text" style={{ color: "#00001E" }}>
 											hello@wiretap.pro
 										</Link>
