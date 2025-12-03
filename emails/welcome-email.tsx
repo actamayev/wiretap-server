@@ -61,8 +61,9 @@ export default function WelcomeEmail(): React.ReactNode {
 					}
 					@media screen and (max-width: 600px) {
 						.footer-section {
-							margin-left: 12px !important;
-							margin-right: 12px !important;
+							margin-left: auto !important;
+							margin-right: auto !important;
+							max-width: 90% !important;
 						}
 					}
 					/* Gmail-specific fixes */
@@ -121,38 +122,40 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Footer section - outside the border */}
-						<Section className="text-left mx-16 footer-section mt-[40px]" style={{ marginTop: "100px" }}>
-							<Row>
-								<Column colSpan={4}>
-									<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
-										<Img
-											alt="Wiretap logo"
-											height="36"
-											width="36"
-											src="https://wiretap.pro/logo512.png"
-										/>
-									</Link>
-									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										Wiretap
-									</Text>
-									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										Paper trade on Polymarket
-									</Text>
-								</Column>
-								<Column colSpan={4}>
-									<Link href="https://x.com/wiretap_pro" style={{ display: "inline-block", width: "36px" }}>
-										<Img alt="X" height="36" width="36" src="https://react.email/static/x-logo.png" />
-									</Link>
-									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										New York, NY
-									</Text>
-									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-										<Link href="mailto:hello@wiretap.pro" className="text-[#00001E] no-underline main-text" style={{ color: "#00001E" }}>
-											hello@wiretap.pro
+						<Section className="footer-section mt-[40px]" style={{ marginTop: "50px", maxWidth: "400px", marginLeft: "auto", marginRight: "auto", textAlign: "center" }}>
+							<div style={{ textAlign: "left", display: "inline-block" }}>
+								<Row>
+									<Column colSpan={4} style={{ paddingRight: "20px" }}>
+										<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
+											<Img
+												alt="Wiretap logo"
+												height="36"
+												width="36"
+												src="https://wiretap.pro/logo512.png"
+											/>
 										</Link>
-									</Text>
-								</Column>
-							</Row>
+										<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
+										Wiretap
+										</Text>
+										<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E", visibility: "hidden" }}>
+										&nbsp;
+										</Text>
+									</Column>
+									<Column colSpan={4} style={{ paddingLeft: "20px" }}>
+										<Link href="https://x.com/wiretap_pro" style={{ display: "inline-block", width: "36px" }}>
+											<Img alt="X" height="36" width="36" src="https://react.email/static/x-logo.png" />
+										</Link>
+										<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
+										New York, NY
+										</Text>
+										<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
+											<Link href="mailto:hello@wiretap.pro" className="text-[#00001E] no-underline main-text" style={{ color: "#00001E" }}>
+											hello@wiretap.pro
+											</Link>
+										</Text>
+									</Column>
+								</Row>
+							</div>
 						</Section>
 					</Container>
 				</Body>

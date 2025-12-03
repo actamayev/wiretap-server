@@ -62,7 +62,8 @@
 		"**.tsx",
 		"**.ts",
 		"src/prisma/seed.ts",
-		"prisma.config.ts"
+		"prisma.config.ts",
+		"emails/**/*"
 	],
 	"exclude": [
 		"node_modules",
