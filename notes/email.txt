@@ -1,0 +1,1 @@
+pnpm dlx react-email dev --port 3001
