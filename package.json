@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && pnpm exec prisma generate && pnpm exec tsup",
+    "dev": "tsx watch src/index.ts",
     "build:prod": "tsc && pnpm dlx prisma generate",
     "start": "nodemon",
     "lint": "eslint .",
@@ -49,6 +50,7 @@
     "nodemon": "^3.1.11",
     "prisma": "^7.1.0",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
   "dependencies": {
