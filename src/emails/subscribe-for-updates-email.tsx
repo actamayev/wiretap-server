@@ -88,10 +88,10 @@ export default function WelcomeEmail(): React.ReactNode {
 						<Section className="mb-[16px] text-center bordered-section">
 							{/* Section 1 */}
 							<Section className="mb-[16px]">
-								<Heading className="main-text text-[32px] font-extrabold p-0" style={{ color: "#00001E" }}>
-									Welcome to <span className="wiretap-blue" style={{ color: "#0041DC" }}>Wiretap</span>
+								<Heading className="main-text text-[32px] font-extrabold p-0 mb-0" style={{ color: "#00001E", marginBottom: "0" }}>
+									Welcome to <Link href="https://wiretap.pro" className="wiretap-blue no-underline" style={{ color: "#0041DC", textDecoration: "none" }}>Wiretap</Link>
 								</Heading>
-								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
+								<Text className="main-text text-[16px] leading-[20px] font-semibold mt-[4px]" style={{ color: "#00001E", marginTop: "4px" }}>
 									Paper trade on Polymarket
 								</Text>
 							</Section>
@@ -121,7 +121,7 @@ export default function WelcomeEmail(): React.ReactNode {
 						</Section>
 
 						{/* Footer section - outside the border */}
-						<Section className="text-left mx-16 footer-section">
+						<Section className="text-left mx-16 footer-section mt-[40px]" style={{ marginTop: "100px" }}>
 							<Row>
 								<Column colSpan={4}>
 									<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
