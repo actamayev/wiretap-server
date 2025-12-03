@@ -1,6 +1,6 @@
 import { Resend } from "resend"
 import { render } from "@react-email/render"
-import WelcomeEmail from "../../emails/welcome-email"
+import WelcomeEmail from "../../../emails/welcome-email"
 import SecretsManager from "../../classes/aws/secrets-manager"
 
 export default async function sendNewUserEmail(email: string): Promise<void> {

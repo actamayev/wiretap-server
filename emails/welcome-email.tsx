@@ -134,10 +134,10 @@ export default function WelcomeEmail(): React.ReactNode {
 										/>
 									</Link>
 									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-				Wiretap
+										Wiretap
 									</Text>
 									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E", visibility: "hidden" }}>
-				&nbsp;
+										&nbsp;
 									</Text>
 								</Column>
 								<Column colSpan={4}>
@@ -145,11 +145,11 @@ export default function WelcomeEmail(): React.ReactNode {
 										<Img alt="X" height="36" width="36" src="https://react.email/static/x-logo.png" />
 									</Link>
 									<Text className="my-[4px] font-semibold text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
-				New York, NY
+									New York, NY
 									</Text>
 									<Text className="mt-[1px] mb-[0px] text-[16px] text-[#00001E] leading-[18px] main-text" style={{ color: "#00001E" }}>
 										<Link href="mailto:hello@wiretap.pro" className="text-[#00001E] no-underline main-text" style={{ color: "#00001E" }}>
-					hello@wiretap.pro
+									hello@wiretap.pro
 										</Link>
 									</Text>
 								</Column>
