@@ -3,21 +3,13 @@ Locally, run:
 	sudo pnpm run build
 
 Production:
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./package.json ubuntu@100.30.47.213:/home/ubuntu/wiretap
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./pnpm-lock.yaml ubuntu@100.30.47.213:/home/ubuntu/wiretap
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./.env.production ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src/.env.production
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./ecosystem.config.js ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/index.js ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/classes ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/controllers ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/db-operations ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/emails ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/middleware ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/routes ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/types ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./dist/src/utils ubuntu@100.30.47.213:/home/ubuntu/wiretap/dist/src
-	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./prisma ubuntu@100.30.47.213:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./package.json ubuntu@100.30.47.213:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./pnpm-lock.yaml ubuntu@100.30.47.213:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./.env.production ubuntu@100.30.47.213:/home/ubuntu/wiretap/.env.production
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./ecosystem.config.js ubuntu@100.30.47.213:/home/ubuntu/wiretap/
 	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./prisma.config.ts ubuntu@100.30.47.213:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem ./dist/index.js ubuntu@100.30.47.213:/home/ubuntu/wiretap/
+	scp -i /Users/arieltamayev/Documents/wiretap-production-ec2-keypair.pem -r ./prisma ubuntu@100.30.47.213:/home/ubuntu/wiretap/
 
 To SSH into AWS:
 	export AWS_PROFILE=wiretap
@@ -48,7 +40,7 @@ Other:
 
 Periodically locally run `depcheck` to see if any packages aren't being used
 
-When first settings up the server, create a wiretap folder, and a dist folder inside of it, and a src folder inside of that.
+When first settings up the server, create a wiretap folder, and a src folder inside of that.
 
 Deleting an active instance:
 	1. Stop the instance:
@@ -73,14 +65,13 @@ Setting up a new instance:
 		source ~/.bashrc
 	4. Make directories:
 		mkdir -p /home/ubuntu/wiretap
-		mkdir -p /home/ubuntu/wiretap/dist/src
 	4.5. Transfer files to the instance (above)
 	5. Go to the wiretap directory:
 		cd /home/ubuntu/wiretap
 		pnpm install --prod --frozen-lockfile
 		pnpm dlx prisma migrate deploy && pnpm dlx prisma generate
-	6. Go to /wiretap/dist/src:
-		cd /home/ubuntu/wiretap/dist/src
+	6. Go to /wiretap/src:
+		cd /home/ubuntu/wiretap/src
 		pm2 start ecosystem.config.js --env production
 	7. View logs:
 		pm2 logs
