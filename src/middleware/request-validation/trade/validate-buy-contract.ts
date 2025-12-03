@@ -6,7 +6,7 @@ const validateBuyContractSchema = Joi.object({
 	outcomeId: Joi.number().integer().positive().required(),
 	numberContractsPurchasing: Joi.number().integer().positive().required(),
 	marketId: Joi.number().integer().positive().required()
-}).required()
+}).required().unknown(false)
 
 export default function validateBuyContract(req: Request, res: Response, next: NextFunction): void {
 	try {

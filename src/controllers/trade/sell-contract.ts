@@ -1,18 +1,9 @@
 import { Response, Request } from "express"
 import executeSellOrder from "../../db-operations/write/simultaneous-writes/execute-sell-order"
 
-// eslint-disable-next-line max-lines-per-function
 export default async function sellContract(req: Request, res: Response): Promise<void> {
 	try {
-		const { validatedSellOrder } = req
-
-		const {
-			wiretapBrokerageAccountId,
-			outcomeId,
-			numberOfContractsSelling,
-			currentPrice,
-			positionAverageCost
-		} = validatedSellOrder
+		const { wiretapBrokerageAccountId, outcomeId, numberOfContractsSelling, currentPrice, positionAverageCost } = req.validatedSellOrder
 
 		// Execute sell order in database transaction
 		const result = await executeSellOrder({

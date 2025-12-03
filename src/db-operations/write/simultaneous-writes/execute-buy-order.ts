@@ -8,7 +8,6 @@ interface ExecuteBuyOrderParams {
 }
 
 interface ExecuteBuyOrderResult {
-	success: true
 	purchaseId: number
 	positionId: number
 	newAccountBalance: number
@@ -51,10 +50,10 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 			throw new Error(`Brokerage account ${wiretapBrokerageAccountId} not found`)
 		}
 
-		const newBalance = account.current_account_balance_usd - totalCost
+		const newAccountBalance = account.current_account_balance_usd - totalCost
 
 		// Double-safety check (should already be validated by middleware)
-		if (newBalance < 0) {
+		if (newAccountBalance < 0) {
 			throw new Error(
 				`Insufficient funds. Balance: $${account.current_account_balance_usd}, Required: $${totalCost}`
 			)
@@ -66,7 +65,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 		await tx.wiretap_brokerage_account.update({
 			where: { wiretap_brokerage_account_id: wiretapBrokerageAccountId },
 			data: {
-				current_account_balance_usd: newBalance
+				current_account_balance_usd: newAccountBalance
 			}
 		})
 
@@ -86,6 +85,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 		// ============================================
 		// STEP 4: Upsert Position
 		// ============================================
+		// Fetch existing position to calculate new values
 		const existingPosition = await tx.position.findUnique({
 			where: {
 				wiretap_brokerage_account_id_outcome_id: {
@@ -94,56 +94,53 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 				}
 			},
 			select: {
-				position_id: true,
 				number_contracts_held: true,
 				total_cost: true
 			}
 		})
 
-		let position
+		// Calculate new values based on whether position exists
+		let newTotalContracts, newTotalCost, newAverageCost
 
 		if (existingPosition) {
-			// Update existing position: add contracts and recalculate average cost
-			const newTotalContracts = existingPosition.number_contracts_held + numberOfContracts
-			const newTotalCost = existingPosition.total_cost + totalCost
-			const newAverageCost = newTotalCost / newTotalContracts
-
-			position = await tx.position.update({
-				where: {
-					wiretap_brokerage_account_id_outcome_id: {
-						wiretap_brokerage_account_id: wiretapBrokerageAccountId,
-						outcome_id: outcomeId
-					}
-				},
-				data: {
-					number_contracts_held: newTotalContracts,
-					average_cost_per_contract: newAverageCost,
-					total_cost: newTotalCost
-				}
-			})
+			newTotalContracts = existingPosition.number_contracts_held + numberOfContracts
+			newTotalCost = existingPosition.total_cost + totalCost
+			newAverageCost = newTotalCost / newTotalContracts
 		} else {
-			// Create new position
-			position = await tx.position.create({
-				data: {
-					wiretap_brokerage_account_id: wiretapBrokerageAccountId	,
-					outcome_id: outcomeId,
-					number_contracts_held: numberOfContracts,
-					average_cost_per_contract: pricePerContract,
-					total_cost: totalCost
-				}
-			})
+			newTotalContracts = numberOfContracts
+			newTotalCost = totalCost
+			newAverageCost = pricePerContract
 		}
+
+		// Single upsert operation
+		const position = await tx.position.upsert({
+			where: {
+				wiretap_brokerage_account_id_outcome_id: {
+					wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+					outcome_id: outcomeId
+				}
+			},
+			update: {
+				number_contracts_held: newTotalContracts,
+				average_cost_per_contract: newAverageCost,
+				total_cost: newTotalCost
+			},
+			create: {
+				wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				outcome_id: outcomeId,
+				number_contracts_held: newTotalContracts,
+				average_cost_per_contract: newAverageCost,
+				total_cost: newTotalCost
+			}
+		})
 
 		return {
 			purchaseId: purchaseOrder.purchase_id,
 			positionId: position.position_id,
-			newAccountBalance: newBalance,
-			totalCost: totalCost
+			newAccountBalance,
+			totalCost
 		}
 	})
 
-	return {
-		success: true,
-		...result
-	}
+	return result
 }

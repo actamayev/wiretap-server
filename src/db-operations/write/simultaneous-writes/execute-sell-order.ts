@@ -9,7 +9,6 @@ interface ExecuteSellOrderParams {
 }
 
 interface ExecuteSellOrderResult {
-	success: true
 	saleId: number
 	newAccountBalance: number
 	totalProceeds: number
@@ -57,7 +56,7 @@ export default async function executeSellOrder(
 			throw new Error(`Brokerage account ${wiretapBrokerageAccountId} not found`)
 		}
 
-		const newBalance = account.current_account_balance_usd + totalProceeds
+		const newAccountBalance = account.current_account_balance_usd + totalProceeds
 
 		// ============================================
 		// STEP 2: Increment Account Balance
@@ -65,7 +64,7 @@ export default async function executeSellOrder(
 		await tx.wiretap_brokerage_account.update({
 			where: { wiretap_brokerage_account_id: wiretapBrokerageAccountId },
 			data: {
-				current_account_balance_usd: newBalance
+				current_account_balance_usd: newAccountBalance
 			}
 		})
 
@@ -139,15 +138,12 @@ export default async function executeSellOrder(
 
 		return {
 			saleId: saleOrder.sale_id,
-			newAccountBalance: newBalance,
+			newAccountBalance,
 			totalProceeds,
 			realizedPnl,
-			positionClosed: positionClosed
+			positionClosed
 		}
 	})
 
-	return {
-		success: true,
-		...result
-	}
+	return result
 }
