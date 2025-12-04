@@ -3,11 +3,11 @@ import executeSellOrder from "../../db-operations/write/simultaneous-writes/exec
 
 export default async function sellContract(req: Request, res: Response): Promise<void> {
 	try {
-		const { wiretapBrokerageAccountId, outcomeId, numberOfContractsSelling, currentPrice, positionAverageCost } = req.validatedSellOrder
+		const { wiretapFundUuid, outcomeId, numberOfContractsSelling, currentPrice, positionAverageCost } = req.validatedSellOrder
 
 		// Execute sell order in database transaction
 		const result = await executeSellOrder({
-			wiretapBrokerageAccountId,
+			wiretapFundUuid,
 			outcomeId,
 			numberOfContractsSelling,
 			pricePerContract: currentPrice,

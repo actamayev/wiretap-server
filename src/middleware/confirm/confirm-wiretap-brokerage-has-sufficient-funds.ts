@@ -8,16 +8,16 @@ export default async function confirmWiretapBrokerageHasSufficientFunds(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { wiretapBrokerageAccountId, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
+		const { wiretapFundUuid, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
 
 		// Calculate total cost
 		const totalCost = currentPrice * numberOfContractsPurchasing
 
 		// Fetch account balance
-		const currentAccountBalance = await retrieveCurrentAccountBalance(wiretapBrokerageAccountId)
+		const currentAccountBalance = await retrieveCurrentAccountBalance(wiretapFundUuid)
 
 		if (isUndefined(currentAccountBalance)) {
-			res.status(500).json({ error: `Brokerage account ${wiretapBrokerageAccountId} not found` } satisfies ErrorResponse)
+			res.status(500).json({ error: `Brokerage account ${wiretapFundUuid} not found` } satisfies ErrorResponse)
 			return
 		}
 

@@ -1,6 +1,6 @@
 declare global {
 	interface TradeOrder {
-		wiretapBrokerageAccountId: number
+		wiretapFundUuid: FundsUUID
 		outcomeId: number
 		currentPrice: number
 	}

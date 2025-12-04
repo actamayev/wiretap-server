@@ -5,7 +5,7 @@ import type * as runtime from "@prisma/client/runtime/client"
 type TransactionClient = Omit<PrismaClient, runtime.ITXClientDenyList>
 
 interface ExecuteBuyOrderParams {
-	wiretapBrokerageAccountId: number
+	wiretapFundUuid: FundsUUID
 	outcomeId: number
 	numberOfContracts: number
 	pricePerContract: number
@@ -27,7 +27,7 @@ interface ExecuteBuyOrderResult {
 // eslint-disable-next-line max-lines-per-function
 export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Promise<ExecuteBuyOrderResult> {
 	const {
-		wiretapBrokerageAccountId,
+		wiretapFundUuid,
 		outcomeId,
 		numberOfContracts,
 		pricePerContract
@@ -43,31 +43,31 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 		// ============================================
 		// STEP 1: Fetch and Validate Account Balance
 		// ============================================
-		const account = await tx.wiretap_brokerage_account.findUnique({
-			where: { wiretap_brokerage_account_id: wiretapBrokerageAccountId },
+		const fund = await tx.wiretap_fund.findUnique({
+			where: { wiretap_fund_uuid: wiretapFundUuid },
 			select: {
 				current_account_balance_usd: true
 			}
 		})
 
-		if (!account) {
-			throw new Error(`Brokerage account ${wiretapBrokerageAccountId} not found`)
+		if (!fund) {
+			throw new Error(`Brokerage account ${wiretapFundUuid} not found`)
 		}
 
-		const newAccountBalance = account.current_account_balance_usd - totalCost
+		const newAccountBalance = fund.current_account_balance_usd - totalCost
 
 		// Double-safety check (should already be validated by middleware)
 		if (newAccountBalance < 0) {
 			throw new Error(
-				`Insufficient funds. Balance: $${account.current_account_balance_usd}, Required: $${totalCost}`
+				`Insufficient funds. Balance: $${fund.current_account_balance_usd}, Required: $${totalCost}`
 			)
 		}
 
 		// ============================================
 		// STEP 2: Decrement Account Balance
 		// ============================================
-		await tx.wiretap_brokerage_account.update({
-			where: { wiretap_brokerage_account_id: wiretapBrokerageAccountId },
+		await tx.wiretap_fund.update({
+			where: { wiretap_fund_uuid: wiretapFundUuid },
 			data: {
 				current_account_balance_usd: newAccountBalance
 			}
@@ -78,7 +78,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 		// ============================================
 		const purchaseOrder = await tx.purchase_order.create({
 			data: {
-				wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid: wiretapFundUuid,
 				outcome_id: outcomeId,
 				number_of_contracts: numberOfContracts,
 				price_per_contract: pricePerContract,
@@ -92,8 +92,8 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 		// Fetch existing position to calculate new values
 		const existingPosition = await tx.position.findUnique({
 			where: {
-				wiretap_brokerage_account_id_outcome_id: {
-					wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid_outcome_id: {
+					wiretap_fund_uuid: wiretapFundUuid,
 					outcome_id: outcomeId
 				}
 			},
@@ -119,8 +119,8 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 		// Single upsert operation
 		const position = await tx.position.upsert({
 			where: {
-				wiretap_brokerage_account_id_outcome_id: {
-					wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid_outcome_id: {
+					wiretap_fund_uuid: wiretapFundUuid,
 					outcome_id: outcomeId
 				}
 			},
@@ -130,7 +130,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 				total_cost: newTotalCost
 			},
 			create: {
-				wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid: wiretapFundUuid,
 				outcome_id: outcomeId,
 				number_contracts_held: newTotalContracts,
 				average_cost_per_contract: newAverageCost,

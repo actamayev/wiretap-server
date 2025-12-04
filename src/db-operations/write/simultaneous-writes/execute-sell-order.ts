@@ -5,7 +5,7 @@ import type * as runtime from "@prisma/client/runtime/client"
 type TransactionClient = Omit<PrismaClient, runtime.ITXClientDenyList>
 
 interface ExecuteSellOrderParams {
-	wiretapBrokerageAccountId: number
+	wiretapFundUuid: FundsUUID
 	outcomeId: number
 	numberOfContractsSelling: number
 	pricePerContract: number
@@ -31,7 +31,7 @@ export default async function executeSellOrder(
 	params: ExecuteSellOrderParams
 ): Promise<ExecuteSellOrderResult> {
 	const {
-		wiretapBrokerageAccountId,
+		wiretapFundUuid,
 		outcomeId,
 		numberOfContractsSelling,
 		pricePerContract,
@@ -49,24 +49,24 @@ export default async function executeSellOrder(
 		// ============================================
 		// STEP 1: Fetch Current Account Balance
 		// ============================================
-		const account = await tx.wiretap_brokerage_account.findUnique({
-			where: { wiretap_brokerage_account_id: wiretapBrokerageAccountId },
+		const fund = await tx.wiretap_fund.findUnique({
+			where: { wiretap_fund_uuid: wiretapFundUuid },
 			select: {
 				current_account_balance_usd: true
 			}
 		})
 
-		if (!account) {
-			throw new Error(`Brokerage account ${wiretapBrokerageAccountId} not found`)
+		if (!fund) {
+			throw new Error(`Fund ${wiretapFundUuid} not found`)
 		}
 
-		const newAccountBalance = account.current_account_balance_usd + totalProceeds
+		const newAccountBalance = fund.current_account_balance_usd + totalProceeds
 
 		// ============================================
 		// STEP 2: Increment Account Balance
 		// ============================================
-		await tx.wiretap_brokerage_account.update({
-			where: { wiretap_brokerage_account_id: wiretapBrokerageAccountId },
+		await tx.wiretap_fund.update({
+			where: { wiretap_fund_uuid: wiretapFundUuid },
 			data: {
 				current_account_balance_usd: newAccountBalance
 			}
@@ -77,7 +77,7 @@ export default async function executeSellOrder(
 		// ============================================
 		const saleOrder = await tx.sale_order.create({
 			data: {
-				wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid: wiretapFundUuid,
 				outcome_id: outcomeId,
 				number_of_contracts: numberOfContractsSelling,
 				price_per_contract: pricePerContract,
@@ -91,8 +91,8 @@ export default async function executeSellOrder(
 		// ============================================
 		const position = await tx.position.findUnique({
 			where: {
-				wiretap_brokerage_account_id_outcome_id: {
-					wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid_outcome_id: {
+					wiretap_fund_uuid: wiretapFundUuid,
 					outcome_id: outcomeId
 				}
 			},
@@ -114,8 +114,8 @@ export default async function executeSellOrder(
 			// Selling all contracts - delete position
 			await tx.position.delete({
 				where: {
-					wiretap_brokerage_account_id_outcome_id: {
-						wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+					wiretap_fund_uuid_outcome_id: {
+						wiretap_fund_uuid: wiretapFundUuid,
 						outcome_id: outcomeId
 					}
 				}
@@ -127,8 +127,8 @@ export default async function executeSellOrder(
 
 			await tx.position.update({
 				where: {
-					wiretap_brokerage_account_id_outcome_id: {
-						wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+					wiretap_fund_uuid_outcome_id: {
+						wiretap_fund_uuid: wiretapFundUuid,
 						outcome_id: outcomeId
 					}
 				},

@@ -113,7 +113,7 @@ export default function WelcomeEmail(): React.ReactNode {
 							{/* Section 3 */}
 							<Section>
 								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
-									Launching in the next few weeks.
+									Launching 12/10.
 								</Text>
 								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									We'll hit your inbox when we're live.
@@ -123,9 +123,9 @@ export default function WelcomeEmail(): React.ReactNode {
 
 						{/* Footer section - outside the border */}
 						<Section className="footer-section mt-[40px]" style={{ marginTop: "50px", maxWidth: "400px", marginLeft: "auto", marginRight: "auto", textAlign: "center" }}>
-							<div style={{ textAlign: "left", display: "inline-block" }}>
+							<div style={{ textAlign: "center", display: "inline-block" }}>
 								<Row>
-									<Column colSpan={4} style={{ paddingRight: "20px" }}>
+									<Column colSpan={4} style={{ paddingRight: "20px", textAlign: "center" }}>
 										<Link href="https://wiretap.pro" style={{ display: "inline-block", width: "36px" }}>
 											<Img
 												alt="Wiretap logo"
@@ -141,7 +141,7 @@ export default function WelcomeEmail(): React.ReactNode {
 										&nbsp;
 										</Text>
 									</Column>
-									<Column colSpan={4} style={{ paddingLeft: "20px" }}>
+									<Column colSpan={4} style={{ paddingLeft: "20px", textAlign: "center" }}>
 										<Link href="https://x.com/wiretap_pro" style={{ display: "inline-block", width: "36px" }}>
 											<Img alt="X" height="36" width="36" src="https://react.email/static/x-logo.png" />
 										</Link>

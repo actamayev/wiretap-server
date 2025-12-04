@@ -1,12 +1,12 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
-export default async function retrieveAllPositions(wiretapBrokerageAccountId: number): Promise<RetrievedUserPositions | null> {
+export default async function retrieveAllPositions(wiretapFundUuid: FundsUUID): Promise<RetrievedUserPositions | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		return await prismaClient.wiretap_brokerage_account.findUnique({
+		return await prismaClient.wiretap_fund.findUnique({
 			where: {
-				wiretap_brokerage_account_id: wiretapBrokerageAccountId
+				wiretap_fund_uuid: wiretapFundUuid
 			},
 			select: {
 				positions: {

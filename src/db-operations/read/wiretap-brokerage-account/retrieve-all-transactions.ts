@@ -2,14 +2,14 @@ import PrismaClientClass from "../../../classes/prisma-client"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function retrieveAllContracts(
-	wiretapBrokerageAccountId: number
+	wiretapFundUuid: FundsUUID
 ): Promise<RetrievedUserTransactions | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		return await prismaClient.wiretap_brokerage_account.findUnique({
+		return await prismaClient.wiretap_fund.findUnique({
 			where: {
-				wiretap_brokerage_account_id: wiretapBrokerageAccountId
+				wiretap_fund_uuid: wiretapFundUuid
 			},
 			select: {
 				purchase_orders: {

@@ -28,7 +28,7 @@ model credentials {
 	updated_at                                                  DateTime @default(now()) @updatedAt
 
 	login_history                                               login_history[]
-	wiretap_brokerage_account									wiretap_brokerage_account[]
+	wiretap_fund												wiretap_fund[]
 }
 
 model login_history {
@@ -48,10 +48,11 @@ model email_update_subscriber {
 	created_at                                                  DateTime  @default(now())
 }
 
-model wiretap_brokerage_account {
-	wiretap_brokerage_account_id                                Int          @id @default(autoincrement())
+model wiretap_fund {
+	wiretap_fund_uuid                               	 		String		@id
 	user_id                                                     Int
 
+	fund_name													String
 	starting_account_balance_usd								Float
 	current_account_balance_usd									Float
 
@@ -193,15 +194,15 @@ model position {
 	average_cost_per_contract   								Float
 	total_cost                  								Float
 
-	wiretap_brokerage_account_id 								Int
+	wiretap_fund_uuid 											String
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
 
-	wiretap_brokerage_account   								wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
 	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
 
-	@@unique([wiretap_brokerage_account_id, outcome_id])
-	@@index([wiretap_brokerage_account_id])
+	@@unique([wiretap_fund_uuid, outcome_id])
+	@@index([wiretap_fund_uuid])
 }
 
 // Purchase order - references specific outcome
@@ -217,15 +218,15 @@ model purchase_order {
 	market_best_bid             								Float?
 	market_best_ask             								Float?
 
-	wiretap_brokerage_account_id 								Int
+	wiretap_fund_uuid 											String
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
 
-	wiretap_brokerage_account   								wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
 	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
 
-	@@index([wiretap_brokerage_account_id])
+	@@index([wiretap_fund_uuid])
 	@@index([outcome_id])
 }
 
@@ -243,14 +244,14 @@ model sale_order {
 	market_best_bid             								Float?
 	market_best_ask             								Float?
 
-	wiretap_brokerage_account_id 								Int
+	wiretap_fund_uuid 											String
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
 
-	wiretap_brokerage_account   								wiretap_brokerage_account @relation(fields: [wiretap_brokerage_account_id], references: [wiretap_brokerage_account_id])
+	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
 	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
 
-	@@index([wiretap_brokerage_account_id])
+	@@index([wiretap_fund_uuid])
 	@@index([outcome_id])
 }

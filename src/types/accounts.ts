@@ -33,6 +33,15 @@ declare global {
 			}
 		}[]
 	}
+
+	interface RetrievedUserFunds {
+		funds: {
+			fund_uuid: FundsUUID
+			fund_name: string
+			starting_account_balance_usd: number
+			current_account_balance_usd: number
+		}[]
+	}
 }
 
 export {}

@@ -5,9 +5,9 @@ import transformRawUserTransactions from "../../utils/transform/transform-raw-us
 
 export default async function getAllTransactions(req: Request, res: Response): Promise<Response> {
 	try {
-		const { wiretapBrokerageAccountId } = req
+		const { wiretapFundUuid } = req
 
-		const rawUserTransactions = await retrieveAllContracts(wiretapBrokerageAccountId)
+		const rawUserTransactions = await retrieveAllContracts(wiretapFundUuid)
 		if (isNull(rawUserTransactions)) {
 			return res.status(400).json({ message: "Unable to find your account" } satisfies MessageResponse)
 		}

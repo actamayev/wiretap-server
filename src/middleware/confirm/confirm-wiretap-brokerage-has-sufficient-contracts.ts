@@ -7,9 +7,9 @@ export default async function confirmWiretapBrokerageHasSufficientContracts(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { wiretapBrokerageAccountId, numberOfContractsSelling, outcomeId } = req.validatedSellOrder
+		const { wiretapFundUuid, numberOfContractsSelling, outcomeId } = req.validatedSellOrder
 
-		const position = await findPosition(wiretapBrokerageAccountId, outcomeId)
+		const position = await findPosition(wiretapFundUuid, outcomeId)
 
 		if (!position) {
 			res.status(400).json({ message: "No position found for this outcome" } satisfies MessageResponse)
