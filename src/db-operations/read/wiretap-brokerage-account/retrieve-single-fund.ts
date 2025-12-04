@@ -7,7 +7,6 @@ export default async function retrieveSingleFund(userId: number, wiretapFundUuid
 
 		const fund = await prismaClient.wiretap_fund.findUnique({
 			where: {
-				user_id: userId,
 				wiretap_fund_uuid: wiretapFundUuid
 			},
 			select: {
