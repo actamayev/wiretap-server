@@ -62,8 +62,12 @@ declare global {
 		positions: SinglePosition[]
 	}
 
-	interface FundsResponse {
+	interface AllMyFundsResponse {
 		funds: SingleFund[]
+	}
+
+	interface SingleFundResponse {
+		singleFund: SingleFund | null
 	}
 
 	interface CreateFundResponse {
@@ -127,6 +131,7 @@ declare global {
 
 	interface IncomingCreateFundRequest {
 		fundName: string
+		startingAccountBalanceUsd: number
 	}
 }
 

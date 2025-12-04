@@ -13,7 +13,7 @@ export default async function getMyFunds(req: Request, res: Response): Promise<R
 		}
 		const funds = transformRawUserFunds(rawUserFunds)
 
-		return res.status(200).json({ funds } satisfies FundsResponse)
+		return res.status(200).json({ funds } satisfies AllMyFundsResponse)
 	} catch (error) {
 		console.error(error)
 		return res.status(500).json({ error: "Internal Server Error: Unable to retrieve user fund data" })

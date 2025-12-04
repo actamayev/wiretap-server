@@ -4,7 +4,8 @@ import { Request, Response, NextFunction } from "express"
 
 const createFundRequestSchema = Joi.object({
 	fundInformation: Joi.object({
-		fundName: Joi.string().required().trim().min(3).max(100)
+		fundName: Joi.string().required().trim().min(3).max(100),
+		startingAccountBalanceUsd: Joi.number().required().min(0)
 	}).required()
 }).required().unknown(false)
 
