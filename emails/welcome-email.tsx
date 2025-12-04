@@ -113,7 +113,7 @@ export default function WelcomeEmail(): React.ReactNode {
 							{/* Section 3 */}
 							<Section>
 								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
-									Launching in the next few weeks.
+									Launching 12/10.
 								</Text>
 								<Text className="main-text text-[16px] leading-[20px] font-semibold" style={{ color: "#00001E" }}>
 									We'll hit your inbox when we're live.
