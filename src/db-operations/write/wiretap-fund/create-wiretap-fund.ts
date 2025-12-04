@@ -12,7 +12,7 @@ export default async function createWiretapFund(userId: number, fundName: string
 				wiretap_fund_uuid: uuid,
 				fund_name: fundName,
 				starting_account_balance_usd: startingAccountBalanceUsd,
-				current_account_balance_usd: 0
+				current_account_balance_usd: startingAccountBalanceUsd
 			}
 		})
 
