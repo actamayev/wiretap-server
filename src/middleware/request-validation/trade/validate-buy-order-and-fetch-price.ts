@@ -17,17 +17,11 @@ export default async function validateBuyOrderAndFetchPrice(
 			return
 		}
 
-		const { wiretapBrokerageAccountId } = req.params as { wiretapBrokerageAccountId: string }
+		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
 		const { outcomeId, numberOfContractsPurchasing } = req.body as { outcomeId: number, numberOfContractsPurchasing: number }
-		const parsedWiretapBrokerageAccountId = parseInt(wiretapBrokerageAccountId, 10)
-
-		if (isNaN(parsedWiretapBrokerageAccountId)) {
-			res.status(400).json({ message: "Invalid wiretap brokerage account id" } satisfies MessageResponse)
-			return
-		}
 
 		const validatedBuyOrder: ValidatedBuyOrder = {
-			wiretapBrokerageAccountId: parsedWiretapBrokerageAccountId,
+			wiretapFundUuid,
 			outcomeId,
 			numberOfContractsPurchasing,
 			currentPrice,

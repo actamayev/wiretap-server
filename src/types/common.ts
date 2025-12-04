@@ -17,6 +17,9 @@ declare global {
 		exp?: number
 	}
 
+	type FundsUUID = UUID & { readonly __brand: unique symbol }
+	type EventUUID = UUID & { readonly __brand: unique symbol }
+
 	type ContractUUID = UUID & { readonly __brand: unique symbol }
 
 	interface TransactionResponse {
@@ -48,8 +51,27 @@ declare global {
 		numberOfContractsHeld: number
 	}
 
+	interface SingleFund {
+		fundUUID: FundsUUID
+		fundName: string
+		startingAccountBalanceUsd: number
+		currentAccountBalanceUsd: number
+	}
+
 	interface PositionsResponse {
 		positions: SinglePosition[]
+	}
+
+	interface AllMyFundsResponse {
+		funds: SingleFund[]
+	}
+
+	interface SingleFundResponse {
+		singleFund: SingleFund | null
+	}
+
+	interface CreateFundResponse {
+		fundUUID: FundsUUID
 	}
 
 	interface IncomingLoginRequest {
@@ -97,6 +119,19 @@ declare global {
 		totalProceeds: number
 		realizedPnl: number
 		newAccountBalance: number
+	}
+
+	interface EmailUpdatesRequest {
+		email: string
+	}
+
+	interface LoginSuccess {
+		personalInfo: BasicPersonalInfoResponse
+	}
+
+	interface IncomingCreateFundRequest {
+		fundName: string
+		startingAccountBalanceUsd: number
 	}
 }
 

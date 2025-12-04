@@ -12,7 +12,7 @@ export default async function sendNewUserEmail(email: string): Promise<void> {
 		const emailHtml = await render(WelcomeEmail())
 
 		const { error } = await resend.emails.send({
-			from: "Ariel Tamayev <ariel@updates.wiretap.pro>",
+			from: "Wiretap <hello@updates.wiretap.pro>",
 			replyTo: "hello@wiretap.pro",
 			to: [email],
 			subject: "Welcome to Wiretap",

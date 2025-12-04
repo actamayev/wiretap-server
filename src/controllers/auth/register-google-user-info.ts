@@ -13,7 +13,7 @@ export default async function registerGoogleInfo(req: Request, res: Response): P
 			res.status(400).json({ message: "You've already registered a username for this account" } satisfies MessageResponse)
 			return
 		}
-		const { username } = req.body.newGoogleInfo as { username: string }
+		const { username } = req.body as { username: string }
 		const usernameExists = await doesUsernameExist(username)
 		if (usernameExists === true) {
 			res.status(400).json({ message: "Username already taken" } satisfies MessageResponse)

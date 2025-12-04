@@ -5,9 +5,9 @@ import retrieveAllPositions from "../../db-operations/read/wiretap-brokerage-acc
 
 export default async function getAllPositions(req: Request, res: Response): Promise<Response> {
 	try {
-		const { wiretapBrokerageAccountId } = req
+		const { wiretapFundUuid } = req
 
-		const rawUserPositions = await retrieveAllPositions(wiretapBrokerageAccountId)
+		const rawUserPositions = await retrieveAllPositions(wiretapFundUuid)
 		if (isNull(rawUserPositions)) {
 			return res.status(400).json({ message: "Unable to find your account" } satisfies MessageResponse)
 		}

@@ -8,6 +8,7 @@ import determineLoginContactType from "../../utils/auth-helpers/determine-contac
 import retrieveUserFromContact from "../../utils/auth-helpers/login/retrieve-user-from-contact"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
 
+// eslint-disable-next-line max-lines-per-function
 export default async function login(req: Request, res: Response): Promise<void> {
 	try {
 		const { contact, password } = req.body.loginInformation as IncomingLoginRequest
@@ -43,9 +44,11 @@ export default async function login(req: Request, res: Response): Promise<void> 
 		setAuthCookie(res, accessToken)
 
 		res.status(200).json({
-			username: credentialsResult.username as string,
-			email,
-		} satisfies BasicPersonalInfoResponse)
+			personalInfo: {
+				username: credentialsResult.username as string,
+				email
+			}
+		} satisfies LoginSuccess)
 		void addLoginHistoryRecord(credentialsResult.user_id)
 		return
 	} catch (error) {

@@ -17,12 +17,11 @@ export default async function validateSellOrderAndFetchPrice(
 			return
 		}
 
-		const { wiretapBrokerageAccountId } = req.params as { wiretapBrokerageAccountId: string }
+		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
 		const { outcomeId, numberOfContractsSelling } = req.body as { outcomeId: number, numberOfContractsSelling: number }
-		const parsedWiretapBrokerageAccountId = parseInt(wiretapBrokerageAccountId, 10)
 
 		req.validatedSellOrder = {
-			wiretapBrokerageAccountId: parsedWiretapBrokerageAccountId,
+			wiretapFundUuid,
 			outcomeId,
 			numberOfContractsSelling,
 			currentPrice,
