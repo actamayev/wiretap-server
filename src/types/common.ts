@@ -66,7 +66,7 @@ declare global {
 		funds: SingleFund[]
 	}
 
-	interface CreateFundRequest {
+	interface CreateFundResponse {
 		fundUUID: FundsUUID
 	}
 
@@ -115,6 +115,18 @@ declare global {
 		totalProceeds: number
 		realizedPnl: number
 		newAccountBalance: number
+	}
+
+	interface EmailUpdatesRequest {
+		email: string
+	}
+
+	interface LoginSuccess {
+		personalInfo: BasicPersonalInfoResponse
+	}
+
+	interface IncomingCreateFundRequest {
+		fundName: string
 	}
 }
 

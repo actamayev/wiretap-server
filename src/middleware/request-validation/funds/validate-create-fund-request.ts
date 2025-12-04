@@ -3,7 +3,9 @@ import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 
 const createFundRequestSchema = Joi.object({
-	fundName: Joi.string().required().trim().min(3).max(100)
+	fundInformation: Joi.object({
+		fundName: Joi.string().required().trim().min(3).max(100)
+	}).required()
 }).required().unknown(false)
 
 export default function validateCreateFundRequest(req: Request, res: Response, next: NextFunction): void {

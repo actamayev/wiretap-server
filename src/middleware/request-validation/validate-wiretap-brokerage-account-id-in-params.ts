@@ -2,13 +2,13 @@ import Joi from "joi"
 import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 
-const wiretapFundIdInParamsSchema = Joi.object({
-	wiretapFundId: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required()
+const wiretapFundUuidInParamsSchema = Joi.object({
+	wiretapFundUuid: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required()
 }).required().unknown(false)
 
-export default function validateWiretapFundIdInParams(req: Request, res: Response, next: NextFunction): void {
+export default function validateWiretapFundUuidInParams(req: Request, res: Response, next: NextFunction): void {
 	try {
-		const { error } = wiretapFundIdInParamsSchema.validate(req.params)
+		const { error } = wiretapFundUuidInParamsSchema.validate(req.params)
 
 		if (!isUndefined(error)) {
 			res.status(400).json({ validationError: error.details[0].message } satisfies ValidationErrorResponse)
