@@ -7,14 +7,14 @@ interface Position {
     averageCostPerContract: number
 }
 
-export default async function findPosition(wiretapBrokerageAccountId: number, outcomeId: number): Promise<Position | null> {
+export default async function findPosition(wiretapFundUuid: FundsUUID, outcomeId: number): Promise<Position | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
 		const position = await prismaClient.position.findUnique({
 			where: {
-				wiretap_brokerage_account_id_outcome_id: {
-					wiretap_brokerage_account_id: wiretapBrokerageAccountId,
+				wiretap_fund_uuid_outcome_id: {
+					wiretap_fund_uuid: wiretapFundUuid,
 					outcome_id: outcomeId
 				}
 			},

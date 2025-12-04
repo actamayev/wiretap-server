@@ -4,7 +4,7 @@ declare global {
 		interface Request {
 			userId: number
 			user: ExtendedCredentials
-			wiretapBrokerageAccountId: number
+			wiretapFundUuid: FundsUUID
 
 			clobTokenId: string
 			validatedBuyOrder: ValidatedBuyOrder

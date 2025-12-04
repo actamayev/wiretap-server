@@ -1,6 +1,6 @@
 import express from "express"
 
-import confirmWiretapBrokerageAccountIdExistsAndValidId
+import confirmWiretapFundIdExistsAndValidId
 	from "../middleware/confirm/confirm-wiretap-brokerage-account-id-exists-and-valid-id"
 import validateBuyContract from "../middleware/request-validation/trade/validate-buy-contract"
 import validateOutcomeValid from "../middleware/request-validation/trade/validate-outcome-valid"
@@ -9,7 +9,7 @@ import validateBuyOrderAndFetchPrice from "../middleware/request-validation/trad
 import validateSellOrderAndFetchPrice from "../middleware/request-validation/trade/validate-sell-order-and-fetch-price"
 import confirmUserHasSufficientFundsToPurchaseContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-funds"
 import confirmWiretapBrokerageHasSufficientContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-contracts"
-import validateWiretapBrokerageAccountIdInParams from "../middleware/request-validation/validate-wiretap-brokerage-account-id-in-params"
+import validateWiretapFundIdInParams from "../middleware/request-validation/validate-wiretap-brokerage-account-id-in-params"
 
 import buyContract from "../controllers/trade/buy-contract"
 import sellContract from "../controllers/trade/sell-contract"
@@ -17,10 +17,10 @@ import sellContract from "../controllers/trade/sell-contract"
 const tradeRoutes = express.Router()
 
 tradeRoutes.post(
-	"/buy/:wiretapBrokerageAccountId",
-	validateWiretapBrokerageAccountIdInParams,
+	"/buy/:wiretapFundId",
+	validateWiretapFundIdInParams,
 	validateBuyContract,
-	confirmWiretapBrokerageAccountIdExistsAndValidId,
+	confirmWiretapFundIdExistsAndValidId,
 	validateOutcomeValid,
 	validateBuyOrderAndFetchPrice,
 	confirmUserHasSufficientFundsToPurchaseContracts,
@@ -28,10 +28,10 @@ tradeRoutes.post(
 )
 
 tradeRoutes.post(
-	"/sell/:wiretapBrokerageAccountId",
-	validateWiretapBrokerageAccountIdInParams,
+	"/sell/:wiretapFundId",
+	validateWiretapFundIdInParams,
 	validateSellContract,
-	confirmWiretapBrokerageAccountIdExistsAndValidId,
+	confirmWiretapFundIdExistsAndValidId,
 	validateOutcomeValid,
 	validateSellOrderAndFetchPrice,
 	confirmWiretapBrokerageHasSufficientContracts,

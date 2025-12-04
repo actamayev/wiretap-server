@@ -2,16 +2,16 @@ import { isUndefined } from "lodash"
 import { Request, Response, NextFunction } from "express"
 import retrieveUserIdFromBrokerageId from "../../db-operations/read/wiretap-brokerage-account/retrieve-user-id-from-brokerage-id"
 
-export default async function confirmWiretapBrokerageAccountIdExistsAndValidId(
+export default async function confirmWiretapFundIdExistsAndValidId(
 	req: Request,
 	res: Response,
 	next: NextFunction
 ): Promise<void> {
 	try {
 		const { userId } = req
-		const { wiretapBrokerageAccountId } = req.params as { wiretapBrokerageAccountId: string }
+		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
 
-		const foundOwnerId = await retrieveUserIdFromBrokerageId(parseInt(wiretapBrokerageAccountId, 10))
+		const foundOwnerId = await retrieveUserIdFromBrokerageId(wiretapFundUuid as FundsUUID)
 
 		if (isUndefined(foundOwnerId)) {
 			res.status(400).json({ message: "Wiretap Brokerage Account Id doesn't exist" } satisfies MessageResponse)

@@ -1,12 +1,12 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
-export default async function retrieveCurrentAccountBalance(wiretapBrokerageId: number): Promise<number | undefined> {
+export default async function retrieveCurrentAccountBalance(wiretapFundUuid: FundsUUID): Promise<number | undefined> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		const brokerageAccount = await prismaClient.wiretap_brokerage_account.findFirst({
+		const brokerageAccount = await prismaClient.wiretap_fund.findFirst({
 			where: {
-				wiretap_brokerage_account_id: wiretapBrokerageId
+				wiretap_fund_uuid: wiretapFundUuid
 			},
 			select: {
 				current_account_balance_usd: true
