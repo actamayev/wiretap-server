@@ -18,7 +18,7 @@ declare global {
 	}
 
 	type FundsUUID = UUID & { readonly __brand: unique symbol }
-	type EventId = bigint & { readonly __brand: unique symbol }
+	type EventId = string & { readonly __brand: unique symbol }
 	type EventSlug = string & { readonly __brand: unique symbol }
 	type MarketId = number & { readonly __brand: unique symbol }
 	type OutcomeString = string & { readonly __brand: unique symbol }
