@@ -24,5 +24,5 @@ export function filterBinaryEvents(events: PolymarketEvent[]): PolymarketEvent[]
 			...event,
 			markets: event.markets.filter(isBinaryMarket)
 		}))
-		.filter(event => event.markets.length > 0)
+		.filter(event => event.markets.length === 1) // ✅ Changed: only events with exactly 1 binary market
 }
