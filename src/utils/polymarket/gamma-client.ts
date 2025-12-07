@@ -3,7 +3,7 @@ import { GAMMA_BASE_URL, MINIMUM_VOLUME } from "../constants"
 
 export async function fetchActiveEvents(): Promise<PolymarketEvent[]> {
 	try {
-		const defaultParams = {
+		const defaultParams: PolymarketEventsQueryParams = {
 			active: true,
 			closed: false,
 			archived: false,

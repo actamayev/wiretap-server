@@ -256,7 +256,7 @@ declare global {
 		end_date_max?: string // ISO date-time
 
 		// Sorting (comma-separated list, use "-" prefix for descending)
-		order?: string // e.g., "-volume", "start_date", "-liquidity"
+		order?: string // e.g., "volume", "start_date", "liquidity"
 		ascending?: boolean
 
 		// ID/slug filtering
