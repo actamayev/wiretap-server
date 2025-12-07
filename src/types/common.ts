@@ -20,8 +20,6 @@ declare global {
 	type FundsUUID = UUID & { readonly __brand: unique symbol }
 	type EventUUID = UUID & { readonly __brand: unique symbol }
 
-	type ContractUUID = UUID & { readonly __brand: unique symbol }
-
 	interface TransactionResponse {
 		purchaseOrders: PurchaseOrder[]
 		saleOrders: SaleOrder[]
