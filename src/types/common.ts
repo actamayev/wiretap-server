@@ -18,7 +18,10 @@ declare global {
 	}
 
 	type FundsUUID = UUID & { readonly __brand: unique symbol }
-	type EventUUID = UUID & { readonly __brand: unique symbol }
+	type EventId = bigint & { readonly __brand: unique symbol }
+	type EventSlug = string & { readonly __brand: unique symbol }
+	type MarketId = number & { readonly __brand: unique symbol }
+	type OutcomeString = string & { readonly __brand: unique symbol }
 
 	interface TransactionResponse {
 		purchaseOrders: PurchaseOrder[]
@@ -26,26 +29,26 @@ declare global {
 	}
 
 	interface CommonTransactionFields {
-		outcomeId: number
+		outcome: OutcomeString
 		transactionDate: Date
-		marketQuestion: string
+		marketQuestion: string | null
 	}
 
 	interface PurchaseOrder extends CommonTransactionFields {
-		outcomeId: number
+		outcome: OutcomeString
 		numberContractsPurchased: number
-		marketQuestion: string
+		marketQuestion: string | null
 	}
 
 	interface SaleOrder extends CommonTransactionFields {
-		outcomeId: number
+		outcome: OutcomeString
 		numberContractsSold: number
-		marketQuestion: string
+		marketQuestion: string | null
 	}
 
 	interface SinglePosition {
-		outcomeId: number
-		marketQuestion: string
+		outcome: OutcomeString
+		marketQuestion: string | null
 		numberOfContractsHeld: number
 	}
 
@@ -130,6 +133,33 @@ declare global {
 	interface IncomingCreateFundRequest {
 		fundName: string
 		startingAccountBalanceUsd: number
+	}
+
+	interface AllEventsResponse {
+		events: SingleEvent[]
+	}
+
+	interface SingleEventResponse {
+		event: SingleEvent | null
+	}
+
+	interface SingleEvent {
+		eventId: EventId
+		eventTitle: string
+		eventDescription: string
+		eventImageUrl: string
+		eventIconUrl: string
+		eventPolymarketUrl: string
+		eventCreatedAt: Date
+		eventUpdatedAt: Date
+		eventMarkets: SingleMarket[]
+	}
+
+	interface SingleMarket {
+		marketId: MarketId
+		marketQuestion: string | null
+		marketCreatedAt: Date
+		marketUpdatedAt: Date
 	}
 }
 

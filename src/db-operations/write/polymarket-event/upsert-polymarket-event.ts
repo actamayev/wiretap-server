@@ -12,19 +12,24 @@ export default async function upsertPolymarketEvent(event: PolymarketEvent): Pro
 				active: event.active,
 				closed: event.closed,
 				archived: event.archived,
-				category: event.category,
 				start_date: event.startDate,
 				end_date: event.endDate,
+				image_url: event.image,
+				icon_url: event.icon,
+				total_volume: event.volume,
 			},
 			create: {
 				event_id: event.id,
+				event_slug: event.slug,
 				title: event.title,
 				description: event.description,
 				active: event.active,
 				closed: event.closed,
 				archived: event.archived,
-				category: event.category,
 				polymarket_url: `https://polymarket.com/event/${event.slug}`,
+				image_url: event.image,
+				icon_url: event.icon,
+				total_volume: event.volume,
 			}
 		})
 	} catch (error) {

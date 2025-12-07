@@ -69,9 +69,10 @@ model wiretap_fund {
 
 // Events table - one row per event
 model polymarket_event {
-	event_id                    								String    @id  // Polymarket's slug
+	event_id                    								BigInt    @id
 	title                       								String
 	description                 								String
+	event_slug													String @unique
 
 	// Market status
 	active                      								Boolean   @default(true)
@@ -83,7 +84,6 @@ model polymarket_event {
 	resolution_time             								DateTime?
 
 	// Metadata
-	category                    								String?
 	start_date                  								DateTime?
 	end_date                    								DateTime?
 
@@ -104,9 +104,9 @@ model polymarket_event {
 model polymarket_market {
 	market_id                   								Int       @id @default(autoincrement())
 	condition_id                								String    @unique // Polymarket's condition ID
-	event_id                    								String
+	event_id                    								BigInt
 
-	question                    								String    // The market question
+	question                    								String?    // The market question
 
 	// Market-level metadata
 	active                      								Boolean   @default(true)

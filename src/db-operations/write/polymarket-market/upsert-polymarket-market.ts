@@ -3,7 +3,7 @@ import { polymarket_market } from "../../../generated/prisma/client"
 
 export default async function upsertPolymarketMarket(
 	market: PolymarketMarket,
-	eventId: EventUUID
+	eventId: EventId
 ): Promise<polymarket_market> {
 	  try {
 		  const prismaClient = await PrismaClientClass.getPrismaClient()
@@ -21,7 +21,7 @@ export default async function upsertPolymarketMarket(
 			  },
 			  create: {
 				  condition_id: market.conditionId,
-				  event_id: eventId,  // ✅ Use event.id (the unique identifier)
+				  event_id: eventId,
 				  question: market.question,
 				  active: market.active,
 				  closed: market.closed,

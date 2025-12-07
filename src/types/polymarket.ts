@@ -5,7 +5,7 @@ declare global {
 
 	interface PolymarketEvent {
 		// Core identification
-		id: EventUUID
+		id: EventId
 		ticker: string
 		slug: string
 		title: string
@@ -78,7 +78,7 @@ declare global {
 
 	interface PolymarketMarket {
 		// Core identification
-		id: string
+		id: MarketId
 		question: string
 		conditionId: string // THIS IS THE KEY FIELD - the tradeable contract ID
 		slug: string
@@ -184,37 +184,37 @@ declare global {
 	}
 
 	interface PolymarketTag {
-	  id: string
-	  label: string
-	  slug: string
-	  forceShow?: boolean
-	  publishedAt?: string
-	  createdAt?: string
-	  updatedAt?: string
-	  forceHide?: boolean
-	  isCarousel?: boolean
+		id: string
+		label: string
+		slug: string
+		forceShow?: boolean
+		publishedAt?: string
+		createdAt?: string
+		updatedAt?: string
+		forceHide?: boolean
+		isCarousel?: boolean
 	}
 
 	interface PolymarketSeries {
-	  id: string
-	  ticker: string
-	  slug: string
-	  title: string
-	  subtitle?: string
-	  seriesType?: string
-	  recurrence?: string
-	  description?: string
-	  image?: string
-	  icon?: string
-	  layout?: string
-	  active: boolean
-	  closed: boolean
-	  archived: boolean
-	  new: boolean
-	  featured: boolean
-	  restricted: boolean
-	  createdAt: string
-	  updatedAt: string
+		id: string
+		ticker: string
+		slug: string
+		title: string
+		subtitle?: string
+		seriesType?: string
+		recurrence?: string
+		description?: string
+		image?: string
+		icon?: string
+		layout?: string
+		active: boolean
+		closed: boolean
+		archived: boolean
+		new: boolean
+		featured: boolean
+		restricted: boolean
+		createdAt: string
+		updatedAt: string
 	}
 
 	// ============================================
@@ -223,9 +223,9 @@ declare global {
 
 	// Use these when parsing the JSON strings
 	interface ParsedMarketData {
-	  outcomes: string[] // Parsed from outcomes JSON string
-	  outcomePrices: number[] // Parsed from outcomePrices JSON string
-	  clobTokenIds: string[] // Parsed from clobTokenIds JSON string
+		outcomes: OutcomeString[] // Parsed from outcomes JSON string
+		outcomePrices: number[] // Parsed from outcomePrices JSON string
+		clobTokenIds: string[] // Parsed from clobTokenIds JSON string
 	}
 
 	// ============================================

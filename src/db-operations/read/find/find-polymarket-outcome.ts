@@ -6,10 +6,10 @@ interface PolymarketOutcome {
 	market: {
 		market_id: number
 		condition_id: string
-		question: string
+		question: string | null
+		accepting_orders: boolean
 		active: boolean
 		closed: boolean
-		accepting_orders: boolean
 	}
 }
 
