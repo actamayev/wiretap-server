@@ -2,9 +2,16 @@ import { MINIMUM_VOLUME } from "../constants"
 
 export function isBinaryMarket(market: PolymarketMarket): boolean {
 	try {
+		// Check if required fields exist
+		if (!market.outcomes || !market.clobTokenIds || !market.outcomePrices) {
+			console.log(`  ⚠️  Market ${market.conditionId} missing outcome data`)
+			return false
+		}
+
 		const outcomes = JSON.parse(market.outcomes)
 		return outcomes.length === 2
-	} catch {
+	} catch (error) {
+		console.log(`  ⚠️  Market ${market.conditionId} has invalid outcome data`)
 		return false
 	}
 }
@@ -14,16 +21,11 @@ export function hasMinimumVolume(event: PolymarketEvent): boolean {
 }
 
 export function filterBinaryEvents(events: PolymarketEvent[]): PolymarketEvent[] {
-	try {
-		return events
-			.filter(hasMinimumVolume)
-			.map(event => ({
-				...event,
-				markets: event.markets.filter(isBinaryMarket)
-			}))
-			.filter(event => event.markets.length > 0)
-	} catch (error) {
-		console.error("Error filtering binary events:", error)
-		return []
-	}
+	return events
+		.filter(hasMinimumVolume)
+		.map(event => ({
+			...event,
+			markets: event.markets.filter(isBinaryMarket)
+		}))
+		.filter(event => event.markets.length > 0)
 }

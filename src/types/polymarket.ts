@@ -233,27 +233,44 @@ declare global {
 	// ============================================
 
 	interface PolymarketEventsQueryParams {
-	  limit?: number // Default 100, max 100
-	  offset?: number // For pagination
-	  active?: boolean // Filter by active status
-	  closed?: boolean // Filter by closed status
-	  archived?: boolean // Filter by archived status
-	  order?: "asc" | "desc" // Sort order
-	  ascending?: boolean // Alternative sort parameter
-	  slug?: string // Filter by specific slug
-	  id?: string // Filter by specific ID
-	  tag?: string // Filter by tag slug
-	}
+		limit?: number // Default 100, max 100
+		offset?: number // For pagination
 
-	interface PolymarketMarketsQueryParams {
-	  limit?: number
-	  offset?: number
-	  active?: boolean
-	  closed?: boolean
-	  archived?: boolean
-	  order?: "asc" | "desc"
-	  id?: string
-	  condition_id?: string // Filter by conditionId
+		// Filtering
+		active?: boolean
+		closed?: boolean
+		archived?: boolean
+		featured?: boolean
+		cyom?: boolean
+
+		// Volume filtering
+		liquidity_min?: number
+		liquidity_max?: number
+		volume_min?: number
+		volume_max?: number
+
+		// Date filtering
+		start_date_min?: string // ISO date-time
+		start_date_max?: string // ISO date-time
+		end_date_min?: string // ISO date-time
+		end_date_max?: string // ISO date-time
+
+		// Sorting (comma-separated list, use "-" prefix for descending)
+		order?: string // e.g., "-volume", "start_date", "-liquidity"
+		ascending?: boolean
+
+		// ID/slug filtering
+		id?: number[]
+		slug?: string[]
+		tag_id?: number
+		exclude_tag_id?: number[]
+		tag_slug?: string
+
+		// Other options
+		related_tags?: boolean
+		include_chat?: boolean
+		include_template?: boolean
+		recurrence?: string
 	}
 
 	interface ParsedOutcome {
