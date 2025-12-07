@@ -145,6 +145,7 @@ declare global {
 
 	interface SingleEvent {
 		eventId: EventId
+		eventSlug: EventSlug
 		eventTitle: string
 		eventDescription: string
 		eventImageUrl: string

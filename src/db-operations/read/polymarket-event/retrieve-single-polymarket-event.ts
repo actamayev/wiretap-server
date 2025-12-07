@@ -10,6 +10,7 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 			where: { event_id: eventId },
 			select: {
 				event_id: true,
+				event_slug: true,
 				title: true,
 				description: true,
 				image_url: true,
@@ -36,6 +37,7 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 
 		return {
 			eventId: rawPolymarketEvent.event_id as EventId,
+			eventSlug: rawPolymarketEvent.event_slug as EventSlug,
 			eventTitle: rawPolymarketEvent.title,
 			eventDescription: rawPolymarketEvent.description,
 			eventImageUrl: rawPolymarketEvent.image_url as string,

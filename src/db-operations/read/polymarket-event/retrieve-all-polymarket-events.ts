@@ -13,6 +13,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 			},
 			select: {
 				event_id: true,
+				event_slug: true,
 				title: true,
 				description: true,
 				image_url: true,
@@ -37,6 +38,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 
 		return rawPolymarketEvents.map((event) => ({
 			eventId: event.event_id as EventId,
+			eventSlug: event.event_slug as EventSlug,
 			eventTitle: event.title,
 			eventDescription: event.description,
 			eventImageUrl: event.image_url as string,
