@@ -5,7 +5,7 @@ declare global {
 
 	interface PolymarketEvent {
 		// Core identification
-		id: string
+		id: EventUUID
 		ticker: string
 		slug: string
 		title: string
@@ -255,6 +255,13 @@ declare global {
 	  id?: string
 	  condition_id?: string // Filter by conditionId
 	}
-  }
+
+	interface ParsedOutcome {
+		clobTokenId: string
+		outcome: string
+		outcomeIndex: number
+		currentPrice: number | null
+	}
+}
 
 export {}

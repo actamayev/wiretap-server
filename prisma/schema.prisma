@@ -88,19 +88,11 @@ model polymarket_event {
 	end_date                    								DateTime?
 
 	// Event-level financials (aggregated across all markets)
-	liquidity                   								Float?
-	volume                      								Float?
-	volume_24hr                 								Float?
-	volume_1wk                  								Float?
-	volume_1mo                  								Float?
+	total_volume                      							Float?
 
 	polymarket_url              								String
 	image_url                   								String?
 	icon_url                    								String?
-
-	// Flags
-	enable_order_book           								Boolean   @default(true)
-	restricted                  								Boolean   @default(false)
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
@@ -148,11 +140,6 @@ model polymarket_outcome {
 
 	// Outcome-specific pricing
 	current_price               								Float?    // From outcomePrices array
-
-	// Price changes (if available per-outcome)
-	price_change_24hr           								Float?
-	price_change_1wk            								Float?
-	price_change_1mo            								Float?
 
 	// Resolution
 	winning_outcome             								Boolean   @default(false)
