@@ -19,7 +19,7 @@ export async function fetchActiveEvents(): Promise<PolymarketEvent[]> {
 
 		console.log(`📥 Fetched ${response.data.length} events from Gamma API`)
 		if (response.data.length > 0) {
-			console.log(`   Top event: "${response.data[0].title}" - Volume: $${response.data[0].volume?.toLocaleString()}`)
+			console.log(`   Top event: "${response.data[0].title}" - Volume: $${response.data[0].volume.toLocaleString()}`)
 		}
 		return response.data
 	} catch (error) {
