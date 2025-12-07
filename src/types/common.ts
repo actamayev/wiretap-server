@@ -154,6 +154,7 @@ declare global {
 		eventCreatedAt: Date
 		eventUpdatedAt: Date
 		eventMarkets: SingleMarket[]
+		eventTotalVolume: number
 	}
 
 	interface SingleMarket {
@@ -161,6 +162,7 @@ declare global {
 		marketQuestion: string | null
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
+		lastTradePrice: number | null
 	}
 }
 

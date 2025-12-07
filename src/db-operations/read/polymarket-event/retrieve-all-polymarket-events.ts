@@ -31,8 +31,10 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 						question: true,
 						created_at: true,
 						updated_at: true,
+						last_trade_price: true,
 					}
-				}
+				},
+				total_volume: true,
 			}
 		})
 
@@ -51,7 +53,9 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 				marketQuestion: market.question,
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
+				lastTradePrice: market.last_trade_price,
 			})),
+			eventTotalVolume: event.total_volume as number,
 		}))
 	} catch (error) {
 		console.error(error)
