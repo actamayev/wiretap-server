@@ -1,6 +1,6 @@
 import { isUndefined } from "lodash"
 import { Request, Response, NextFunction } from "express"
-import retrieveUserIdFromBrokerageId from "../../db-operations/read/wiretap-brokerage-account/retrieve-user-id-from-brokerage-id"
+import retrieveUserIdFromBrokerageId from "../../db-operations/read/wiretap-fund/retrieve-user-id-from-brokerage-id"
 
 export default async function confirmWiretapFundIdExistsAndValidId(
 	req: Request,

@@ -57,6 +57,7 @@ declare global {
 		fundName: string
 		startingAccountBalanceUsd: number
 		currentAccountBalanceUsd: number
+		isPrimaryFund: boolean
 	}
 
 	interface PositionsResponse {
@@ -95,13 +96,19 @@ declare global {
 	interface GoogleAuthSuccess {
 		isNewUser: boolean
 		personalInfo?: BasicPersonalInfoResponse
+		funds: SingleFund[]
 	}
 
 	interface NewGoogleInfoRequest {
 		username: string
 	}
 
-	interface EmailResponse {
+	interface NewGoogleUserResponse {
+		email: string
+		fund: SingleFund
+	}
+
+	interface EmailUpdatesRequest {
 		email: string
 	}
 
@@ -123,12 +130,9 @@ declare global {
 		newAccountBalance: number
 	}
 
-	interface EmailUpdatesRequest {
-		email: string
-	}
-
 	interface LoginSuccess {
 		personalInfo: BasicPersonalInfoResponse
+		funds: SingleFund[]
 	}
 
 	interface IncomingCreateFundRequest {

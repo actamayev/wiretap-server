@@ -29,6 +29,7 @@ model credentials {
 
 	login_history                                               login_history[]
 	wiretap_fund												wiretap_fund[]
+	user_feedback												user_feedback[]
 }
 
 model login_history {
@@ -55,6 +56,8 @@ model wiretap_fund {
 	fund_name													String
 	starting_account_balance_usd								Float
 	current_account_balance_usd									Float
+	is_primary_fund												Boolean		@default(false)
+	is_starting_fund											Boolean		@default(false)
 
 	created_at                                                  DateTime     @default(now())
 	updated_at                                                  DateTime     @default(now()) @updatedAt
@@ -241,4 +244,16 @@ model portfolio_snapshot {
 	@@unique([wiretap_fund_uuid, timestamp])
 	@@index([wiretap_fund_uuid])
 	@@index([timestamp])
+}
+
+model user_feedback {
+	user_feedback_id                                            Int       @id @default(autoincrement())
+	user_id                                                     Int
+	feedback                                                    String
+
+	created_at                                                  DateTime  @default(now())
+
+	user                                                        credentials @relation(fields: [user_id], references: [user_id])
+
+	@@index([user_id])
 }
