@@ -1,65 +1,68 @@
-import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
 
 // eslint-disable-next-line max-lines-per-function
-export default async function retrieveAllTransactions(
-	wiretapFundUuid: FundsUUID
-): Promise<TransactionResponse | null> {
+export default async function retrieveAllTransactions(wiretapFundUuid: FundsUUID): Promise<TransactionResponse> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		const rawUserTransactions = await prismaClient.wiretap_fund.findUnique({
-			where: {
-				wiretap_fund_uuid: wiretapFundUuid
-			},
-			select: {
-				purchase_orders: {
-					select: {
-						outcome_id: true,
-						number_of_contracts: true,
-						created_at: true,
-						outcome: {
-							select: {
-								outcome: true,
-								market: {
-									select: {
-										question: true
-									}
-								}
-							}
-						}
-					}
+		// eslint-disable-next-line max-lines-per-function
+		const result = await prismaClient.$transaction(async (tx: TransactionClient) => {
+			// Query purchase orders
+			const purchaseOrders = await tx.purchase_order.findMany({
+				where: {
+					wiretap_fund_uuid: wiretapFundUuid
 				},
-				sales_orders: {
-					select: {
-						outcome_id: true,
-						number_of_contracts: true,
-						created_at: true,
-						outcome: {
-							select: {
-								outcome: true,
-								market: {
-									select: {
-										question: true
-									}
+				select: {
+					number_of_contracts: true,
+					created_at: true,
+					outcome: {
+						select: {
+							outcome: true,
+							market: {
+								select: {
+									question: true
 								}
 							}
 						}
 					}
 				}
+			})
+
+			// Query sales orders
+			const salesOrders = await tx.sale_order.findMany({
+				where: {
+					wiretap_fund_uuid: wiretapFundUuid
+				},
+				select: {
+					number_of_contracts: true,
+					created_at: true,
+					outcome: {
+						select: {
+							outcome: true,
+							market: {
+								select: {
+									question: true
+								}
+							}
+						}
+					}
+				}
+			})
+
+			return {
+				purchaseOrders,
+				salesOrders
 			}
 		})
 
-		if (isNull(rawUserTransactions)) return null
-
 		return {
-			purchaseOrders: rawUserTransactions.purchase_orders.map((purchaseOrder) => ({
+			purchaseOrders: result.purchaseOrders.map((purchaseOrder) => ({
 				outcome: purchaseOrder.outcome.outcome as OutcomeString,
 				transactionDate: purchaseOrder.created_at,
 				numberContractsPurchased: purchaseOrder.number_of_contracts,
 				marketQuestion: purchaseOrder.outcome.market.question,
 			})),
-			saleOrders: rawUserTransactions.sales_orders.map((saleOrder) => ({
+			saleOrders: result.salesOrders.map((saleOrder) => ({
 				outcome: saleOrder.outcome.outcome as OutcomeString,
 				transactionDate: saleOrder.created_at,
 				numberContractsSold: saleOrder.number_of_contracts,

@@ -8,9 +8,9 @@ export default async function validateBuyOrderAndFetchPrice(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { clobTokenId } = req
+		const { clobToken, numberOfContractsPurchasing } = req.body as { clobToken: ClobTokenId, numberOfContractsPurchasing: number }
 
-		const currentPrice = await fetchPolymarketPrice(clobTokenId)
+		const currentPrice = await fetchPolymarketPrice(clobToken)
 
 		if (isNull(currentPrice)) {
 			res.status(500).json({ message: "Unable to fetch current market price. Please try again." } satisfies MessageResponse)
@@ -18,11 +18,10 @@ export default async function validateBuyOrderAndFetchPrice(
 		}
 
 		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
-		const { outcomeId, numberOfContractsPurchasing } = req.body as { outcomeId: number, numberOfContractsPurchasing: number }
 
 		const validatedBuyOrder: ValidatedBuyOrder = {
 			wiretapFundUuid,
-			outcomeId,
+			clobToken,
 			numberOfContractsPurchasing,
 			currentPrice,
 		}

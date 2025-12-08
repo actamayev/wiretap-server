@@ -3,9 +3,8 @@ import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 
 const validateBuyContractSchema = Joi.object({
-	outcomeId: Joi.number().integer().positive().required(),
-	numberContractsPurchasing: Joi.number().integer().positive().required(),
-	marketId: Joi.number().integer().positive().required()
+	clobToken: Joi.string().required(),
+	numberContractsPurchasing: Joi.number().integer().positive().required()
 }).required().unknown(false)
 
 export default function validateBuyContract(req: Request, res: Response, next: NextFunction): void {

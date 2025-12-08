@@ -22,6 +22,7 @@ declare global {
 	type EventSlug = string & { readonly __brand: unique symbol }
 	type MarketId = number & { readonly __brand: unique symbol }
 	type OutcomeString = string & { readonly __brand: unique symbol }
+	type ClobTokenId = string & { readonly __brand: unique symbol }
 
 	interface TransactionResponse {
 		purchaseOrders: PurchaseOrder[]

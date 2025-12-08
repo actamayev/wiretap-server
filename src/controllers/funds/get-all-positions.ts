@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import retrieveAllPositions from "../../db-operations/read/wiretap-fund/retrieve-all-positions"
+import retrieveAllPositions from "../../db-operations/read/position/retrieve-all-positions"
 
 export default async function getAllPositions(req: Request, res: Response): Promise<Response> {
 	try {
