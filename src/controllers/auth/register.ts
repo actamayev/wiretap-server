@@ -8,6 +8,7 @@ import doesUsernameExist from "../../db-operations/read/does-x-exist/does-userna
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
 import constructLocalUserFields from "../../utils/auth-helpers/register/construct-local-user-fields"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
+import createStartingFundForUser from "../../db-operations/read/wiretap-fund/create-starting-fund-for-user"
 
 export default async function register(req: Request, res: Response): Promise<void> {
 	try {
@@ -38,9 +39,11 @@ export default async function register(req: Request, res: Response): Promise<voi
 			username: registerInformation.username,
 			isActive: true
 		})
+		const startingFund = await createStartingFundForUser(userId)
+		const funds = [startingFund]
 
 		setAuthCookie(res, accessToken)
-		res.status(200).json({ success: "Registered successfully" } satisfies SuccessResponse)
+		res.status(200).json({ funds } satisfies AllMyFundsResponse)
 		void addLoginHistoryRecord(userId)
 		return
 	} catch (error) {

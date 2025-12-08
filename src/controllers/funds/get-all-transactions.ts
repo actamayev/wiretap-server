@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import retrieveAllTransactions from "../../db-operations/read/wiretap-brokerage-account/retrieve-all-transactions"
+import retrieveAllTransactions from "../../db-operations/read/wiretap-fund/retrieve-all-transactions"
 import isNull from "lodash/isNull"
 
 export default async function getAllTransactions(req: Request, res: Response): Promise<Response> {

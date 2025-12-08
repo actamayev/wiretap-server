@@ -1,0 +1,33 @@
+import PrismaClientClass from "../../../classes/prisma-client"
+
+export default async function createStartingFundForUser(userId: number): Promise<SingleFund> {
+	try {
+		const prismaClient = await PrismaClientClass.getPrismaClient()
+
+		const uuid = crypto.randomUUID() as FundsUUID
+		const startingAccountBalanceUsd = 10000
+
+		const fund = await prismaClient.wiretap_fund.create({
+			data: {
+				user_id: userId,
+				wiretap_fund_uuid: uuid,
+				fund_name: "My First Fund",
+				starting_account_balance_usd: startingAccountBalanceUsd,
+				current_account_balance_usd: startingAccountBalanceUsd,
+				is_primary_fund: true,
+				is_starting_fund: true
+			}
+		})
+
+		return {
+			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
+			fundName: fund.fund_name,
+			startingAccountBalanceUsd: fund.starting_account_balance_usd,
+			currentAccountBalanceUsd: fund.current_account_balance_usd,
+			isPrimaryFund: fund.is_primary_fund
+		} satisfies SingleFund
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
+}

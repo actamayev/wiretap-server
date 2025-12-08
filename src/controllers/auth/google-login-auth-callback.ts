@@ -7,6 +7,7 @@ import { setAuthCookie } from "../../middleware/cookie-helpers"
 import { findUserById } from "../../db-operations/read/find/find-user"
 import { addGoogleUser } from "../../db-operations/write/credentials/add-user"
 import createGoogleAuthClient from "../../utils/google/create-google-auth-client"
+import retrieveMyFunds from "../../db-operations/read/wiretap-fund/retrieve-my-funds"
 import retrieveUserIdByEmail from "../../db-operations/read/credentials/retrieve-user-id-by-email"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
 
@@ -36,6 +37,7 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 		let accessToken: string
 		let isNewUser = false
 		let personalInfo: BasicPersonalInfoResponse | undefined = undefined
+		let funds: SingleFund[] = []
 		if (isUndefined(userId)) {
 			res.status(500).json({ error: "Unable to login with this email. Account offline." } satisfies ErrorResponse)
 			return
@@ -56,13 +58,15 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 				email: payload.email,
 				isGoogleUser: true
 			}
+			funds = await retrieveMyFunds(userId)
 		}
 
 		setAuthCookie(res, accessToken)
 
 		res.status(200).json({
 			isNewUser,
-			personalInfo
+			personalInfo,
+			funds
 		} satisfies GoogleAuthSuccess)
 		void addLoginHistoryRecord(userId)
 		return

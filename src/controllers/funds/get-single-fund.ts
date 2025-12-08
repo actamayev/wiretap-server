@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import retrieveSingleFund from "../../db-operations/read/wiretap-brokerage-account/retrieve-single-fund"
+import retrieveSingleFund from "../../db-operations/read/wiretap-fund/retrieve-single-fund"
 
 export default async function getMyFunds(req: Request, res: Response): Promise<Response> {
 	try {
