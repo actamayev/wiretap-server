@@ -46,7 +46,8 @@ export default async function login(req: Request, res: Response): Promise<void> 
 		res.status(200).json({
 			personalInfo: {
 				username: credentialsResult.username as string,
-				email
+				email,
+				isGoogleUser: false
 			}
 		} satisfies LoginSuccess)
 		void addLoginHistoryRecord(credentialsResult.user_id)

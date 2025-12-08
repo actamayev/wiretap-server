@@ -89,6 +89,7 @@ declare global {
 	interface BasicPersonalInfoResponse {
 		username: string
 		email: string | null
+		isGoogleUser: boolean
 	}
 
 	interface GoogleAuthSuccess {
