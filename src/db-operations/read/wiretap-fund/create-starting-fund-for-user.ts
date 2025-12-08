@@ -13,7 +13,9 @@ export default async function createStartingFundForUser(userId: number): Promise
 				wiretap_fund_uuid: uuid,
 				fund_name: "My First Fund",
 				starting_account_balance_usd: startingAccountBalanceUsd,
-				current_account_balance_usd: startingAccountBalanceUsd
+				current_account_balance_usd: startingAccountBalanceUsd,
+				is_primary_fund: true,
+				is_starting_fund: true
 			}
 		})
 
@@ -21,8 +23,9 @@ export default async function createStartingFundForUser(userId: number): Promise
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
 			startingAccountBalanceUsd: fund.starting_account_balance_usd,
-			currentAccountBalanceUsd: fund.current_account_balance_usd
-		}
+			currentAccountBalanceUsd: fund.current_account_balance_usd,
+			isPrimaryFund: fund.is_primary_fund
+		} satisfies SingleFund
 	} catch (error) {
 		console.error(error)
 		throw error

@@ -12,6 +12,7 @@ import getMyFunds from "../controllers/funds/get-my-funds"
 import getAllPositions from "../controllers/funds/get-all-positions"
 import getAllTransactions from "../controllers/funds/get-all-transactions"
 import getSingleFund from "../controllers/funds/get-single-fund"
+import setPrimaryFund from "../controllers/funds/set-primary-fund"
 
 const fundsRoutes = express.Router()
 
@@ -45,6 +46,13 @@ fundsRoutes.get(
 	validateWiretapFundIdInParams,
 	confirmWiretapFundIdExistsAndValidId,
 	getAllTransactions
+)
+
+fundsRoutes.post(
+	"/set-primary-fund/:wiretapFundUuid",
+	validateWiretapFundIdInParams,
+	confirmWiretapFundIdExistsAndValidId,
+	setPrimaryFund
 )
 
 export default fundsRoutes

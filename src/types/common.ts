@@ -57,6 +57,7 @@ declare global {
 		fundName: string
 		startingAccountBalanceUsd: number
 		currentAccountBalanceUsd: number
+		isPrimaryFund: boolean
 	}
 
 	interface PositionsResponse {
