@@ -20,10 +20,10 @@ export default async function retrieveSingleFund(userId: number, wiretapFundUuid
 		if (isNull(fund)) return null
 
 		return {
-			fundUUID: fund?.wiretap_fund_uuid as FundsUUID,
-			fundName: fund?.fund_name,
-			startingAccountBalanceUsd: fund?.starting_account_balance_usd,
-			currentAccountBalanceUsd: fund?.current_account_balance_usd
+			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
+			fundName: fund.fund_name,
+			startingAccountBalanceUsd: fund.starting_account_balance_usd,
+			currentAccountBalanceUsd: fund.current_account_balance_usd
 		}
 	} catch (error) {
 		console.error(error)

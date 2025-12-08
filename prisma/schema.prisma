@@ -64,13 +64,15 @@ model wiretap_fund {
 	purchase_orders												purchase_order[]
 	sales_orders												sale_order[]
 	positions													position[]
+	portfolio_snapshot											portfolio_snapshot[]
 }
 
 // Events table - one row per event
 model polymarket_event {
-	event_id                    								String    @id  // Polymarket's slug
+	event_id                    								String    @id
 	title                       								String
 	description                 								String
+	event_slug													String @unique
 
 	// Market status
 	active                      								Boolean   @default(true)
@@ -82,24 +84,15 @@ model polymarket_event {
 	resolution_time             								DateTime?
 
 	// Metadata
-	category                    								String?
 	start_date                  								DateTime?
 	end_date                    								DateTime?
 
 	// Event-level financials (aggregated across all markets)
-	liquidity                   								Float?
-	volume                      								Float?
-	volume_24hr                 								Float?
-	volume_1wk                  								Float?
-	volume_1mo                  								Float?
+	total_volume                      							Float?
 
 	polymarket_url              								String
 	image_url                   								String?
 	icon_url                    								String?
-
-	// Flags
-	enable_order_book           								Boolean   @default(true)
-	restricted                  								Boolean   @default(false)
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
@@ -113,7 +106,7 @@ model polymarket_market {
 	condition_id                								String    @unique // Polymarket's condition ID
 	event_id                    								String
 
-	question                    								String    // The market question
+	question                    								String?    // The market question
 
 	// Market-level metadata
 	active                      								Boolean   @default(true)
@@ -121,25 +114,11 @@ model polymarket_market {
 	accepting_orders            								Boolean   @default(true)
 
 	// Aggregate market data (often reflects primary outcome in API)
-	best_bid                    								Float?
-	best_ask                    								Float?
 	last_trade_price            								Float?
-	spread                      								Float?
 
 	// Volume metrics (market-level)
 	volume                      								Float?
-	liquidity                   								Float?
-	volume_24hr                 								Float?
-	volume_1wk                  								Float?
-	volume_1mo                  								Float?
-
-	// Order book settings
-	order_min_size              								Float?
-	order_min_tick_size         								Float?
-
-	// Metadata
-	enable_order_book           								Boolean   @default(true)
-	restricted                  								Boolean   @default(false)
+	volume_total												Float?
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
@@ -161,11 +140,6 @@ model polymarket_outcome {
 
 	// Outcome-specific pricing
 	current_price               								Float?    // From outcomePrices array
-
-	// Price changes (if available per-outcome)
-	price_change_24hr           								Float?
-	price_change_1wk            								Float?
-	price_change_1mo            								Float?
 
 	// Resolution
 	winning_outcome             								Boolean   @default(false)
@@ -254,4 +228,17 @@ model sale_order {
 
 	@@index([wiretap_fund_uuid])
 	@@index([outcome_id])
+}
+
+model portfolio_snapshot {
+	snapshot_id    												Int      @id @default(autoincrement())
+	wiretap_fund_uuid 											String
+	total_value    												Float
+	timestamp      												DateTime @default(now())
+
+	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
+
+	@@unique([wiretap_fund_uuid, timestamp])
+	@@index([wiretap_fund_uuid])
+	@@index([timestamp])
 }
