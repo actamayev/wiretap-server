@@ -4,7 +4,8 @@ import Encryptor from "../../classes/encryptor"
 import signJWT from "../../utils/auth-helpers/jwt/sign-jwt"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
 import doesUsernameExist from "../../db-operations/read/does-x-exist/does-username-exist"
-import setUsername from "../../db-operations/write/credentials/set-username-and-age"
+import setUsername from "../../db-operations/write/credentials/set-username"
+import createStartingFundForUser from "../../db-operations/read/wiretap-fund/create-starting-fund-for-user"
 
 export default async function registerGoogleInfo(req: Request, res: Response): Promise<void> {
 	try {
@@ -33,7 +34,8 @@ export default async function registerGoogleInfo(req: Request, res: Response): P
 		const encryptor = new Encryptor()
 		const email = await encryptor.deterministicDecrypt(user.email__encrypted, "EMAIL_ENCRYPTION_KEY")
 
-		res.status(200).json({ email } satisfies EmailResponse)
+		const fund = await createStartingFundForUser(user.user_id)
+		res.status(200).json({ email, fund } satisfies NewGoogleUserResponse)
 		return
 	} catch (error) {
 		console.error(error)

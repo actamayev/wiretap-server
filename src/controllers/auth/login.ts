@@ -7,6 +7,7 @@ import { setAuthCookie } from "../../middleware/cookie-helpers"
 import determineLoginContactType from "../../utils/auth-helpers/determine-contact-type"
 import retrieveUserFromContact from "../../utils/auth-helpers/login/retrieve-user-from-contact"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
+import retrieveMyFunds from "../../db-operations/read/wiretap-fund/retrieve-my-funds"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function login(req: Request, res: Response): Promise<void> {
@@ -42,13 +43,15 @@ export default async function login(req: Request, res: Response): Promise<void> 
 		const email = await encryptor.deterministicDecrypt(credentialsResult.email__encrypted, "EMAIL_ENCRYPTION_KEY")
 
 		setAuthCookie(res, accessToken)
+		const funds = await retrieveMyFunds(credentialsResult.user_id)
 
 		res.status(200).json({
 			personalInfo: {
 				username: credentialsResult.username as string,
 				email,
 				isGoogleUser: false
-			}
+			},
+			funds
 		} satisfies LoginSuccess)
 		void addLoginHistoryRecord(credentialsResult.user_id)
 		return

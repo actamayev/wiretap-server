@@ -95,14 +95,16 @@ declare global {
 	interface GoogleAuthSuccess {
 		isNewUser: boolean
 		personalInfo?: BasicPersonalInfoResponse
+		funds: SingleFund[]
 	}
 
 	interface NewGoogleInfoRequest {
 		username: string
 	}
 
-	interface EmailResponse {
+	interface NewGoogleUserResponse {
 		email: string
+		fund: SingleFund
 	}
 
 	interface SuccessBuyOrderResponse {
@@ -123,12 +125,9 @@ declare global {
 		newAccountBalance: number
 	}
 
-	interface EmailUpdatesRequest {
-		email: string
-	}
-
 	interface LoginSuccess {
 		personalInfo: BasicPersonalInfoResponse
+		funds: SingleFund[]
 	}
 
 	interface IncomingCreateFundRequest {
