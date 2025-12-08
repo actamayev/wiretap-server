@@ -160,6 +160,7 @@ declare global {
 		eventUpdatedAt: Date
 		eventMarkets: SingleMarket[]
 		eventTotalVolume: number
+		eventEndDate: Date
 	}
 
 	interface SingleMarket {

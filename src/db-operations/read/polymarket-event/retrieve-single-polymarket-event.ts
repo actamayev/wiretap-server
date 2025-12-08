@@ -32,6 +32,7 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 					},
 				},
 				total_volume: true,
+				end_date: true,
 			}
 		})
 
@@ -55,6 +56,7 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 				marketUpdatedAt: market.updated_at,
 				lastTradePrice: market.last_trade_price
 			})),
+			eventEndDate: rawPolymarketEvent.end_date as Date,
 		}
 	} catch (error) {
 		console.error(error)
