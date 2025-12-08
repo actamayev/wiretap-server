@@ -107,6 +107,10 @@ declare global {
 		fund: SingleFund
 	}
 
+	interface EmailUpdatesRequest {
+		email: string
+	}
+
 	interface SuccessBuyOrderResponse {
 		success: "Buy order executed successfully"
 		pricePerContract: number
