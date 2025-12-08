@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import Encryptor from "../../classes/encryptor"
+import { AuthMethods } from "../../generated/prisma/client"
 
 export default async function getPersonalInfo(req: Request, res: Response): Promise<void> {
 	try {
@@ -10,7 +11,8 @@ export default async function getPersonalInfo(req: Request, res: Response): Prom
 
 		res.status(200).json({
 			username: user.username as string,
-			email
+			email,
+			isGoogleUser: user.auth_method === AuthMethods.GOOGLE
 		} satisfies BasicPersonalInfoResponse)
 		return
 	} catch (error) {

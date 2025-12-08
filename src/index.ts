@@ -7,6 +7,7 @@ import getEnvPath from "./utils/config/get-env-path"
 import { configureAppMiddleware, corsOptions } from "./middleware/init-config"
 
 import setupRoutes from "./utils/config/setup-routes"
+import startBackgroundJobs from "./jobs/start-background-jobs"
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.error("🚨 Unhandled Promise Rejection at:", promise, "reason:", reason)
@@ -55,4 +56,5 @@ if (!isUndefined(process.env.NODE_ENV))  {
 const PORT = 8080
 app.listen(PORT, () => {
 	console.info(`Server is listening on port ${PORT}`)
+	void startBackgroundJobs()
 })

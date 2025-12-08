@@ -1,3 +1,10 @@
 -- SELECT * FROM credentials ORDER BY created_at;
 -- Select * from login_history;
-Select * from email_update_subscriber;
+-- Select * from email_update_subscriber;
+-- SELECT * FROM polymarket_event;
+-- SELECT * FROM polymarket_market ORDER BY market_id;
+-- SELECT * FROM polymarket_outcome order by outcome_id;
+-- SELECT * FROM "position";
+-- SELECT * FROM purchase_order;
+-- SELECT * FROM sale_order;
+-- SELECT * FROM portfolio_snapshot;

@@ -5,6 +5,7 @@ declare global {
 			number_of_contracts: number
 			created_at: Date
 			outcome: {
+				outcome: OutcomeString
 				market: {
 					question: string
 				}
@@ -15,6 +16,7 @@ declare global {
 			number_of_contracts: number
 			created_at: Date
 			outcome: {
+				outcome: OutcomeString
 				market: {
 					question: string
 				}

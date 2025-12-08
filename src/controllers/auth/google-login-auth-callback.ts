@@ -53,7 +53,8 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 			accessToken = await signJWT({ userId, username: credentialsResult.username as string, isActive: true })
 			personalInfo = {
 				username: credentialsResult.username as string,
-				email: payload.email
+				email: payload.email,
+				isGoogleUser: true
 			}
 		}
 
