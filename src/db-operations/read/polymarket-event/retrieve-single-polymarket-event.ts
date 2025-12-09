@@ -1,12 +1,11 @@
-import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
 
 // eslint-disable-next-line max-lines-per-function
-export default async function retrieveSinglePolymarketEvent(eventId: EventId): Promise<SingleEvent | null> {
+export default async function retrieveSinglePolymarketEvent(eventId: EventId): Promise<SingleEvent> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		const rawPolymarketEvent = await prismaClient.polymarket_event.findUnique({
+		const rawPolymarketEvent = await prismaClient.polymarket_event.findUniqueOrThrow({
 			where: { event_id: eventId },
 			select: {
 				event_id: true,
@@ -41,8 +40,6 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 				end_date: true,
 			}
 		})
-
-		if (isNull(rawPolymarketEvent)) return null
 
 		return {
 			eventId: rawPolymarketEvent.event_id as EventId,

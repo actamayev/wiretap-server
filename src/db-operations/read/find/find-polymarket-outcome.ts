@@ -12,11 +12,11 @@ interface PolymarketOutcome {
 	}
 }
 
-export default async function findPolymarketOutcomeById(clobToken: ClobTokenId): Promise<PolymarketOutcome | null> {
+export default async function findPolymarketOutcomeById(clobToken: ClobTokenId): Promise<PolymarketOutcome> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		const outcome = await prismaClient.polymarket_outcome.findUnique({
+		const outcome = await prismaClient.polymarket_outcome.findUniqueOrThrow({
 			where: { clob_token_id: clobToken },
 			select: {
 				clob_token_id: true,
@@ -32,8 +32,6 @@ export default async function findPolymarketOutcomeById(clobToken: ClobTokenId):
 				}
 			}
 		})
-
-		if (!outcome) return null
 
 		return {
 			clob_token_id: outcome.clob_token_id as ClobTokenId,

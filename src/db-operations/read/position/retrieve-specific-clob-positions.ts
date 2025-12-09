@@ -25,7 +25,13 @@ export default async function retrieveSpecificClobPositions(
 						outcome: true,
 						market: {
 							select: {
-								question: true
+								question: true,
+								event: {
+									select: {
+										event_slug: true,
+										image_url: true
+									}
+								}
 							}
 						}
 					}
@@ -42,7 +48,9 @@ export default async function retrieveSpecificClobPositions(
 			numberOfContractsHeld: position.number_contracts_held,
 			costBasisPerContractUsd: position.average_cost_per_contract,
 			currentMarketPricePerContractUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
-			positionCreatedAt: position.created_at
+			positionCreatedAt: position.created_at,
+			polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
+			polymarketImageUrl: position.outcome.market.event.image_url as string
 		})))
 	} catch (error) {
 		console.error(error)
