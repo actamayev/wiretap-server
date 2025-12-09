@@ -1,7 +1,9 @@
 import { Response, Request } from "express"
 import executeSellOrder from "../../db-operations/write/simultaneous-writes/execute-sell-order"
 import retrieveSpecificClobPositions from "../../db-operations/read/position/retrieve-specific-clob-positions"
+import retrievePolymarketOutcomeDataForTrade from "../../db-operations/read/polymarket-outcome/retrieve-polymarket-outcome-data-for-trade"
 
+// eslint-disable-next-line max-lines-per-function
 export default async function sellContract(req: Request, res: Response): Promise<void> {
 	try {
 		const { wiretapFundUuid, clobToken, numberOfContractsSelling, currentPrice, totalCostOfContractsSelling } = req.validatedSellOrder
@@ -17,6 +19,8 @@ export default async function sellContract(req: Request, res: Response): Promise
 
 		const remainingPositions = await retrieveSpecificClobPositions(wiretapFundUuid, clobToken)
 
+		const outcomeData = await retrievePolymarketOutcomeDataForTrade(clobToken)
+
 		res.status(200).json({
 			success: "Sell order executed successfully",
 			saleId: result.saleId,
@@ -26,7 +30,13 @@ export default async function sellContract(req: Request, res: Response): Promise
 			totalProceeds: result.totalProceeds,
 			realizedPnl: result.realizedPnl,
 			newAccountCashBalance: result.newAccountCashBalance,
-			remainingPositions
+			remainingPositions,
+			outcomeData: {
+				outcome: outcomeData.outcome,
+				marketQuestion: outcomeData.marketQuestion,
+				polymarketSlug: outcomeData.polymarketSlug,
+				polymarketImageUrl: outcomeData.polymarketImageUrl
+			}
 		} satisfies SuccessSellOrderResponse)
 		return
 	} catch (error: unknown) {

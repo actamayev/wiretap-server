@@ -1,7 +1,7 @@
 import { Response, Request } from "express"
 import executeBuyOrder from "../../db-operations/write/simultaneous-writes/execute-buy-order"
-import retrievePolymarketOutcomeDataForPurchase
-	from "../../db-operations/read/polymarket-outcome/retrieve-polymarket-outcome-data-for-purchase"
+import retrievePolymarketOutcomeDataForTrade
+	from "../../db-operations/read/polymarket-outcome/retrieve-polymarket-outcome-data-for-trade"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function buyContract(req: Request, res: Response): Promise<void> {
@@ -16,7 +16,7 @@ export default async function buyContract(req: Request, res: Response): Promise<
 			pricePerContract: currentPrice
 		})
 
-		const outcomeData = await retrievePolymarketOutcomeDataForPurchase(clobToken)
+		const outcomeData = await retrievePolymarketOutcomeDataForTrade(clobToken)
 
 		res.status(200).json({
 			success: "Buy order executed successfully",
