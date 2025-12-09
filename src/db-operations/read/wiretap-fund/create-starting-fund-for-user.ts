@@ -26,7 +26,11 @@ export default async function createStartingFundForUser(userId: number): Promise
 			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
 			isPrimaryFund: fund.is_primary_fund,
 			positionsValueUsd: 0,
-			positions: []
+			positions: [],
+			transactions: {
+				purchaseOrders: [],
+				saleOrders: []
+			}
 		} satisfies SingleFund
 	} catch (error) {
 		console.error(error)

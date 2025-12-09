@@ -9,20 +9,11 @@ import validateWiretapFundIdInParams from "../middleware/request-validation/vali
 import renameFund from "../controllers/funds/rename-fund"
 import createFund from "../controllers/funds/create-fund"
 import getMyFunds from "../controllers/funds/get-my-funds"
-import getAllTransactions from "../controllers/funds/get-all-transactions"
-import getSingleFund from "../controllers/funds/get-single-fund"
 import setPrimaryFund from "../controllers/funds/set-primary-fund"
 
 const fundsRoutes = express.Router()
 
 fundsRoutes.get("/all-my-funds", getMyFunds)
-
-fundsRoutes.get(
-	"/my-fund/:wiretapFundUuid",
-	validateWiretapFundIdInParams,
-	confirmWiretapFundIdExistsAndValidId,
-	getSingleFund
-)
 
 fundsRoutes.post("/create-fund", validateCreateFundRequest, createFund)
 
@@ -31,13 +22,6 @@ fundsRoutes.post("/rename-fund/:wiretapFundUuid",
 	validateRenameFundRequest,
 	confirmWiretapFundIdExistsAndValidId,
 	renameFund
-)
-
-fundsRoutes.get(
-	"/all-fund-transactions/:wiretapFundUuid",
-	validateWiretapFundIdInParams,
-	confirmWiretapFundIdExistsAndValidId,
-	getAllTransactions
 )
 
 fundsRoutes.post(

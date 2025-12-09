@@ -32,6 +32,38 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 							}
 						}
 					}
+				},
+				purchase_orders: {
+					select: {
+						number_of_contracts: true,
+						created_at: true,
+						outcome: {
+							select: {
+								outcome: true,
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
+					}
+				},
+				sales_orders: {
+					select: {
+						number_of_contracts: true,
+						created_at: true,
+						outcome: {
+							select: {
+								outcome: true,
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		})
@@ -50,7 +82,21 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				outcome: position.outcome.outcome as OutcomeString,
 				marketQuestion: position.outcome.market.question,
 				numberOfContractsHeld: position.number_contracts_held,
-			}))
+			})),
+			transactions: {
+				purchaseOrders: fund.purchase_orders.map((purchaseOrder) => ({
+					outcome: purchaseOrder.outcome.outcome as OutcomeString,
+					transactionDate: purchaseOrder.created_at,
+					numberContractsPurchased: purchaseOrder.number_of_contracts,
+					marketQuestion: purchaseOrder.outcome.market.question,
+				})),
+				saleOrders: fund.sales_orders.map((saleOrder) => ({
+					outcome: saleOrder.outcome.outcome as OutcomeString,
+					transactionDate: saleOrder.created_at,
+					numberContractsSold: saleOrder.number_of_contracts,
+					marketQuestion: saleOrder.outcome.market.question,
+				}))
+			}
 		}))
 
 		// Calculate portfolio value for each fund in parallel
