@@ -24,7 +24,7 @@ export default async function validateSellOrderAndFetchPrice(
 			clobToken,
 			numberOfContractsSelling,
 			currentPrice,
-			positionAverageCost: 0
+			totalCostOfContractsSelling: 0
 		}
 
 		next()

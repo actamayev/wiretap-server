@@ -170,6 +170,7 @@ declare global {
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
 		lastTradePrice: number | null
+		clobTokens: [ClobTokenId, ClobTokenId]
 	}
 }
 

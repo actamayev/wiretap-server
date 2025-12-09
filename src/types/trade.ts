@@ -11,7 +11,7 @@ declare global {
 
 	interface ValidatedSellOrder extends TradeOrder {
 		numberOfContractsSelling: number
-		positionAverageCost: number
+		totalCostOfContractsSelling: number
 	}
 }
 

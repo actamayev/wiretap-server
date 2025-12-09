@@ -29,6 +29,12 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 						created_at: true,
 						updated_at: true,
 						last_trade_price: true,
+						outcomes: {
+							select: {
+								outcome: true,
+								clob_token_id: true,
+							},
+						},
 					},
 				},
 				total_volume: true,
@@ -54,7 +60,10 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 				marketQuestion: market.question,
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
-				lastTradePrice: market.last_trade_price
+				lastTradePrice: market.last_trade_price,
+				clobTokens: market.outcomes
+					.sort((a) => a.outcome === "YES" ? -1 : 1)
+					.map((outcome) => outcome.clob_token_id as ClobTokenId) as [ClobTokenId, ClobTokenId],
 			})),
 			eventEndDate: rawPolymarketEvent.end_date as Date,
 		}

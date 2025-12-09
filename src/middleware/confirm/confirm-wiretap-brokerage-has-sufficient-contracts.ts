@@ -9,7 +9,7 @@ export default async function confirmWiretapBrokerageHasSufficientContracts(
 	try {
 		const { wiretapFundUuid, numberOfContractsSelling, clobToken } = req.validatedSellOrder
 
-		const position = await findPosition(wiretapFundUuid, clobToken)
+		const position = await findPosition(wiretapFundUuid, clobToken, numberOfContractsSelling)
 
 		if (!position) {
 			res.status(400).json({ message: "No position found for this outcome" } satisfies MessageResponse)
@@ -23,7 +23,7 @@ export default async function confirmWiretapBrokerageHasSufficientContracts(
 			return
 		}
 
-		req.validatedSellOrder.positionAverageCost = position.averageCostPerContract
+		req.validatedSellOrder.totalCostOfContractsSelling = position.totalCostOfContractsSelling
 
 		next()
 	} catch (error: unknown) {

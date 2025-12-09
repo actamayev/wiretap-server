@@ -1,15 +1,21 @@
-import isNull from "lodash/isNull"
+import { isNil } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
 
 interface Position {
     numberOfContractsHeld: number
-    averageCostPerContract: number
+    totalCostOfContractsSelling: number
 }
 
-export default async function findPosition(wiretapFundUuid: FundsUUID, clobToken: ClobTokenId): Promise<Position | null> {
+// eslint-disable-next-line max-lines-per-function
+export default async function findPosition(
+	wiretapFundUuid: FundsUUID,
+	clobToken: ClobTokenId,
+	numberOfContractsSelling: number
+): Promise<Position | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
+		// Retrieve all positions for this contract, ordered by created_at (FIFO - oldest first)
 		const positions = await prismaClient.position.findMany({
 			where: {
 				wiretap_fund_uuid: wiretapFundUuid,
@@ -18,27 +24,44 @@ export default async function findPosition(wiretapFundUuid: FundsUUID, clobToken
 			select: {
 				position_id: true,
 				number_contracts_held: true,
-				average_cost_per_contract: true
+				average_cost_per_contract: true,
+				created_at: true
+			},
+			orderBy: {
+				created_at: "asc"
 			}
 		})
 
-		if (isNull(positions)) return null
+		if (isNil(positions)) return null
 
-		if (positions.length === 0) return null
-
+		// Calculate total contracts held
 		let totalNumberOfContractsHeld = 0
-		let totalAverageCostPerContract = 0
-
 		for (const position of positions) {
 			totalNumberOfContractsHeld += position.number_contracts_held
-			totalAverageCostPerContract += position.average_cost_per_contract
 		}
 
-		const averageCostPerContract = totalAverageCostPerContract / positions.length
+		// Calculate FIFO total cost for the contracts being sold
+		let contractsRemainingToSell = numberOfContractsSelling
+		let totalCostForContractsSelling = 0
+
+		for (const position of positions) {
+			if (contractsRemainingToSell <= 0) break
+
+			const contractsToTakeFromThisPosition = Math.min(
+				position.number_contracts_held,
+				contractsRemainingToSell
+			)
+
+			const costFromThisPosition =
+				contractsToTakeFromThisPosition * position.average_cost_per_contract
+
+			totalCostForContractsSelling += costFromThisPosition
+			contractsRemainingToSell -= contractsToTakeFromThisPosition
+		}
 
 		return {
 			numberOfContractsHeld: totalNumberOfContractsHeld,
-			averageCostPerContract: averageCostPerContract as number
+			totalCostOfContractsSelling: totalCostForContractsSelling
 		} satisfies Position
 	} catch (error) {
 		console.error("Error finding position:", error)

@@ -1,11 +1,16 @@
+import { isNull } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
+import type { PrismaClient } from "../../../generated/prisma/client"
+import type * as runtime from "@prisma/client/runtime/client"
+
+type TransactionClient = Omit<PrismaClient, runtime.ITXClientDenyList>
 
 interface ExecuteSellOrderParams {
 	wiretapFundUuid: FundsUUID
 	clobToken: ClobTokenId
 	numberOfContractsSelling: number
 	pricePerContract: number
-	positionAverageCost: number
+	totalCostOfContractsSelling: number
 }
 
 interface ExecuteSellOrderResult {
@@ -30,11 +35,11 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 			clobToken,
 			numberOfContractsSelling,
 			pricePerContract,
-			positionAverageCost
+			totalCostOfContractsSelling
 		} = params
 
 		const totalProceeds = pricePerContract * numberOfContractsSelling
-		const realizedPnl = (pricePerContract - positionAverageCost) * numberOfContractsSelling
+		const realizedPnl = totalProceeds - totalCostOfContractsSelling
 
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
@@ -51,7 +56,7 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 				}
 			})
 
-			if (!fund) throw new Error(`Fund ${wiretapFundUuid} not found`)
+			if (isNull(fund)) throw new Error(`Fund ${wiretapFundUuid} not found`)
 
 			const newAccountBalance = fund.current_account_balance_usd + totalProceeds
 
@@ -80,57 +85,61 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 			})
 
 			// ============================================
-			// STEP 4: Update or Delete Position
+			// STEP 4: Update or Delete Positions (FIFO)
 			// ============================================
-			const position = await tx.position.findUnique({
+			// Get all positions ordered by created_at (FIFO - oldest first)
+			const positions = await tx.position.findMany({
 				where: {
-					wiretap_fund_uuid_clob_token: {
-						wiretap_fund_uuid: wiretapFundUuid,
-						clob_token_id: clobToken
-					}
+					wiretap_fund_uuid: wiretapFundUuid,
+					clob_token_id: clobToken
 				},
-				select: {
-					position_id: true,
-					number_contracts_held: true,
-					average_cost_per_contract: true
+				orderBy: {
+					created_at: "asc"
 				}
 			})
 
-			if (!position) {
+			if (positions.length === 0) {
 				throw new Error("Position not found (should have been validated by middleware)")
 			}
 
-			const remainingContracts = position.number_contracts_held - numberOfContractsSelling
+			// Apply FIFO: sell from oldest positions first
+			let contractsRemainingToSell = numberOfContractsSelling
 			let positionClosed = false
 
-			if (remainingContracts <= 0) {
-			// Selling all contracts - delete position
-				await tx.position.delete({
-					where: {
-						wiretap_fund_uuid_clob_token: {
-							wiretap_fund_uuid: wiretapFundUuid,
-							clob_token_id: clobToken
-						}
-					}
-				})
-				positionClosed = true
-			} else {
-			// Partial sale - update position
-				const newTotalCost = position.average_cost_per_contract * remainingContracts
+			for (const position of positions) {
+				if (contractsRemainingToSell <= 0) break
 
-				await tx.position.update({
-					where: {
-						wiretap_fund_uuid_outcome_id: {
-							wiretap_fund_uuid: wiretapFundUuid,
-							clob_token_id: clobToken
+				const contractsToSellFromThisPosition = Math.min(
+					position.number_contracts_held,
+					contractsRemainingToSell
+				)
+
+				const remainingContracts = position.number_contracts_held - contractsToSellFromThisPosition
+
+				if (remainingContracts <= 0) {
+					// Selling all contracts from this position - delete it
+					await tx.position.delete({
+						where: {
+							position_id: position.position_id
 						}
-					},
-					data: {
-						number_contracts_held: remainingContracts,
-						average_cost_per_contract: newTotalCost
-					// average_cost_per_contract stays the same (cost basis)
-					}
-				})
+					})
+					positionClosed = true
+				} else {
+					// Partial sale - update this position
+					const newTotalCost = position.average_cost_per_contract * remainingContracts
+
+					await tx.position.update({
+						where: {
+							position_id: position.position_id
+						},
+						data: {
+							number_contracts_held: remainingContracts,
+							total_cost: newTotalCost
+						}
+					})
+				}
+
+				contractsRemainingToSell -= contractsToSellFromThisPosition
 			}
 
 			return {
