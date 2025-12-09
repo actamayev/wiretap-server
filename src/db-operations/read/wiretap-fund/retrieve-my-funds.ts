@@ -51,7 +51,13 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 								outcome: true,
 								market: {
 									select: {
-										question: true
+										question: true,
+										event: {
+											select: {
+												event_slug: true,
+												image_url: true
+											}
+										}
 									}
 								}
 							}
@@ -67,7 +73,13 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 								outcome: true,
 								market: {
 									select: {
-										question: true
+										question: true,
+										event: {
+											select: {
+												event_slug: true,
+												image_url: true
+											}
+										}
 									}
 								}
 							}
@@ -117,12 +129,16 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 							transactionDate: purchaseOrder.created_at,
 							numberContractsPurchased: purchaseOrder.number_of_contracts,
 							marketQuestion: purchaseOrder.outcome.market.question,
+							polymarketSlug: purchaseOrder.outcome.market.event.event_slug as EventSlug,
+							polymarketImageUrl: purchaseOrder.outcome.market.event.image_url as string
 						})),
 						saleOrders: fund.sales_orders.map((saleOrder) => ({
 							outcome: saleOrder.outcome.outcome as OutcomeString,
 							transactionDate: saleOrder.created_at,
 							numberContractsSold: saleOrder.number_of_contracts,
 							marketQuestion: saleOrder.outcome.market.question,
+							polymarketSlug: saleOrder.outcome.market.event.event_slug as EventSlug,
+							polymarketImageUrl: saleOrder.outcome.market.event.image_url as string
 						}))
 					}
 				}

@@ -33,6 +33,8 @@ declare global {
 		outcome: OutcomeString
 		transactionDate: Date
 		marketQuestion: string | null
+		polymarketSlug: EventSlug
+		polymarketImageUrl: string
 	}
 
 	interface PurchaseOrder extends CommonTransactionFields {
