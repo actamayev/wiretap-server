@@ -1,5 +1,6 @@
 import express from "express"
 
+import { generalRateLimiter } from "../middleware/rate-limiters"
 import jwtVerifyAttachUser from "../middleware/jwt/jwt-verify-attach-user"
 import jwtVerifyAttachUserId from "../middleware/jwt/jwt-verify-attach-user-id"
 import confirmUsernameNotTaken from "../middleware/confirm/confirm-username-not-taken"
@@ -15,6 +16,7 @@ const personalInfoRoutes = express.Router()
 personalInfoRoutes.get(
 	"/personal-info",
 	jwtVerifyAttachUser,
+	generalRateLimiter,
 	getPersonalInfo
 )
 
@@ -22,6 +24,7 @@ personalInfoRoutes.post(
 	"/update-username/:username",
 	validateUpdateUsername,
 	jwtVerifyAttachUserId,
+	generalRateLimiter,
 	confirmUsernameNotTaken,
 	setUsername
 )
@@ -30,6 +33,7 @@ personalInfoRoutes.post(
 	"/change-password",
 	validateUpdateChangePassword,
 	jwtVerifyAttachUser,
+	generalRateLimiter,
 	setNewPassword
 )
 

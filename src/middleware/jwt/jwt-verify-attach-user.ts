@@ -34,6 +34,7 @@ export default async function jwtVerifyAttachUser(req: Request, res: Response, n
 		}
 
 		req.user = user
+		req.userId = userId // needed for rate limiting
 		next()
 	} catch (error) {
 		console.error("JWT verification error:", error)
