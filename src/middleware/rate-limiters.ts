@@ -3,7 +3,7 @@ import rateLimit, { ipKeyGenerator } from "express-rate-limit"
 
 export const eventsRateLimiter = rateLimit({
 	windowMs: 60 * 1000, // 1 minute
-	max: 60, // 60 requests per minute
+	max: 45, // 60 requests per minute
 	message: { error: "Too many requests." },
 	standardHeaders: true,
 	legacyHeaders: false,
@@ -16,7 +16,7 @@ export const eventsRateLimiter = rateLimit({
 
 export const generalRateLimiter = rateLimit({
 	windowMs: 60 * 1000, // 1 minute
-	max: 60, // 60 requests per minute
+	max: 45, // 60 requests per minute
 	message: { error: "Too many requests." },
 	standardHeaders: true,
 	legacyHeaders: false,
@@ -29,7 +29,7 @@ export const generalRateLimiter = rateLimit({
 
 export const authRateLimiter = rateLimit({
 	windowMs: 5 * 60 * 1000, // 5 minutes
-	max: 10, // 10 requests per 5 minutes
+	max: 20, // 20 requests per 5 minutes
 	message: { error: "Too many authentication attempts, please try again later." },
 	standardHeaders: true,
 	legacyHeaders: false,
