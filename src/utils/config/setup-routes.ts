@@ -8,14 +8,17 @@ import checkHealth from "../../controllers/health-checks/check-health"
 import internalRoutes from "../../routes/internal-routes"
 import personalInfoRoutes from "../../routes/personal-info-routes"
 import eventsRoutes from "../../routes/events-routes"
+import { authRateLimiter, eventsRateLimiter, tradingRateLimiter } from "../../middleware/rate-limiters"
 
 export default function setupRoutes(app: Express): void {
-	app.use("/auth", authRoutes)
-	app.use("/events", jwtVerifyAttachUserId, eventsRoutes)
+	app.use("/auth", authRateLimiter, authRoutes)
+
+	app.use("/events", jwtVerifyAttachUserId, eventsRateLimiter, eventsRoutes)
+	app.use("/personal-info", personalInfoRoutes)
+	app.use("/trade", jwtVerifyAttachUserId, tradingRateLimiter, tradeRoutes)
+	app.use("/funds", jwtVerifyAttachUserId, tradingRateLimiter, fundsRoutes)
+
 	app.use("/internal", internalRoutes)
 	app.use("/health", checkHealth)
 	app.use("/misc", miscRoutes)
-	app.use("/personal-info", personalInfoRoutes)
-	app.use("/trade", jwtVerifyAttachUserId, tradeRoutes)
-	app.use("/funds", jwtVerifyAttachUserId, fundsRoutes)
 }

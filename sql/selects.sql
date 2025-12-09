@@ -1,7 +1,7 @@
--- DELETE FROM credentials;
--- DELETE from login_history;
--- DELETE from wiretap_fund;
--- Select * from email_update_subscriber;
+-- SELECT * FROM credentials;
+-- SELECT * from login_history;
+-- SELECT * from wiretap_fund;
+-- Select * from email_update_subscriber order by email_update_subscriber_id;
 -- SELECT * FROM polymarket_event;
 -- SELECT * FROM polymarket_market ORDER BY market_id;
 -- SELECT * FROM polymarket_outcome order by outcome_id;
