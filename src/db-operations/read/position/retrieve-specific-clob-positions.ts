@@ -1,6 +1,8 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
+import fetchPolymarketPrice from "../../../utils/polymarket/fetch-current-price"
 
+// eslint-disable-next-line max-lines-per-function
 export default async function retrieveSpecificClobPositions(
 	wiretapFundUuid: FundsUUID,
 	clobToken: ClobTokenId
@@ -16,6 +18,8 @@ export default async function retrieveSpecificClobPositions(
 			select: {
 				clob_token_id: true,
 				number_contracts_held: true,
+				average_cost_per_contract: true,
+				created_at: true,
 				outcome: {
 					select: {
 						outcome: true,
@@ -31,12 +35,15 @@ export default async function retrieveSpecificClobPositions(
 
 		if (isNull(rawUserPositions)) return []
 
-		return rawUserPositions.map((position) => ({
+		return await Promise.all(rawUserPositions.map(async (position) => ({
 			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
 			numberOfContractsHeld: position.number_contracts_held,
-		}))
+			costBasisPerContractUsd: position.average_cost_per_contract,
+			currentMarketPricePerContractUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
+			positionCreatedAt: position.created_at
+		})))
 	} catch (error) {
 		console.error(error)
 		throw error

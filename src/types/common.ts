@@ -52,6 +52,9 @@ declare global {
 		marketQuestion: string | null
 		numberOfContractsHeld: number
 		clobToken: ClobTokenId
+		costBasisPerContractUsd: number
+		currentMarketPricePerContractUsd: number
+		positionCreatedAt: Date
 	}
 
 	interface SingleFund {
