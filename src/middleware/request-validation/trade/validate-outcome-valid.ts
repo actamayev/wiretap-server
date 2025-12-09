@@ -1,4 +1,3 @@
-import isNull from "lodash/isNull"
 import { Request, Response, NextFunction } from "express"
 import findPolymarketOutcomeById from "../../../db-operations/read/find/find-polymarket-outcome"
 
@@ -10,14 +9,7 @@ export default async function validateOutcomeValid(
 	try {
 		const { clobToken } = req.body as { clobToken: ClobTokenId }
 
-		const outcome = await findPolymarketOutcomeById(clobToken)
-
-		if (isNull(outcome)) {
-			res.status(500).json({ error: `Outcome with id ${clobToken} not found` } satisfies ErrorResponse)
-			return
-		}
-
-		const { market } = outcome
+		const { market } = await findPolymarketOutcomeById(clobToken)
 
 		if (!market.active) {
 			res.status(400).json({ message: `Market "${market.question}" is not active` } satisfies MessageResponse)

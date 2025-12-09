@@ -1,4 +1,5 @@
 import PrismaClientClass from "../../../classes/prisma-client"
+import { position } from "../../../generated/prisma/client"
 
 interface ExecuteBuyOrderParams {
 	wiretapFundUuid: FundsUUID
@@ -9,7 +10,7 @@ interface ExecuteBuyOrderParams {
 
 interface ExecuteBuyOrderResult {
 	purchaseId: number
-	positionId: number
+	position: position
 	newAccountCashBalance: number
 	totalCost: number
 }
@@ -81,7 +82,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 				}
 			})
 
-			const position = await tx.position.create({
+			const newPosition = await tx.position.create({
 				data: {
 					wiretap_fund_uuid: wiretapFundUuid,
 					clob_token_id: clobToken,
@@ -93,7 +94,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 
 			return {
 				purchaseId: purchaseOrder.purchase_id,
-				positionId: position.position_id,
+				position: newPosition,
 				newAccountCashBalance,
 				totalCost
 			}

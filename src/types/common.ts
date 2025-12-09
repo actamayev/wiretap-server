@@ -55,6 +55,8 @@ declare global {
 		costBasisPerContractUsd: number
 		currentMarketPricePerContractUsd: number
 		positionCreatedAt: Date
+		polymarketSlug: EventSlug
+		polymarketImageUrl: string
 	}
 
 	interface SingleFund {
@@ -115,10 +117,8 @@ declare global {
 
 	interface SuccessBuyOrderResponse {
 		success: "Buy order executed successfully"
-		pricePerContract: number
-		totalCost: number
+		position: SinglePosition
 		newAccountCashBalance: number
-		contractsPurchased: number
 	}
 
 	interface SuccessSellOrderResponse {
@@ -148,7 +148,7 @@ declare global {
 	}
 
 	interface SingleEventResponse {
-		event: SingleEvent | null
+		event: SingleEvent
 	}
 
 	interface SingleEvent {
