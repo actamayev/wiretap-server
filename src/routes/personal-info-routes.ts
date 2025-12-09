@@ -13,7 +13,7 @@ import getPersonalInfo from "../controllers/personal-info/get-personal-info"
 const personalInfoRoutes = express.Router()
 
 personalInfoRoutes.get(
-	"/get-personal-info",
+	"/personal-info",
 	jwtVerifyAttachUser,
 	getPersonalInfo
 )
