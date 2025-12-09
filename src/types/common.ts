@@ -132,6 +132,7 @@ declare global {
 		totalProceeds: number
 		realizedPnl: number
 		newAccountBalance: number
+		remainingPositions: SinglePosition[]
 	}
 
 	interface LoginSuccess {
