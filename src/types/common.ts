@@ -41,12 +41,14 @@ declare global {
 		outcome: OutcomeString
 		numberContractsPurchased: number
 		marketQuestion: string | null
+		totalCost: number
 	}
 
 	interface SaleOrder extends CommonTransactionFields {
 		outcome: OutcomeString
 		numberContractsSold: number
 		marketQuestion: string | null
+		totalProceeds: number
 	}
 
 	interface SinglePosition {
