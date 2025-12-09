@@ -1,12 +1,8 @@
 import PrismaClientClass from "../../../classes/prisma-client"
-import type { PrismaClient } from "../../../generated/prisma/client"
-import type * as runtime from "@prisma/client/runtime/client"
-
-type TransactionClient = Omit<PrismaClient, runtime.ITXClientDenyList>
 
 interface ExecuteBuyOrderParams {
 	wiretapFundUuid: FundsUUID
-	outcomeId: number
+	clobToken: ClobTokenId
 	numberOfContracts: number
 	pricePerContract: number
 }
@@ -26,125 +22,86 @@ interface ExecuteBuyOrderResult {
  */
 // eslint-disable-next-line max-lines-per-function
 export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Promise<ExecuteBuyOrderResult> {
-	const {
-		wiretapFundUuid,
-		outcomeId,
-		numberOfContracts,
-		pricePerContract
-	} = params
+	try {
+		const {
+			wiretapFundUuid,
+			clobToken,
+			numberOfContracts,
+			pricePerContract
+		} = params
 
-	const totalCost = pricePerContract * numberOfContracts
+		const totalCost = pricePerContract * numberOfContracts
 
-	const prismaClient = await PrismaClientClass.getPrismaClient()
+		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-	// Execute all operations in a transaction
-	// eslint-disable-next-line max-lines-per-function
-	const result = await prismaClient.$transaction(async (tx: TransactionClient) => {
+		// Execute all operations in a transaction
+		// eslint-disable-next-line max-lines-per-function
+		const result = await prismaClient.$transaction(async (tx: TransactionClient) => {
 		// ============================================
 		// STEP 1: Fetch and Validate Account Balance
 		// ============================================
-		const fund = await tx.wiretap_fund.findUnique({
-			where: { wiretap_fund_uuid: wiretapFundUuid },
-			select: {
-				current_account_balance_usd: true
-			}
-		})
-
-		if (!fund) {
-			throw new Error(`Brokerage account ${wiretapFundUuid} not found`)
-		}
-
-		const newAccountBalance = fund.current_account_balance_usd - totalCost
-
-		// Double-safety check (should already be validated by middleware)
-		if (newAccountBalance < 0) {
-			throw new Error(
-				`Insufficient funds. Balance: $${fund.current_account_balance_usd}, Required: $${totalCost}`
-			)
-		}
-
-		// ============================================
-		// STEP 2: Decrement Account Balance
-		// ============================================
-		await tx.wiretap_fund.update({
-			where: { wiretap_fund_uuid: wiretapFundUuid },
-			data: {
-				current_account_balance_usd: newAccountBalance
-			}
-		})
-
-		// ============================================
-		// STEP 3: Create Purchase Order Record
-		// ============================================
-		const purchaseOrder = await tx.purchase_order.create({
-			data: {
-				wiretap_fund_uuid: wiretapFundUuid,
-				outcome_id: outcomeId,
-				number_of_contracts: numberOfContracts,
-				price_per_contract: pricePerContract,
-				total_cost: totalCost
-			}
-		})
-
-		// ============================================
-		// STEP 4: Upsert Position
-		// ============================================
-		// Fetch existing position to calculate new values
-		const existingPosition = await tx.position.findUnique({
-			where: {
-				wiretap_fund_uuid_outcome_id: {
-					wiretap_fund_uuid: wiretapFundUuid,
-					outcome_id: outcomeId
+			const fund = await tx.wiretap_fund.findUnique({
+				where: { wiretap_fund_uuid: wiretapFundUuid },
+				select: {
+					current_account_balance_usd: true
 				}
-			},
-			select: {
-				number_contracts_held: true,
-				total_cost: true
+			})
+
+			if (!fund) throw new Error(`Brokerage account ${wiretapFundUuid} not found`)
+
+			const newAccountBalance = fund.current_account_balance_usd - totalCost
+
+			// Double-safety check (should already be validated by middleware)
+			if (newAccountBalance < 0) {
+				throw new Error(
+					`Insufficient funds. Balance: $${fund.current_account_balance_usd}, Required: $${totalCost}`
+				)
 			}
-		})
 
-		// Calculate new values based on whether position exists
-		let newTotalContracts, newTotalCost, newAverageCost
-
-		if (existingPosition) {
-			newTotalContracts = existingPosition.number_contracts_held + numberOfContracts
-			newTotalCost = existingPosition.total_cost + totalCost
-			newAverageCost = newTotalCost / newTotalContracts
-		} else {
-			newTotalContracts = numberOfContracts
-			newTotalCost = totalCost
-			newAverageCost = pricePerContract
-		}
-
-		// Single upsert operation
-		const position = await tx.position.upsert({
-			where: {
-				wiretap_fund_uuid_outcome_id: {
-					wiretap_fund_uuid: wiretapFundUuid,
-					outcome_id: outcomeId
+			// ============================================
+			// STEP 2: Decrement Account Balance
+			// ============================================
+			await tx.wiretap_fund.update({
+				where: { wiretap_fund_uuid: wiretapFundUuid },
+				data: {
+					current_account_balance_usd: newAccountBalance
 				}
-			},
-			update: {
-				number_contracts_held: newTotalContracts,
-				average_cost_per_contract: newAverageCost,
-				total_cost: newTotalCost
-			},
-			create: {
-				wiretap_fund_uuid: wiretapFundUuid,
-				outcome_id: outcomeId,
-				number_contracts_held: newTotalContracts,
-				average_cost_per_contract: newAverageCost,
-				total_cost: newTotalCost
+			})
+
+			// ============================================
+			// STEP 3: Create Purchase Order Record
+			// ============================================
+			const purchaseOrder = await tx.purchase_order.create({
+				data: {
+					wiretap_fund_uuid: wiretapFundUuid,
+					clob_token_id: clobToken,
+					number_of_contracts: numberOfContracts,
+					price_per_contract: pricePerContract,
+					total_cost: totalCost
+				}
+			})
+
+			const position = await tx.position.create({
+				data: {
+					wiretap_fund_uuid: wiretapFundUuid,
+					clob_token_id: clobToken,
+					number_contracts_held: numberOfContracts,
+					average_cost_per_contract: pricePerContract,
+					total_cost: totalCost
+				}
+			})
+
+			return {
+				purchaseId: purchaseOrder.purchase_id,
+				positionId: position.position_id,
+				newAccountBalance,
+				totalCost
 			}
 		})
 
-		return {
-			purchaseId: purchaseOrder.purchase_id,
-			positionId: position.position_id,
-			newAccountBalance,
-			totalCost
-		}
-	})
-
-	return result
+		return result
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
 }

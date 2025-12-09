@@ -1,4 +1,6 @@
+import { isEmpty } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
+import retrievePrimaryFundPositions from "../position/retrieve-primary-fund-positions"
 
 export default async function retrieveMyFunds(userId: number): Promise<SingleFund[]> {
 	try {
@@ -17,13 +19,27 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 			}
 		})
 
-		return funds.map((fund) => ({
+		if (isEmpty(funds)) return []
+
+		const primaryFund = funds.find((fund) => fund.is_primary_fund)
+
+		const transformedFunds: SingleFund[] = funds.map((fund) => ({
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
 			startingAccountBalanceUsd: fund.starting_account_balance_usd,
 			currentAccountBalanceUsd: fund.current_account_balance_usd,
 			isPrimaryFund: fund.is_primary_fund
 		}))
+
+		if (primaryFund) {
+			const positions = await retrievePrimaryFundPositions(primaryFund.wiretap_fund_uuid as FundsUUID)
+			const primaryFundIndex = transformedFunds.findIndex((fund) => fund.isPrimaryFund)
+			if (primaryFundIndex !== -1) {
+				transformedFunds[primaryFundIndex].positions = positions
+			}
+		}
+
+		return transformedFunds
 	} catch (error) {
 		console.error(error)
 		throw error

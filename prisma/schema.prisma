@@ -134,10 +134,9 @@ model polymarket_market {
 
 // Outcomes table - one row per tradeable outcome token
 model polymarket_outcome {
-	outcome_id                  								Int       @id @default(autoincrement())
+	clob_token_id               								String    @id
 	market_id                   								Int
 
-	clob_token_id               								String    @unique // The specific tradeable token ID
 	outcome                     								String    // "Yes", "No", "Trump", "Harris", etc
 	outcome_index               								Int       // Position in outcomes array (0, 1, 2...)
 
@@ -159,13 +158,12 @@ model polymarket_outcome {
 
 	@@unique([market_id, outcome_index])
 	@@index([market_id])
-	@@index([clob_token_id])
 }
 
 // Position - references specific outcome
 model position {
 	position_id                 								Int       @id @default(autoincrement())
-	outcome_id                  								Int
+	clob_token_id                  								String
 
 	number_contracts_held       								Float
 	average_cost_per_contract   								Float
@@ -176,16 +174,15 @@ model position {
 	updated_at                  								DateTime  @default(now()) @updatedAt
 
 	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
-	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
+	outcome                     								polymarket_outcome @relation(fields: [clob_token_id], references: [clob_token_id])
 
-	@@unique([wiretap_fund_uuid, outcome_id])
 	@@index([wiretap_fund_uuid])
 }
 
 // Purchase order - references specific outcome
 model purchase_order {
 	purchase_id                 								Int       @id @default(autoincrement())
-	outcome_id                  								Int
+	clob_token_id                  								String
 
 	number_of_contracts         								Float
 	price_per_contract          								Float
@@ -201,16 +198,16 @@ model purchase_order {
 	updated_at                  								DateTime  @default(now()) @updatedAt
 
 	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
-	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
+	outcome                     								polymarket_outcome @relation(fields: [clob_token_id], references: [clob_token_id])
 
 	@@index([wiretap_fund_uuid])
-	@@index([outcome_id])
+	@@index([clob_token_id])
 }
 
 // Sale order - references specific outcome
 model sale_order {
 	sale_id                     								Int       @id @default(autoincrement())
-	outcome_id                  								Int
+	clob_token_id                  								String
 
 	number_of_contracts         								Float
 	price_per_contract          								Float
@@ -227,10 +224,10 @@ model sale_order {
 	updated_at                  								DateTime  @default(now()) @updatedAt
 
 	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
-	outcome                     								polymarket_outcome @relation(fields: [outcome_id], references: [outcome_id])
+	outcome                     								polymarket_outcome @relation(fields: [clob_token_id], references: [clob_token_id])
 
 	@@index([wiretap_fund_uuid])
-	@@index([outcome_id])
+	@@index([clob_token_id])
 }
 
 model portfolio_snapshot {

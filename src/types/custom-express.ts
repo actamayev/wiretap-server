@@ -6,7 +6,6 @@ declare global {
 			user: ExtendedCredentials
 			eventId: EventId
 
-			clobTokenId: string
 			validatedBuyOrder: ValidatedBuyOrder
 			validatedSellOrder: ValidatedSellOrder
 		}

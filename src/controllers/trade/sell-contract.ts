@@ -1,18 +1,21 @@
 import { Response, Request } from "express"
 import executeSellOrder from "../../db-operations/write/simultaneous-writes/execute-sell-order"
+import retrieveSpecificClobPositions from "../../db-operations/read/position/retrieve-specific-clob-positions"
 
 export default async function sellContract(req: Request, res: Response): Promise<void> {
 	try {
-		const { wiretapFundUuid, outcomeId, numberOfContractsSelling, currentPrice, positionAverageCost } = req.validatedSellOrder
+		const { wiretapFundUuid, clobToken, numberOfContractsSelling, currentPrice, totalCostOfContractsSelling } = req.validatedSellOrder
 
 		// Execute sell order in database transaction
 		const result = await executeSellOrder({
 			wiretapFundUuid,
-			outcomeId,
+			clobToken,
 			numberOfContractsSelling,
 			pricePerContract: currentPrice,
-			positionAverageCost
+			totalCostOfContractsSelling
 		})
+
+		const remainingPositions = await retrieveSpecificClobPositions(wiretapFundUuid, clobToken)
 
 		res.status(200).json({
 			success: "Sell order executed successfully",
@@ -22,7 +25,8 @@ export default async function sellContract(req: Request, res: Response): Promise
 			pricePerContract: currentPrice,
 			totalProceeds: result.totalProceeds,
 			realizedPnl: result.realizedPnl,
-			newAccountBalance: result.newAccountBalance
+			newAccountBalance: result.newAccountBalance,
+			remainingPositions
 		} satisfies SuccessSellOrderResponse)
 		return
 	} catch (error: unknown) {

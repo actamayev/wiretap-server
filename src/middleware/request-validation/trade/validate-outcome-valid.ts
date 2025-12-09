@@ -8,12 +8,12 @@ export default async function validateOutcomeValid(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { outcomeId } = req.body as { outcomeId: number }
+		const { clobToken } = req.body as { clobToken: ClobTokenId }
 
-		const outcome = await findPolymarketOutcomeById(outcomeId)
+		const outcome = await findPolymarketOutcomeById(clobToken)
 
 		if (isNull(outcome)) {
-			res.status(500).json({ error: `Outcome with id ${outcomeId} not found` } satisfies ErrorResponse)
+			res.status(500).json({ error: `Outcome with id ${clobToken} not found` } satisfies ErrorResponse)
 			return
 		}
 
@@ -33,8 +33,6 @@ export default async function validateOutcomeValid(
 			res.status(400).json({ message: `Market "${market.question}" is not accepting orders` } satisfies MessageResponse)
 			return
 		}
-
-		req.clobTokenId = outcome.clob_token_id
 
 		next()
 	} catch (error: unknown) {

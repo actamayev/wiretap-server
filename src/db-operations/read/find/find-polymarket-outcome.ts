@@ -1,8 +1,7 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
 interface PolymarketOutcome {
-	outcome_id: number
-	clob_token_id: string
+	clob_token_id: ClobTokenId
 	market: {
 		market_id: number
 		condition_id: string
@@ -13,14 +12,13 @@ interface PolymarketOutcome {
 	}
 }
 
-export default async function findPolymarketOutcomeById(outcomeId: number): Promise<PolymarketOutcome | null> {
+export default async function findPolymarketOutcomeById(clobToken: ClobTokenId): Promise<PolymarketOutcome | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		return await prismaClient.polymarket_outcome.findUnique({
-			where: { outcome_id: outcomeId },
+		const outcome = await prismaClient.polymarket_outcome.findUnique({
+			where: { clob_token_id: clobToken },
 			select: {
-				outcome_id: true,
 				clob_token_id: true,
 				market: {
 					select: {
@@ -34,6 +32,13 @@ export default async function findPolymarketOutcomeById(outcomeId: number): Prom
 				}
 			}
 		})
+
+		if (!outcome) return null
+
+		return {
+			clob_token_id: outcome.clob_token_id as ClobTokenId,
+			market: outcome.market
+		} satisfies PolymarketOutcome
 	} catch (error) {
 		console.error("Error finding user by Id:", error)
 		throw error
