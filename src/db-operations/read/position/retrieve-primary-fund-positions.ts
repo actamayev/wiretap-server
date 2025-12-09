@@ -28,6 +28,7 @@ export default async function retrievePrimaryFundPositions(wiretapFundUuid: Fund
 		if (isNull(rawUserPositions)) return []
 
 		return rawUserPositions.map((position) => ({
+			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
 			numberOfContractsHeld: position.number_contracts_held,

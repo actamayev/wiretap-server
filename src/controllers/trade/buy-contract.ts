@@ -17,7 +17,8 @@ export default async function buyContract(req: Request, res: Response): Promise<
 			success: "Buy order executed successfully",
 			pricePerContract: currentPrice,
 			totalCost: result.totalCost,
-			newAccountBalance: result.newAccountBalance
+			newAccountBalance: result.newAccountBalance,
+			contractsPurchased: numberOfContractsPurchasing
 		} satisfies SuccessBuyOrderResponse)
 		return
 	} catch (error: unknown) {

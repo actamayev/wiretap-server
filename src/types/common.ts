@@ -51,6 +51,7 @@ declare global {
 		outcome: OutcomeString
 		marketQuestion: string | null
 		numberOfContractsHeld: number
+		clobToken: ClobTokenId
 	}
 
 	interface SingleFund {
@@ -119,6 +120,7 @@ declare global {
 		pricePerContract: number
 		totalCost: number
 		newAccountBalance: number
+		contractsPurchased: number
 	}
 
 	interface SuccessSellOrderResponse {
