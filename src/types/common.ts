@@ -57,6 +57,7 @@ declare global {
 	interface SingleFund {
 		fundUUID: FundsUUID
 		fundName: string
+		fundCreatedAt: Date
 		startingAccountCashBalanceUsd: number
 		currentAccountCashBalanceUsd: number
 		isPrimaryFund: boolean

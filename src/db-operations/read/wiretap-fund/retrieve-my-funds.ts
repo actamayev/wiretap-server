@@ -17,6 +17,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				starting_account_balance_usd: true,
 				current_account_balance_usd: true,
 				is_primary_fund: true,
+				created_at: true,
 				positions: {
 					select: {
 						clob_token_id: true,
@@ -73,6 +74,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 		const transformedFunds: SingleFund[] = funds.map((fund) => ({
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
+			fundCreatedAt: fund.created_at,
 			startingAccountCashBalanceUsd: fund.starting_account_balance_usd,
 			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
 			isPrimaryFund: fund.is_primary_fund,
