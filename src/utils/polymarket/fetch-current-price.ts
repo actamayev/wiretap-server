@@ -5,7 +5,7 @@ interface PolymarketMidpointResponse {
 	price?: string
 }
 
-export default async function fetchPolymarketPrice(clobTokenId: string): Promise<number | null> {
+export default async function fetchPolymarketPrice(clobTokenId: ClobTokenId): Promise<number | null> {
 	try {
 		const midpointUrl = `https://clob.polymarket.com/midpoint?token_id=${clobTokenId}`
 

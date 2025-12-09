@@ -17,7 +17,7 @@ export default async function buyContract(req: Request, res: Response): Promise<
 			success: "Buy order executed successfully",
 			pricePerContract: currentPrice,
 			totalCost: result.totalCost,
-			newAccountBalance: result.newAccountBalance,
+			newAccountCashBalance: result.newAccountCashBalance,
 			contractsPurchased: numberOfContractsPurchasing
 		} satisfies SuccessBuyOrderResponse)
 		return

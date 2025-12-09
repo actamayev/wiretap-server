@@ -1,7 +1,8 @@
 import { isEmpty } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
-import retrievePrimaryFundPositions from "../position/retrieve-primary-fund-positions"
+import calculatePortfolioValue from "../../../utils/calculate-portfolio-value"
 
+// eslint-disable-next-line max-lines-per-function
 export default async function retrieveMyFunds(userId: number): Promise<SingleFund[]> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
@@ -15,29 +16,51 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				fund_name: true,
 				starting_account_balance_usd: true,
 				current_account_balance_usd: true,
-				is_primary_fund: true
+				is_primary_fund: true,
+				positions: {
+					select: {
+						clob_token_id: true,
+						number_contracts_held: true,
+						outcome: {
+							select: {
+								outcome: true,
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		})
 
 		if (isEmpty(funds)) return []
 
-		const primaryFund = funds.find((fund) => fund.is_primary_fund)
-
 		const transformedFunds: SingleFund[] = funds.map((fund) => ({
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
-			startingAccountBalanceUsd: fund.starting_account_balance_usd,
-			currentAccountBalanceUsd: fund.current_account_balance_usd,
-			isPrimaryFund: fund.is_primary_fund
+			startingAccountCashBalanceUsd: fund.starting_account_balance_usd,
+			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
+			isPrimaryFund: fund.is_primary_fund,
+			positionsValueUsd: 0,
+			positions: fund.positions.map((position) => ({
+				clobToken: position.clob_token_id as ClobTokenId,
+				outcome: position.outcome.outcome as OutcomeString,
+				marketQuestion: position.outcome.market.question,
+				numberOfContractsHeld: position.number_contracts_held,
+			}))
 		}))
 
-		if (primaryFund) {
-			const positions = await retrievePrimaryFundPositions(primaryFund.wiretap_fund_uuid as FundsUUID)
-			const primaryFundIndex = transformedFunds.findIndex((fund) => fund.isPrimaryFund)
-			if (primaryFundIndex !== -1) {
-				transformedFunds[primaryFundIndex].positions = positions
-			}
-		}
+		// Calculate portfolio value for each fund in parallel
+		const portfolioValues = await Promise.all(
+			transformedFunds.map((fund) => calculatePortfolioValue(fund.positions))
+		)
+
+		transformedFunds.forEach((fund, index) => {
+			fund.positionsValueUsd = portfolioValues[index]
+		})
 
 		return transformedFunds
 	} catch (error) {

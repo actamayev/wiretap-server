@@ -57,10 +57,11 @@ declare global {
 	interface SingleFund {
 		fundUUID: FundsUUID
 		fundName: string
-		startingAccountBalanceUsd: number
-		currentAccountBalanceUsd: number
+		startingAccountCashBalanceUsd: number
+		currentAccountCashBalanceUsd: number
 		isPrimaryFund: boolean
-		positions?: SinglePosition[]
+		positionsValueUsd: number
+		positions: SinglePosition[]
 	}
 
 	interface PositionsResponse {
@@ -119,7 +120,7 @@ declare global {
 		success: "Buy order executed successfully"
 		pricePerContract: number
 		totalCost: number
-		newAccountBalance: number
+		newAccountCashBalance: number
 		contractsPurchased: number
 	}
 
@@ -131,7 +132,7 @@ declare global {
 		pricePerContract: number
 		totalProceeds: number
 		realizedPnl: number
-		newAccountBalance: number
+		newAccountCashBalance: number
 		remainingPositions: SinglePosition[]
 	}
 
@@ -142,7 +143,7 @@ declare global {
 
 	interface IncomingCreateFundRequest {
 		fundName: string
-		startingAccountBalanceUsd: number
+		startingAccountCashBalanceUsd: number
 	}
 
 	interface AllEventsResponse {

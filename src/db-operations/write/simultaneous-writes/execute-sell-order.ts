@@ -15,7 +15,7 @@ interface ExecuteSellOrderParams {
 
 interface ExecuteSellOrderResult {
 	saleId: number
-	newAccountBalance: number
+	newAccountCashBalance: number
 	totalProceeds: number
 	positionClosed: boolean
 	realizedPnl: number
@@ -58,7 +58,7 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 
 			if (isNull(fund)) throw new Error(`Fund ${wiretapFundUuid} not found`)
 
-			const newAccountBalance = fund.current_account_balance_usd + totalProceeds
+			const newAccountCashBalance = fund.current_account_balance_usd + totalProceeds
 
 			// ============================================
 			// STEP 2: Increment Account Balance
@@ -66,7 +66,7 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 			await tx.wiretap_fund.update({
 				where: { wiretap_fund_uuid: wiretapFundUuid },
 				data: {
-					current_account_balance_usd: newAccountBalance
+					current_account_balance_usd: newAccountCashBalance
 				}
 			})
 
@@ -144,7 +144,7 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 
 			return {
 				saleId: saleOrder.sale_id,
-				newAccountBalance,
+				newAccountCashBalance,
 				totalProceeds,
 				realizedPnl,
 				positionClosed

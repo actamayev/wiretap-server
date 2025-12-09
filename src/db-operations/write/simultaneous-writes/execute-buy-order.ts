@@ -10,7 +10,7 @@ interface ExecuteBuyOrderParams {
 interface ExecuteBuyOrderResult {
 	purchaseId: number
 	positionId: number
-	newAccountBalance: number
+	newAccountCashBalance: number
 	totalCost: number
 }
 
@@ -49,10 +49,10 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 
 			if (!fund) throw new Error(`Brokerage account ${wiretapFundUuid} not found`)
 
-			const newAccountBalance = fund.current_account_balance_usd - totalCost
+			const newAccountCashBalance = fund.current_account_balance_usd - totalCost
 
 			// Double-safety check (should already be validated by middleware)
-			if (newAccountBalance < 0) {
+			if (newAccountCashBalance < 0) {
 				throw new Error(
 					`Insufficient funds. Balance: $${fund.current_account_balance_usd}, Required: $${totalCost}`
 				)
@@ -64,7 +64,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 			await tx.wiretap_fund.update({
 				where: { wiretap_fund_uuid: wiretapFundUuid },
 				data: {
-					current_account_balance_usd: newAccountBalance
+					current_account_balance_usd: newAccountCashBalance
 				}
 			})
 
@@ -94,7 +94,7 @@ export default async function executeBuyOrder(params: ExecuteBuyOrderParams): Pr
 			return {
 				purchaseId: purchaseOrder.purchase_id,
 				positionId: position.position_id,
-				newAccountBalance,
+				newAccountCashBalance,
 				totalCost
 			}
 		})
