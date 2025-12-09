@@ -60,7 +60,8 @@ declare global {
 		startingAccountCashBalanceUsd: number
 		currentAccountCashBalanceUsd: number
 		isPrimaryFund: boolean
-		positions?: SinglePosition[]
+		positionsValueUsd: number
+		positions: SinglePosition[]
 	}
 
 	interface PositionsResponse {

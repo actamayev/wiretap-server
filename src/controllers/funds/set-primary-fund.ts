@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import updatePrimaryFund from "../../db-operations/read/wiretap-fund/update-primary-fund"
-import retrievePrimaryFundPositions from "../../db-operations/read/position/retrieve-primary-fund-positions"
+import retrieveFundPositions from "../../db-operations/read/position/retrieve-fund-positions"
 
 export default async function setPrimaryFund(req: Request, res: Response): Promise<Response> {
 	try {
@@ -11,7 +11,7 @@ export default async function setPrimaryFund(req: Request, res: Response): Promi
 		await updatePrimaryFund(userId, wiretapFundUuid)
 
 		if (needsPositions) {
-			const positions = await retrievePrimaryFundPositions(wiretapFundUuid)
+			const positions = await retrieveFundPositions(wiretapFundUuid)
 			return res.status(200).json({ positions } satisfies PositionsResponse)
 		}
 

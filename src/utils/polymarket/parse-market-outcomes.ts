@@ -6,7 +6,7 @@ export function parseMarketOutcomes(market: PolymarketMarket): ParsedOutcome[] {
 	  }
 
 	  const outcomes: string[] = JSON.parse(market.outcomes)
-	  const clobTokenIds: string[] = JSON.parse(market.clobTokenIds)
+	  const clobTokenIds: ClobTokenId[] = JSON.parse(market.clobTokenIds)
 	  const outcomePrices: string[] = JSON.parse(market.outcomePrices)
 
 	  if (outcomes.length !== 2) {
@@ -21,7 +21,7 @@ export function parseMarketOutcomes(market: PolymarketMarket): ParsedOutcome[] {
 			clobTokenId: clobTokenIds[index],
 			outcome: outcome,
 			outcomeIndex: index,
-			currentPrice: outcomePrices[index] ? parseFloat(outcomePrices[index]) : null
+			currentPrice: outcomePrices[index] ? parseFloat(outcomePrices[index]) : null,
 	  }))
 
 	} catch (error) {

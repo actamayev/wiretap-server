@@ -1,5 +1,7 @@
 import { isNull } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
+import retrieveFundPositions from "../position/retrieve-fund-positions"
+import calculatePortfolioValue from "../../../utils/calculate-portfolio-value"
 
 export default async function retrieveSingleFund(userId: number, wiretapFundUuid: FundsUUID): Promise<SingleFund | null> {
 	try {
@@ -20,12 +22,18 @@ export default async function retrieveSingleFund(userId: number, wiretapFundUuid
 
 		if (isNull(fund)) return null
 
+		const positions = await retrieveFundPositions(fund.wiretap_fund_uuid as FundsUUID)
+
+		const positionsValueUsd = await calculatePortfolioValue(positions)
+
 		return {
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
 			startingAccountCashBalanceUsd: fund.starting_account_balance_usd,
 			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
-			isPrimaryFund: fund.is_primary_fund
+			isPrimaryFund: fund.is_primary_fund,
+			positionsValueUsd,
+			positions
 		}
 	} catch (error) {
 		console.error(error)

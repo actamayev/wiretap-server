@@ -1,7 +1,9 @@
 import { isEmpty } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
-import retrievePrimaryFundPositions from "../position/retrieve-primary-fund-positions"
+import retrieveFundPositions from "../position/retrieve-fund-positions"
+import calculatePortfolioValue from "../../../utils/calculate-portfolio-value"
 
+// eslint-disable-next-line max-lines-per-function
 export default async function retrieveMyFunds(userId: number): Promise<SingleFund[]> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
@@ -21,23 +23,29 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 
 		if (isEmpty(funds)) return []
 
-		const primaryFund = funds.find((fund) => fund.is_primary_fund)
-
 		const transformedFunds: SingleFund[] = funds.map((fund) => ({
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
 			startingAccountCashBalanceUsd: fund.starting_account_balance_usd,
 			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
-			isPrimaryFund: fund.is_primary_fund
+			isPrimaryFund: fund.is_primary_fund,
+			positionsValueUsd: 0,
+			positions: []
 		}))
 
-		if (primaryFund) {
-			const positions = await retrievePrimaryFundPositions(primaryFund.wiretap_fund_uuid as FundsUUID)
-			const primaryFundIndex = transformedFunds.findIndex((fund) => fund.isPrimaryFund)
-			if (primaryFundIndex !== -1) {
-				transformedFunds[primaryFundIndex].positions = positions
-			}
-		}
+		const allPositions = await Promise.all(
+			transformedFunds.map((fund) => retrieveFundPositions(fund.fundUUID))
+		)
+
+		// Calculate portfolio value for each fund in parallel
+		const portfolioValues = await Promise.all(
+			allPositions.map((positions) => calculatePortfolioValue(positions))
+		)
+
+		transformedFunds.forEach((fund, index) => {
+			fund.positions = allPositions[index]
+			fund.positionsValueUsd = portfolioValues[index]
+		})
 
 		return transformedFunds
 	} catch (error) {
