@@ -7,9 +7,9 @@ import validateOutcomeValid from "../middleware/request-validation/trade/validat
 import validateSellContract from "../middleware/request-validation/trade/validate-sell-contract"
 import validateBuyOrderAndFetchPrice from "../middleware/request-validation/trade/validate-buy-order-and-fetch-price"
 import validateSellOrderAndFetchPrice from "../middleware/request-validation/trade/validate-sell-order-and-fetch-price"
+import validateWiretapFundUuidInParams from "../middleware/request-validation/validate-wiretap-brokerage-account-id-in-params"
 import confirmUserHasSufficientFundsToPurchaseContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-funds"
 import confirmWiretapBrokerageHasSufficientContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-contracts"
-import validateWiretapFundUuidInParams from "../middleware/request-validation/validate-wiretap-brokerage-account-id-in-params"
 
 import buyContract from "../controllers/trade/buy-contract"
 import sellContract from "../controllers/trade/sell-contract"

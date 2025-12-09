@@ -3,12 +3,12 @@ import executeBuyOrder from "../../db-operations/write/simultaneous-writes/execu
 
 export default async function buyContract(req: Request, res: Response): Promise<void> {
 	try {
-		const { wiretapFundUuid, outcomeId, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
+		const { wiretapFundUuid, clobToken, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
 
 		// Execute buy order in database transaction
 		const result = await executeBuyOrder({
 			wiretapFundUuid,
-			outcomeId,
+			clobToken,
 			numberOfContracts: numberOfContractsPurchasing,
 			pricePerContract: currentPrice
 		})
@@ -17,7 +17,8 @@ export default async function buyContract(req: Request, res: Response): Promise<
 			success: "Buy order executed successfully",
 			pricePerContract: currentPrice,
 			totalCost: result.totalCost,
-			newAccountBalance: result.newAccountBalance
+			newAccountBalance: result.newAccountBalance,
+			contractsPurchased: numberOfContractsPurchasing
 		} satisfies SuccessBuyOrderResponse)
 		return
 	} catch (error: unknown) {

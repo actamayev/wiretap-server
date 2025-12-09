@@ -14,6 +14,7 @@ function isBinaryMarket(market: PolymarketMarket): boolean {
 }
 
 function hasMinimumVolume(event: PolymarketEvent): boolean {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	return (event.volume ?? 0) >= MINIMUM_VOLUME
 }
 

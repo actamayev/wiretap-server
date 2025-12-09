@@ -1,7 +1,7 @@
 declare global {
 	interface TradeOrder {
 		wiretapFundUuid: FundsUUID
-		outcomeId: number
+		clobToken: ClobTokenId
 		currentPrice: number
 	}
 
@@ -11,7 +11,7 @@ declare global {
 
 	interface ValidatedSellOrder extends TradeOrder {
 		numberOfContractsSelling: number
-		positionAverageCost: number
+		totalCostOfContractsSelling: number
 	}
 }
 

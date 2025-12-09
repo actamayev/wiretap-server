@@ -1,27 +1,23 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
 
-export default async function retrieveAllPositions(wiretapFundUuid: FundsUUID): Promise<SinglePosition[] | []> {
+export default async function retrievePrimaryFundPositions(wiretapFundUuid: FundsUUID): Promise<SinglePosition[]> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		const rawUserPositions = await prismaClient.wiretap_fund.findUnique({
+		const rawUserPositions = await prismaClient.position.findMany({
 			where: {
 				wiretap_fund_uuid: wiretapFundUuid
 			},
 			select: {
-				positions: {
+				clob_token_id: true,
+				number_contracts_held: true,
+				outcome: {
 					select: {
-						outcome_id: true,
-						number_contracts_held: true,
-						outcome: {
+						outcome: true,
+						market: {
 							select: {
-								outcome: true,
-								market: {
-									select: {
-										question: true
-									}
-								}
+								question: true
 							}
 						}
 					}
@@ -31,7 +27,8 @@ export default async function retrieveAllPositions(wiretapFundUuid: FundsUUID): 
 
 		if (isNull(rawUserPositions)) return []
 
-		return rawUserPositions.positions.map((position) => ({
+		return rawUserPositions.map((position) => ({
+			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
 			numberOfContractsHeld: position.number_contracts_held,

@@ -22,6 +22,7 @@ declare global {
 	type EventSlug = string & { readonly __brand: unique symbol }
 	type MarketId = number & { readonly __brand: unique symbol }
 	type OutcomeString = string & { readonly __brand: unique symbol }
+	type ClobTokenId = string & { readonly __brand: unique symbol }
 
 	interface TransactionResponse {
 		purchaseOrders: PurchaseOrder[]
@@ -50,6 +51,7 @@ declare global {
 		outcome: OutcomeString
 		marketQuestion: string | null
 		numberOfContractsHeld: number
+		clobToken: ClobTokenId
 	}
 
 	interface SingleFund {
@@ -58,6 +60,7 @@ declare global {
 		startingAccountBalanceUsd: number
 		currentAccountBalanceUsd: number
 		isPrimaryFund: boolean
+		positions?: SinglePosition[]
 	}
 
 	interface PositionsResponse {
@@ -117,6 +120,7 @@ declare global {
 		pricePerContract: number
 		totalCost: number
 		newAccountBalance: number
+		contractsPurchased: number
 	}
 
 	interface SuccessSellOrderResponse {
@@ -128,6 +132,7 @@ declare global {
 		totalProceeds: number
 		realizedPnl: number
 		newAccountBalance: number
+		remainingPositions: SinglePosition[]
 	}
 
 	interface LoginSuccess {
@@ -160,6 +165,7 @@ declare global {
 		eventUpdatedAt: Date
 		eventMarkets: SingleMarket[]
 		eventTotalVolume: number
+		eventEndDate: Date
 	}
 
 	interface SingleMarket {
@@ -168,6 +174,7 @@ declare global {
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
 		lastTradePrice: number | null
+		clobTokens: [ClobTokenId, ClobTokenId]
 	}
 }
 
