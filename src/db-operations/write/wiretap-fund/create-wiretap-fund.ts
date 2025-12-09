@@ -1,6 +1,10 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
-export default async function createWiretapFund(userId: number, fundName: string, startingAccountBalanceUsd: number): Promise<FundsUUID> {
+export default async function createWiretapFund(
+	userId: number,
+	fundName: string,
+	startingAccountCashBalanceUsd: number
+): Promise<FundsUUID> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
@@ -11,8 +15,8 @@ export default async function createWiretapFund(userId: number, fundName: string
 				user_id: userId,
 				wiretap_fund_uuid: uuid,
 				fund_name: fundName,
-				starting_account_balance_usd: startingAccountBalanceUsd,
-				current_account_balance_usd: startingAccountBalanceUsd
+				starting_account_balance_usd: startingAccountCashBalanceUsd,
+				current_account_balance_usd: startingAccountCashBalanceUsd
 			}
 		})
 

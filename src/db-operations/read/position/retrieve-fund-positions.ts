@@ -1,7 +1,7 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
 
-export default async function retrievePrimaryFundPositions(wiretapFundUuid: FundsUUID): Promise<SinglePosition[]> {
+export default async function retrieveFundPositions(wiretapFundUuid: FundsUUID): Promise<SinglePosition[]> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
