@@ -1,6 +1,5 @@
 import { isEmpty } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
-import retrieveFundPositions from "../position/retrieve-fund-positions"
 import calculatePortfolioValue from "../../../utils/calculate-portfolio-value"
 
 // eslint-disable-next-line max-lines-per-function
@@ -17,7 +16,23 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				fund_name: true,
 				starting_account_balance_usd: true,
 				current_account_balance_usd: true,
-				is_primary_fund: true
+				is_primary_fund: true,
+				positions: {
+					select: {
+						clob_token_id: true,
+						number_contracts_held: true,
+						outcome: {
+							select: {
+								outcome: true,
+								market: {
+									select: {
+										question: true
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		})
 
@@ -30,20 +45,20 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
 			isPrimaryFund: fund.is_primary_fund,
 			positionsValueUsd: 0,
-			positions: []
+			positions: fund.positions.map((position) => ({
+				clobToken: position.clob_token_id as ClobTokenId,
+				outcome: position.outcome.outcome as OutcomeString,
+				marketQuestion: position.outcome.market.question,
+				numberOfContractsHeld: position.number_contracts_held,
+			}))
 		}))
-
-		const allPositions = await Promise.all(
-			transformedFunds.map((fund) => retrieveFundPositions(fund.fundUUID))
-		)
 
 		// Calculate portfolio value for each fund in parallel
 		const portfolioValues = await Promise.all(
-			allPositions.map((positions) => calculatePortfolioValue(positions))
+			transformedFunds.map((fund) => calculatePortfolioValue(fund.positions))
 		)
 
 		transformedFunds.forEach((fund, index) => {
-			fund.positions = allPositions[index]
 			fund.positionsValueUsd = portfolioValues[index]
 		})
 
