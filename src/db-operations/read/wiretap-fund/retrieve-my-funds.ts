@@ -26,8 +26,8 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 		const transformedFunds: SingleFund[] = funds.map((fund) => ({
 			fundUUID: fund.wiretap_fund_uuid as FundsUUID,
 			fundName: fund.fund_name,
-			startingAccountBalanceUsd: fund.starting_account_balance_usd,
-			currentAccountBalanceUsd: fund.current_account_balance_usd,
+			startingAccountCashBalanceUsd: fund.starting_account_balance_usd,
+			currentAccountCashBalanceUsd: fund.current_account_balance_usd,
 			isPrimaryFund: fund.is_primary_fund
 		}))
 

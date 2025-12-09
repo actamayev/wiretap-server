@@ -4,9 +4,9 @@ import createWiretapFund from "../../db-operations/write/wiretap-fund/create-wir
 export default async function createFund(req: Request, res: Response): Promise<Response> {
 	try {
 		const { userId } = req
-		const { fundName, startingAccountBalanceUsd } = req.body.fundInformation as IncomingCreateFundRequest
+		const { fundName, startingAccountCashBalanceUsd } = req.body.fundInformation as IncomingCreateFundRequest
 
-		const newFundUUID = await createWiretapFund(userId, fundName, startingAccountBalanceUsd)
+		const newFundUUID = await createWiretapFund(userId, fundName, startingAccountCashBalanceUsd)
 
 		return res.status(200).json({ fundUUID: newFundUUID } satisfies CreateFundResponse)
 	} catch (error) {

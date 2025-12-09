@@ -25,8 +25,8 @@ export default async function sellContract(req: Request, res: Response): Promise
 			pricePerContract: currentPrice,
 			totalProceeds: result.totalProceeds,
 			realizedPnl: result.realizedPnl,
-			newAccountBalance: result.newAccountBalance,
-			remainingPositions
+			newAccountCashBalance: result.newAccountCashBalance,
+			remainingPositions: remainingPositions
 		} satisfies SuccessSellOrderResponse)
 		return
 	} catch (error: unknown) {
