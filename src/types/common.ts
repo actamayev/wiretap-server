@@ -125,6 +125,13 @@ declare global {
 		newAccountCashBalance: number
 	}
 
+	interface PolymarketOutcomeDataForTrade {
+		outcome: OutcomeString
+		marketQuestion: string | null
+		polymarketSlug: EventSlug
+		polymarketImageUrl: string
+	}
+
 	interface SuccessSellOrderResponse {
 		success: "Sell order executed successfully"
 		saleId: number
@@ -135,6 +142,7 @@ declare global {
 		realizedPnl: number
 		newAccountCashBalance: number
 		remainingPositions: SinglePosition[]
+		outcomeData: PolymarketOutcomeDataForTrade
 	}
 
 	interface LoginSuccess {

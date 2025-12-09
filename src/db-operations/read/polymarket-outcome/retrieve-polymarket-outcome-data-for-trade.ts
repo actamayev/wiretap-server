@@ -1,13 +1,6 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
-interface PolymarketOutcomeDataForPurchase {
-	outcome: OutcomeString
-	marketQuestion: string | null
-	polymarketSlug: EventSlug
-	polymarketImageUrl: string
-}
-
-export default async function retrievePolymarketOutcomeDataForPurchase(clobToken: ClobTokenId): Promise<PolymarketOutcomeDataForPurchase> {
+export default async function retrievePolymarketOutcomeDataForTrade(clobToken: ClobTokenId): Promise<PolymarketOutcomeDataForTrade> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
@@ -34,7 +27,7 @@ export default async function retrievePolymarketOutcomeDataForPurchase(clobToken
 			marketQuestion: outcome.market.question,
 			polymarketSlug: outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: outcome.market.event.image_url as string
-		} satisfies PolymarketOutcomeDataForPurchase
+		} satisfies PolymarketOutcomeDataForTrade
 	} catch (error) {
 		console.error("Error finding user by Id:", error)
 		throw error
