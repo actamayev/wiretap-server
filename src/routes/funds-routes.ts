@@ -5,11 +5,11 @@ import confirmWiretapFundIdExistsAndValidId
 import validateRenameFundRequest from "../middleware/request-validation/funds/validate-rename-fund"
 import validateCreateFundRequest from "../middleware/request-validation/funds/validate-create-fund-request"
 import validateWiretapFundIdInParams from "../middleware/request-validation/validate-wiretap-brokerage-account-id-in-params"
+import validateSetPrimaryFundRequest from "../middleware/request-validation/funds/validate-set-primary-funds-request"
 
 import renameFund from "../controllers/funds/rename-fund"
 import createFund from "../controllers/funds/create-fund"
 import getMyFunds from "../controllers/funds/get-my-funds"
-import getAllPositions from "../controllers/funds/get-all-positions"
 import getAllTransactions from "../controllers/funds/get-all-transactions"
 import getSingleFund from "../controllers/funds/get-single-fund"
 import setPrimaryFund from "../controllers/funds/set-primary-fund"
@@ -35,13 +35,6 @@ fundsRoutes.post("/rename-fund/:wiretapFundUuid",
 )
 
 fundsRoutes.get(
-	"/all-current-positions/:wiretapFundUuid",
-	validateWiretapFundIdInParams,
-	confirmWiretapFundIdExistsAndValidId,
-	getAllPositions
-)
-
-fundsRoutes.get(
 	"/all-fund-transactions/:wiretapFundUuid",
 	validateWiretapFundIdInParams,
 	confirmWiretapFundIdExistsAndValidId,
@@ -51,6 +44,7 @@ fundsRoutes.get(
 fundsRoutes.post(
 	"/set-primary-fund/:wiretapFundUuid",
 	validateWiretapFundIdInParams,
+	validateSetPrimaryFundRequest,
 	confirmWiretapFundIdExistsAndValidId,
 	setPrimaryFund
 )
