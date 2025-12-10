@@ -193,6 +193,39 @@ declare global {
 	interface SingleOutcome {
 		outcome: OutcomeString
 		clobTokenId: ClobTokenId
+		priceHistory: SinglePriceSnapshot[]
+	}
+
+	interface SinglePriceSnapshot {
+		timestamp: Date
+		price: number
+	}
+
+	// ============================================
+	// Socket.IO Event Types
+	// ============================================
+
+	type ServerSocketEventPayloadMap = {
+		"market:prices": MarketPricesUpdate
+	}
+
+	type ServerSocketEvents = keyof ServerSocketEventPayloadMap
+
+	interface ServerSocketEventMessage<E extends ServerSocketEvents = ServerSocketEvents> {
+		event: E
+		payload: ServerSocketEventPayloadMap[E]
+	}
+
+	interface PriceUpdate {
+		clobTokenId: ClobTokenId
+		bestBid: number | null
+		bestAsk: number | null
+		lastTradePrice: number | null
+	}
+
+	interface MarketPricesUpdate {
+		prices: PriceUpdate[]
+		timestamp: number // Unix timestamp in milliseconds
 	}
 }
 

@@ -2,6 +2,7 @@ import createPriceSnapshots from "../db-operations/write/polymarket-price-histor
 import Singleton from "./singleton"
 import calculatePortfolioSnapshots from "../jobs/calculate-portfolio-snapshots"
 import { isNull, isUndefined } from "lodash"
+import ClientWebSocketManager from "./client-websocket-manager"
 
 /**
  * Manages in-memory price snapshots and periodic saving to database
@@ -51,13 +52,6 @@ export default class PriceTracker extends Singleton {
 			lastTradePrice: parseFloat(message.price),
 			timestamp: Date.now()
 		})
-	}
-
-	/**
-	 * Get price snapshot from in-memory cache
-	 */
-	public getPriceSnapshot(clobTokenId: ClobTokenId): PriceSnapshot | null {
-		return this.priceSnapshots.get(clobTokenId) ?? null
 	}
 
 	/**
@@ -122,6 +116,15 @@ export default class PriceTracker extends Singleton {
 
 			await createPriceSnapshots(snapshots)
 			console.log(`✅ Saved ${snapshots.length} price snapshots`)
+
+			const priceUpdates: PriceUpdate[] = snapshots.map(snapshot => ({  // ✅ Use snapshots
+				clobTokenId: snapshot.clobTokenId,
+				bestBid: snapshot.bestBid,
+				bestAsk: snapshot.bestAsk,
+				lastTradePrice: snapshot.lastTradePrice
+			}))
+
+			ClientWebSocketManager.getInstance().broadcastPriceUpdates(priceUpdates)
 
 			// Calculate portfolio snapshots immediately after saving prices
 			await calculatePortfolioSnapshots()

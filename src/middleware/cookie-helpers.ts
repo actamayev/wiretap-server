@@ -10,7 +10,7 @@ interface CookieOptions {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const AUTH_COOKIE_NAME = "auth_token"
+export const AUTH_COOKIE_NAME = "auth_token"
 
 // Default cookie options for auth
 const getAuthCookieOptions = (): CookieOptions => ({

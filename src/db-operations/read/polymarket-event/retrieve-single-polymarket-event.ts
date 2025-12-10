@@ -35,6 +35,14 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 							select: {
 								outcome: true,
 								clob_token_id: true,
+								price_history: {
+									select: {
+										best_bid: true,
+										best_ask: true,
+										last_trade_price: true,
+										timestamp: true,
+									},
+								},
 							},
 						},
 					},
@@ -67,6 +75,10 @@ export default async function retrieveSinglePolymarketEvent(eventId: EventId): P
 				outcomes: market.outcomes.sort((a) => a.outcome === "YES" ? -1 : 1).map((outcome) => ({
 					outcome: outcome.outcome as OutcomeString,
 					clobTokenId: outcome.clob_token_id as ClobTokenId,
+					priceHistory: outcome.price_history.map((price) => ({
+						timestamp: price.timestamp,
+						price: price.last_trade_price || 0,
+					})),
 				})),
 			})),
 			eventEndDate: rawPolymarketEvent.end_date as Date,
