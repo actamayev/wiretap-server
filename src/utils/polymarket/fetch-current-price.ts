@@ -5,6 +5,7 @@ interface PolymarketMidpointResponse {
 	price?: string
 }
 
+// TODO 12/9/25: Use https://docs.polymarket.com/api-reference/pricing/get-multiple-market-prices for multiple clob token ids
 export default async function fetchPolymarketPrice(clobTokenId: ClobTokenId): Promise<number | null> {
 	try {
 		const midpointUrl = `https://clob.polymarket.com/midpoint?token_id=${clobTokenId}`

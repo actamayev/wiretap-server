@@ -155,6 +155,7 @@ model polymarket_outcome {
 	purchase_orders             								purchase_order[]
 	sale_orders                 								sale_order[]
 	positions                   								position[]
+	price_history               								polymarket_price_history[]  // ✅ New relation
 
 	@@unique([market_id, outcome_index])
 	@@index([market_id])
@@ -188,10 +189,6 @@ model purchase_order {
 	price_per_contract          								Float
 	total_cost                  								Float
 
-	// Snapshot of market state at execution
-	market_best_bid             								Float?
-	market_best_ask             								Float?
-
 	wiretap_fund_uuid 											String
 
 	created_at                  								DateTime  @default(now())
@@ -213,10 +210,6 @@ model sale_order {
 	price_per_contract          								Float
 	total_proceeds              								Float
 	realized_pnl                								Float
-
-	// Snapshot of market state at execution
-	market_best_bid             								Float?
-	market_best_ask             								Float?
 
 	wiretap_fund_uuid 											String
 
@@ -253,4 +246,23 @@ model user_feedback {
 	user                                                        credentials @relation(fields: [user_id], references: [user_id])
 
 	@@index([user_id])
+}
+
+model polymarket_price_history {
+	price_history_id            								Int       @id @default(autoincrement())
+	clob_token_id               								String
+
+	// Pricing data
+	best_bid                    								Float?
+	best_ask                    								Float?
+	midpoint                    								Float?    // Calculated as (best_bid + best_ask) / 2
+	last_trade_price            								Float?
+
+	timestamp                   								DateTime  @default(now())
+
+	outcome                     								polymarket_outcome @relation(fields: [clob_token_id], references: [clob_token_id], onDelete: Cascade)
+
+	@@index([clob_token_id])
+	@@index([timestamp])
+	@@index([clob_token_id, timestamp]) // Composite index for time-series queries
 }
