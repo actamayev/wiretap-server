@@ -8,7 +8,7 @@ export default async function validateSellOrderAndFetchPrice(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { clobToken, numberOfContractsSelling } = req.body as { clobToken: ClobTokenId, numberOfContractsSelling: number }
+		const { clobToken, numberOfSharesSelling } = req.body as { clobToken: ClobTokenId, numberOfSharesSelling: number }
 
 		const currentPrice = await fetchPolymarketPrice(clobToken)
 
@@ -22,9 +22,9 @@ export default async function validateSellOrderAndFetchPrice(
 		req.validatedSellOrder = {
 			wiretapFundUuid,
 			clobToken,
-			numberOfContractsSelling,
+			numberOfSharesSelling,
 			currentPrice,
-			totalCostOfContractsSelling: 0
+			totalCostOfSharesSelling: 0
 		}
 
 		next()

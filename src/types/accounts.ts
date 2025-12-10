@@ -2,7 +2,7 @@ declare global {
 	interface RetrievedUserTransactions {
 		purchase_orders: {
 			outcome_id: number
-			number_of_contracts: number
+			number_of_shares: number
 			created_at: Date
 			outcome: {
 				outcome: OutcomeString
@@ -13,7 +13,7 @@ declare global {
 		}[]
 		sales_orders: {
 			outcome_id: number
-			number_of_contracts: number
+			number_of_shares: number
 			created_at: Date
 			outcome: {
 				outcome: OutcomeString
@@ -27,7 +27,7 @@ declare global {
 	interface RetrievedUserPositions {
 		positions: {
 			outcome_id: number
-			number_contracts_held: number
+			number_shares_held: number
 			outcome: {
 				market: {
 					question: string

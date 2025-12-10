@@ -1,6 +1,6 @@
-import { isNull } from "lodash"
 import createPriceSnapshots from "../db-operations/write/polymarket-price-history/create-price-snapshots"
 import Singleton from "./singleton"
+import { calculatePortfolioSnapshots } from "../jobs/calculate-portfolio-snapshots"
 
 /**
  * Manages in-memory price snapshots and periodic saving to database
@@ -14,7 +14,7 @@ export default class PriceTracker extends Singleton {
 	}
 
 	public static override getInstance(): PriceTracker {
-		if (isNull(PriceTracker.instance)) {
+		if (PriceTracker.instance === null) {
 			PriceTracker.instance = new PriceTracker()
 		}
 		return PriceTracker.instance
@@ -31,7 +31,7 @@ export default class PriceTracker extends Singleton {
 				clobTokenId: change.asset_id,
 				bestBid: parseFloat(change.best_bid),
 				bestAsk: parseFloat(change.best_ask),
-				lastTradePrice: existing?.lastTradePrice ?? null, // Keep existing trade price
+				lastTradePrice: existing?.lastTradePrice ?? null,
 				timestamp: Date.now()
 			})
 		}
@@ -45,11 +45,29 @@ export default class PriceTracker extends Singleton {
 
 		this.priceSnapshots.set(message.asset_id, {
 			clobTokenId: message.asset_id,
-			bestBid: existing?.bestBid ?? null, // Keep existing bid/ask
+			bestBid: existing?.bestBid ?? null,
 			bestAsk: existing?.bestAsk ?? null,
 			lastTradePrice: parseFloat(message.price),
 			timestamp: Date.now()
 		})
+	}
+
+	/**
+	 * Get price snapshot from in-memory cache
+	 */
+	public getPriceSnapshot(clobTokenId: ClobTokenId): PriceSnapshot | null {
+		return this.priceSnapshots.get(clobTokenId) ?? null
+	}
+
+	/**
+	 * Calculate midpoint from a price snapshot
+	 */
+	public getMidpoint(clobTokenId: ClobTokenId): number | null {
+		const snapshot = this.priceSnapshots.get(clobTokenId)
+		if (!snapshot || snapshot.bestBid === null || snapshot.bestAsk === null) {
+			return null
+		}
+		return (snapshot.bestBid + snapshot.bestAsk) / 2
 	}
 
 	/**
@@ -80,7 +98,7 @@ export default class PriceTracker extends Singleton {
 		const delay = nextMinute - now
 
 		this.saveTimer = setTimeout(() => {
-			this.saveAndClearSnapshots()
+			this.savePriceSnapshots()
 				.then(() => this.scheduleNextMinute())
 				.catch(error => console.error("Error in minute timer:", error))
 		}, delay)
@@ -90,9 +108,10 @@ export default class PriceTracker extends Singleton {
 	}
 
 	/**
-	 * Save all current snapshots to database and clear memory
+	 * Save all current snapshots to database and calculate portfolio snapshots
+	 * NOTE: We don't clear the Map - it acts as a permanent cache
 	 */
-	private async saveAndClearSnapshots(): Promise<void> {
+	private async savePriceSnapshots(): Promise<void> {
 		if (this.priceSnapshots.size === 0) {
 			console.log("📊 No price snapshots to save")
 			return
@@ -101,15 +120,16 @@ export default class PriceTracker extends Singleton {
 		try {
 			const snapshots = Array.from(this.priceSnapshots.values())
 			console.log(`💾 Saving ${snapshots.length} price snapshots to database...`)
-			console.log(snapshots)
 
 			await createPriceSnapshots(snapshots)
-
 			console.log(`✅ Saved ${snapshots.length} price snapshots`)
-			this.priceSnapshots.clear()
+
+			// Calculate portfolio snapshots immediately after saving prices
+			await calculatePortfolioSnapshots()
+
+			// DON'T clear the Map - keep prices in memory for fast lookups
 		} catch (error) {
 			console.error("❌ Failed to save price snapshots:", error)
-			// Don't clear on error - we'll try again next minute
 		}
 	}
 
@@ -123,7 +143,7 @@ export default class PriceTracker extends Singleton {
 	/**
 	 * Clear all snapshots (used when reconnecting)
 	 */
-	public clear(): void {
+	clear(): void {
 		this.priceSnapshots.clear()
 	}
 }

@@ -39,14 +39,14 @@ declare global {
 
 	interface PurchaseOrder extends CommonTransactionFields {
 		outcome: OutcomeString
-		numberContractsPurchased: number
+		numberOfSharesPurchased: number
 		marketQuestion: string | null
 		totalCost: number
 	}
 
 	interface SaleOrder extends CommonTransactionFields {
 		outcome: OutcomeString
-		numberContractsSold: number
+		numberOfSharesSold: number
 		marketQuestion: string | null
 		totalProceeds: number
 	}
@@ -54,10 +54,10 @@ declare global {
 	interface SinglePosition {
 		outcome: OutcomeString
 		marketQuestion: string | null
-		numberOfContractsHeld: number
+		numberOfSharesHeld: number
 		clobToken: ClobTokenId
-		costBasisPerContractUsd: number
-		currentMarketPricePerContractUsd: number
+		costBasisPerShareUsd: number
+		currentMarketPricePerShareUsd: number
 		positionCreatedAt: Date
 		polymarketSlug: EventSlug
 		polymarketImageUrl: string
@@ -136,8 +136,8 @@ declare global {
 		success: "Sell order executed successfully"
 		saleId: number
 		positionClosed: boolean
-		contractsSold: number
-		pricePerContract: number
+		numberOfSharesSold: number
+		pricePerShare: number
 		totalProceeds: number
 		realizedPnl: number
 		newAccountCashBalance: number

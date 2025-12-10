@@ -21,8 +21,8 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				positions: {
 					select: {
 						clob_token_id: true,
-						number_contracts_held: true,
-						average_cost_per_contract: true,
+						number_shares_held: true,
+						average_cost_per_share: true,
 						created_at: true,
 						outcome: {
 							select: {
@@ -44,7 +44,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				},
 				purchase_orders: {
 					select: {
-						number_of_contracts: true,
+						number_of_shares: true,
 						created_at: true,
 						total_cost: true,
 						outcome: {
@@ -67,7 +67,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				},
 				sales_orders: {
 					select: {
-						number_of_contracts: true,
+						number_of_shares: true,
 						created_at: true,
 						total_proceeds: true,
 						outcome: {
@@ -101,18 +101,18 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 						clobToken: position.clob_token_id as ClobTokenId,
 						outcome: position.outcome.outcome as OutcomeString,
 						marketQuestion: position.outcome.market.question,
-						numberOfContractsHeld: position.number_contracts_held,
-						costBasisPerContractUsd: position.average_cost_per_contract,
-						currentMarketPricePerContractUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
+						numberOfSharesHeld: position.number_shares_held,
+						costBasisPerShareUsd: position.average_cost_per_share,
+						currentMarketPricePerShareUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
 						positionCreatedAt: position.created_at,
 						polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
 						polymarketImageUrl: position.outcome.market.event.image_url as string
 					}))
 				)
 
-				// Calculate portfolio value: sum of (numberOfContractsHeld * currentMarketPricePerContractUsd)
+				// Calculate portfolio value: sum of (numberOfSharesHeld * currentMarketPricePerShareUsd)
 				const positionsValueUsd = positions.reduce(
-					(sum, position) => sum + position.numberOfContractsHeld * position.currentMarketPricePerContractUsd,
+					(sum, position) => sum + position.numberOfSharesHeld * position.currentMarketPricePerShareUsd,
 					0
 				)
 
@@ -129,7 +129,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 						purchaseOrders: fund.purchase_orders.map((purchaseOrder) => ({
 							outcome: purchaseOrder.outcome.outcome as OutcomeString,
 							transactionDate: purchaseOrder.created_at,
-							numberContractsPurchased: purchaseOrder.number_of_contracts,
+							numberOfSharesPurchased: purchaseOrder.number_of_shares,
 							marketQuestion: purchaseOrder.outcome.market.question,
 							polymarketSlug: purchaseOrder.outcome.market.event.event_slug as EventSlug,
 							polymarketImageUrl: purchaseOrder.outcome.market.event.image_url as string,
@@ -138,7 +138,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 						saleOrders: fund.sales_orders.map((saleOrder) => ({
 							outcome: saleOrder.outcome.outcome as OutcomeString,
 							transactionDate: saleOrder.created_at,
-							numberContractsSold: saleOrder.number_of_contracts,
+							numberOfSharesSold: saleOrder.number_of_shares,
 							marketQuestion: saleOrder.outcome.market.question,
 							polymarketSlug: saleOrder.outcome.market.event.event_slug as EventSlug,
 							polymarketImageUrl: saleOrder.outcome.market.event.image_url as string,

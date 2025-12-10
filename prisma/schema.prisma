@@ -166,8 +166,8 @@ model position {
 	position_id                 								Int       @id @default(autoincrement())
 	clob_token_id                  								String
 
-	number_contracts_held       								Float
-	average_cost_per_contract   								Float
+	number_shares_held       									Float
+	average_cost_per_share   									Float
 	total_cost                  								Float
 
 	wiretap_fund_uuid 											String
@@ -185,8 +185,8 @@ model purchase_order {
 	purchase_id                 								Int       @id @default(autoincrement())
 	clob_token_id                  								String
 
-	number_of_contracts         								Float
-	price_per_contract          								Float
+	number_of_shares         									Float
+	price_per_share          									Float
 	total_cost                  								Float
 
 	wiretap_fund_uuid 											String
@@ -206,8 +206,8 @@ model sale_order {
 	sale_id                     								Int       @id @default(autoincrement())
 	clob_token_id                  								String
 
-	number_of_contracts         								Float
-	price_per_contract          								Float
+	number_of_shares         									Float
+	price_per_share          									Float
 	total_proceeds              								Float
 	realized_pnl                								Float
 

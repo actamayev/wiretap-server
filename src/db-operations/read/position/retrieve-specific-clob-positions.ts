@@ -17,8 +17,8 @@ export default async function retrieveSpecificClobPositions(
 			},
 			select: {
 				clob_token_id: true,
-				number_contracts_held: true,
-				average_cost_per_contract: true,
+				number_shares_held: true,
+				average_cost_per_share: true,
 				created_at: true,
 				outcome: {
 					select: {
@@ -45,9 +45,9 @@ export default async function retrieveSpecificClobPositions(
 			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
-			numberOfContractsHeld: position.number_contracts_held,
-			costBasisPerContractUsd: position.average_cost_per_contract,
-			currentMarketPricePerContractUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
+			numberOfSharesHeld: position.number_shares_held,
+			costBasisPerShareUsd: position.average_cost_per_share,
+			currentMarketPricePerShareUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
 			positionCreatedAt: position.created_at,
 			polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: position.outcome.market.event.image_url as string

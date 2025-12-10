@@ -2,16 +2,16 @@ import { isUndefined } from "lodash"
 import { Request, Response, NextFunction } from "express"
 import retrieveCurrentAccountBalance from "../../db-operations/read/wiretap-fund/retrieve-current-account-balance"
 
-export default async function confirmWiretapBrokerageHasSufficientFunds(
+export default async function confirmWiretapBrokerageHasSufficientFundsToPurchaseShares(
 	req: Request,
 	res: Response,
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { wiretapFundUuid, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
+		const { wiretapFundUuid, numberOfSharesPurchasing, currentPrice } = req.validatedBuyOrder
 
 		// Calculate total cost
-		const totalCost = currentPrice * numberOfContractsPurchasing
+		const totalCost = currentPrice * numberOfSharesPurchasing
 
 		// Fetch account balance
 		const currentAccountBalance = await retrieveCurrentAccountBalance(wiretapFundUuid)

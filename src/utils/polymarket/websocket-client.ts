@@ -171,4 +171,30 @@ export default class PolymarketWebSocketClient {
 	public isWebSocketConnected(): boolean {
 		return this.isConnected && this.ws?.readyState === WebSocket.OPEN
 	}
+
+	/**
+ * Update subscription with new list of clob_token_ids
+ * Sends new subscription message without disconnecting
+ */
+	public updateSubscription(clobTokenIds: ClobTokenId[]): void {
+		if (!this.isConnected || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
+			console.error("❌ Cannot update subscription - WebSocket not connected")
+			return
+		}
+
+		this.clobTokenIds = clobTokenIds
+		console.log(`🔄 Updating subscription to ${clobTokenIds.length} assets...`)
+
+		const subscription: MarketChannelSubscription = {
+			type: "market",
+			assets_ids: this.clobTokenIds
+		}
+
+		this.ws.send(JSON.stringify(subscription))
+		console.log("✅ Subscription updated")
+	}
+
+	public getCurrentSubscription(): ClobTokenId[] {
+		return [...this.clobTokenIds]
+	}
 }

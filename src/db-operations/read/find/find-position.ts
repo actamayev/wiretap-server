@@ -2,20 +2,20 @@ import { isNil } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
 
 interface Position {
-    numberOfContractsHeld: number
-    totalCostOfContractsSelling: number
+    numberOfSharesHeld: number
+    totalCostOfSharesSelling: number
 }
 
 // eslint-disable-next-line max-lines-per-function
 export default async function findPosition(
 	wiretapFundUuid: FundsUUID,
 	clobToken: ClobTokenId,
-	numberOfContractsSelling: number
+	numberOfSharesSelling: number
 ): Promise<Position | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		// Retrieve all positions for this contract, ordered by created_at (FIFO - oldest first)
+		// Retrieve all positions for this share, ordered by created_at (FIFO - oldest first)
 		const positions = await prismaClient.position.findMany({
 			where: {
 				wiretap_fund_uuid: wiretapFundUuid,
@@ -23,8 +23,8 @@ export default async function findPosition(
 			},
 			select: {
 				position_id: true,
-				number_contracts_held: true,
-				average_cost_per_contract: true,
+				number_shares_held: true,
+				average_cost_per_share: true,
 				created_at: true
 			},
 			orderBy: {
@@ -34,34 +34,34 @@ export default async function findPosition(
 
 		if (isNil(positions)) return null
 
-		// Calculate total contracts held
-		let totalNumberOfContractsHeld = 0
+		// Calculate total shares held
+		let totalNumberOfSharesHeld = 0
 		for (const position of positions) {
-			totalNumberOfContractsHeld += position.number_contracts_held
+			totalNumberOfSharesHeld += position.number_shares_held
 		}
 
-		// Calculate FIFO total cost for the contracts being sold
-		let contractsRemainingToSell = numberOfContractsSelling
-		let totalCostForContractsSelling = 0
+		// Calculate FIFO total cost for the shares being sold
+		let sharesRemainingToSell = numberOfSharesSelling
+		let totalCostForSharesSelling = 0
 
 		for (const position of positions) {
-			if (contractsRemainingToSell <= 0) break
+			if (sharesRemainingToSell <= 0) break
 
-			const contractsToTakeFromThisPosition = Math.min(
-				position.number_contracts_held,
-				contractsRemainingToSell
+			const sharesToTakeFromThisPosition = Math.min(
+				position.number_shares_held,
+				sharesRemainingToSell
 			)
 
 			const costFromThisPosition =
-				contractsToTakeFromThisPosition * position.average_cost_per_contract
+				sharesToTakeFromThisPosition * position.average_cost_per_share
 
-			totalCostForContractsSelling += costFromThisPosition
-			contractsRemainingToSell -= contractsToTakeFromThisPosition
+			totalCostForSharesSelling += costFromThisPosition
+			sharesRemainingToSell -= sharesToTakeFromThisPosition
 		}
 
 		return {
-			numberOfContractsHeld: totalNumberOfContractsHeld,
-			totalCostOfContractsSelling: totalCostForContractsSelling
+			numberOfSharesHeld: totalNumberOfSharesHeld,
+			totalCostOfSharesSelling: totalCostForSharesSelling
 		} satisfies Position
 	} catch (error) {
 		console.error("Error finding position:", error)

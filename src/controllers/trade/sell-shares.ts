@@ -4,17 +4,17 @@ import retrieveSpecificClobPositions from "../../db-operations/read/position/ret
 import retrievePolymarketOutcomeDataForTrade from "../../db-operations/read/polymarket-outcome/retrieve-polymarket-outcome-data-for-trade"
 
 // eslint-disable-next-line max-lines-per-function
-export default async function sellContract(req: Request, res: Response): Promise<void> {
+export default async function sellShares(req: Request, res: Response): Promise<void> {
 	try {
-		const { wiretapFundUuid, clobToken, numberOfContractsSelling, currentPrice, totalCostOfContractsSelling } = req.validatedSellOrder
+		const { wiretapFundUuid, clobToken, numberOfSharesSelling, currentPrice, totalCostOfSharesSelling } = req.validatedSellOrder
 
 		// Execute sell order in database transaction
 		const result = await executeSellOrder({
 			wiretapFundUuid,
 			clobToken,
-			numberOfContractsSelling,
-			pricePerContract: currentPrice,
-			totalCostOfContractsSelling
+			numberOfSharesSelling,
+			pricePerShare: currentPrice,
+			totalCostOfSharesSelling
 		})
 
 		const remainingPositions = await retrieveSpecificClobPositions(wiretapFundUuid, clobToken)
@@ -25,8 +25,8 @@ export default async function sellContract(req: Request, res: Response): Promise
 			success: "Sell order executed successfully",
 			saleId: result.saleId,
 			positionClosed: result.positionClosed,
-			contractsSold: numberOfContractsSelling,
-			pricePerContract: currentPrice,
+			numberOfSharesSold: numberOfSharesSelling,
+			pricePerShare: currentPrice,
 			totalProceeds: result.totalProceeds,
 			realizedPnl: result.realizedPnl,
 			newAccountCashBalance: result.newAccountCashBalance,
@@ -55,7 +55,7 @@ export default async function sellContract(req: Request, res: Response): Promise
 			}
 		}
 
-		res.status(500).json({ error: "Internal Server Error: Unable to sell contract" } satisfies ErrorResponse)
+		res.status(500).json({ error: "Internal Server Error: Unable to sell shares" } satisfies ErrorResponse)
 		return
 	}
 }

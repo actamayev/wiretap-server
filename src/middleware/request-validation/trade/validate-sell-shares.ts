@@ -2,14 +2,14 @@ import Joi from "joi"
 import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 
-const validateSellContractSchema = Joi.object({
+const validateSellSharesSchema = Joi.object({
 	clobToken: Joi.string().required(),
-	numberOfContractsSelling: Joi.number().integer().positive().required()
+	numberOfSharesSelling: Joi.number().integer().positive().required()
 }).required().unknown(false)
 
-export default function validateSellContract(req: Request, res: Response, next: NextFunction): void {
+export default function validateSellShares(req: Request, res: Response, next: NextFunction): void {
 	try {
-		const { error } = validateSellContractSchema.validate(req.body)
+		const { error } = validateSellSharesSchema.validate(req.body)
 
 		if (!isUndefined(error)) {
 			res.status(400).json({ validationError: error.details[0].message } satisfies ValidationErrorResponse)
@@ -19,7 +19,7 @@ export default function validateSellContract(req: Request, res: Response, next: 
 		next()
 	} catch (error) {
 		console.error(error)
-		res.status(500).json({ error: "Internal Server Error: Unable to validate sell contract" } satisfies ErrorResponse)
+		res.status(500).json({ error: "Internal Server Error: Unable to validate sell share" } satisfies ErrorResponse)
 		return
 	}
 }

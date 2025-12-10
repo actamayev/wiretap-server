@@ -31,7 +31,11 @@ export async function startPriceTracking(): Promise<void> {
 				console.error("WebSocket error:", error)
 			},
 			onClose: (): void => {
-				console.log("WebSocket closed unexpectedly")
+				console.error("🔌 WebSocket closed unexpectedly - attempting reconnect...")
+				// Attempt to reconnect after 5 seconds
+				setTimeout(() => {
+					void restartPriceTracking()
+				}, 5000)
 			}
 		})
 
@@ -45,7 +49,55 @@ export async function startPriceTracking(): Promise<void> {
 	}
 }
 
-export async function stopPriceTracking(): Promise<void> {
+/**
+ * Update WebSocket subscription with new market list
+ * Only updates if the list has actually changed
+ */
+export async function updatePriceTracking(): Promise<void> {
+	try {
+		if (!wsClient || !wsClient.isWebSocketConnected()) {
+			console.warn("⚠️ WebSocket not connected, cannot update subscription")
+			return
+		}
+
+		// Get fresh list of active clob_token_ids
+		const newClobTokenIds = await getAllActiveClobTokenIds()
+
+		if (newClobTokenIds.length === 0) {
+			console.warn("⚠️ No active markets found")
+			return
+		}
+
+		// Get current subscription list from WebSocket client
+		// We need to add a getter for this
+		const currentTokenIds = wsClient.getCurrentSubscription()
+
+		// Compare lists (order doesn't matter)
+		const currentSet = new Set(currentTokenIds)
+		const newSet = new Set(newClobTokenIds)
+
+		const hasChanged =
+			currentSet.size !== newSet.size ||
+			![...currentSet].every(token => newSet.has(token))
+
+		if (!hasChanged) {
+			console.log("✅ Market list unchanged, skipping subscription update")
+			return
+		}
+
+		console.log(`🔄 Market list changed: ${currentTokenIds.length} → ${newClobTokenIds.length} tokens`)
+
+		// Update subscription without disconnecting
+		wsClient.updateSubscription(newClobTokenIds)
+
+		console.log("✅ Price tracking subscription updated")
+	} catch (error) {
+		console.error("❌ Failed to update price tracking:", error)
+		// Don't throw - let existing connection continue
+	}
+}
+
+async function stopPriceTracking(): Promise<void> {
 	console.log("🛑 Stopping price tracking system...")
 
 	// Singleton persists, just stop its timer and clear data
@@ -61,7 +113,7 @@ export async function stopPriceTracking(): Promise<void> {
 	console.log("✅ Price tracking system stopped")
 }
 
-export async function restartPriceTracking(): Promise<void> {
+async function restartPriceTracking(): Promise<void> {
 	console.log("🔄 Restarting price tracking with updated market list...")
 	await stopPriceTracking()
 	await startPriceTracking()
