@@ -19,7 +19,7 @@ export default function validateSellShares(req: Request, res: Response, next: Ne
 		next()
 	} catch (error) {
 		console.error(error)
-		res.status(500).json({ error: "Internal Server Error: Unable to validate sell share" } satisfies ErrorResponse)
+		res.status(500).json({ error: "Internal Server Error: Unable to validate sell shares" } satisfies ErrorResponse)
 		return
 	}
 }

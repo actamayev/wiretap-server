@@ -3,7 +3,7 @@ import { isEmpty, isNull } from "lodash"
 import PriceTracker from "../classes/price-tracker"
 import getPositionsForFund from "../db-operations/read/position/get-positions-for-fund"
 import getFundsWithPositions from "../db-operations/read/wiretap-fund/get-funds-with-positions"
-import getMostRecentPrice from "../db-operations/read/polymarket-price-history/get-most-recent-price"
+import getMostRecentMidpointPrice from "../db-operations/read/polymarket-price-history/get-most-recent-midpoint-price"
 import createPortfolioSnapshot from "../db-operations/read/portfolio-snapshot/create-portfolio-snapshot"
 
 /**
@@ -36,7 +36,7 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 
 					// Fallback to DB if not in cache
 					if (midpoint === null) {
-						midpoint = await getMostRecentPrice(position.clobTokenId)
+						midpoint = await getMostRecentMidpointPrice(position.clobTokenId)
 					}
 
 					// If we still don't have a price, skip this position

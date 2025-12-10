@@ -19,13 +19,15 @@ export default async function validateSellOrderAndFetchPrice(
 
 		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
 
-		req.validatedSellOrder = {
+		const validatedSellOrder: ValidatedSellOrder = {
 			wiretapFundUuid,
 			clobToken,
 			numberOfSharesSelling,
 			currentPrice,
 			totalCostOfSharesSelling: 0
 		}
+
+		req.validatedSellOrder = validatedSellOrder
 
 		next()
 	} catch (error: unknown) {

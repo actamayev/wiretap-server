@@ -4,7 +4,7 @@ import PrismaClientClass from "../../../classes/prisma-client"
  * Get the most recent midpoint price for a clob_token_id
  * Used as fallback when price is not in memory cache
  */
-export default async function getMostRecentPrice(clobTokenId: ClobTokenId): Promise<number | null> {
+export default async function getMostRecentMidpointPrice(clobTokenId: ClobTokenId): Promise<number | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
