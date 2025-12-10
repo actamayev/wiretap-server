@@ -22,7 +22,7 @@ export default class PolymarketWebSocketClient {
 	/**
 	 * Connect to Polymarket WebSocket and subscribe to markets
 	 */
-	async connect(clobTokenIds: ClobTokenId[]): Promise<void> {
+	public async connect(clobTokenIds: ClobTokenId[]): Promise<void> {
 		if (this.isConnected) {
 			console.warn("⚠️ WebSocket already connected, disconnecting first...")
 			await this.disconnect()
@@ -99,9 +99,7 @@ export default class PolymarketWebSocketClient {
 		const messageStr = data.toString()
 
 		// Handle PONG responses (not JSON)
-		if (messageStr === "PONG") {
-			return
-		}
+		if (messageStr === "PONG") return
 
 		try {
 			const parsed = JSON.parse(messageStr)
@@ -162,10 +160,9 @@ export default class PolymarketWebSocketClient {
 	 * Stop PING interval
 	 */
 	private stopPingInterval(): void {
-		if (this.pingInterval) {
-			clearInterval(this.pingInterval)
-			this.pingInterval = null
-		}
+		if (!this.pingInterval) return
+		clearInterval(this.pingInterval)
+		this.pingInterval = null
 	}
 
 	/**

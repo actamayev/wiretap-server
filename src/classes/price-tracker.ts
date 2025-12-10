@@ -23,7 +23,7 @@ export default class PriceTracker extends Singleton {
 	/**
 	 * Update price data from a price_change message
 	 */
-	updateFromPriceChange(message: PolymarketPriceChangeMessage): void {
+	public updateFromPriceChange(message: PolymarketPriceChangeMessage): void {
 		for (const change of message.price_changes) {
 			const existing = this.priceSnapshots.get(change.asset_id)
 
@@ -40,7 +40,7 @@ export default class PriceTracker extends Singleton {
 	/**
 	 * Update last trade price from a last_trade_price message
 	 */
-	updateFromLastTradePrice(message: PolymarketLastTradePriceMessage): void {
+	public updateFromLastTradePrice(message: PolymarketLastTradePriceMessage): void {
 		const existing = this.priceSnapshots.get(message.asset_id)
 
 		this.priceSnapshots.set(message.asset_id, {
@@ -55,7 +55,7 @@ export default class PriceTracker extends Singleton {
 	/**
 	 * Start the minute-interval timer for saving snapshots
 	 */
-	startMinuteTimer(): void {
+	public startMinuteTimer(): void {
 		console.log("⏰ Starting minute-interval price snapshot timer")
 		this.scheduleNextMinute()
 	}
@@ -63,7 +63,7 @@ export default class PriceTracker extends Singleton {
 	/**
 	 * Stop the minute timer
 	 */
-	stopMinuteTimer(): void {
+	public stopMinuteTimer(): void {
 		if (this.saveTimer) {
 			clearTimeout(this.saveTimer)
 			this.saveTimer = null
@@ -116,14 +116,14 @@ export default class PriceTracker extends Singleton {
 	/**
 	 * Get current snapshot count (for monitoring)
 	 */
-	getSnapshotCount(): number {
+	public getSnapshotCount(): number {
 		return this.priceSnapshots.size
 	}
 
 	/**
 	 * Clear all snapshots (used when reconnecting)
 	 */
-	clear(): void {
+	public clear(): void {
 		this.priceSnapshots.clear()
 	}
 }

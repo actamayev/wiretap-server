@@ -3,16 +3,11 @@ import PriceTracker from "../classes/price-tracker"
 import getAllActiveClobTokenIds from "../db-operations/read/polymarket-outcome/retrieve-all-active-clob-token-ids"
 
 let wsClient: PolymarketWebSocketClient | null = null
-let priceTracker: PriceTracker | null = null
 
-/**
- * Start WebSocket connection and price tracking
- */
 export async function startPriceTracking(): Promise<void> {
 	try {
 		console.log("🚀 Starting price tracking system...")
 
-		// Get all active clob_token_ids from database
 		const clobTokenIds = await getAllActiveClobTokenIds()
 
 		if (clobTokenIds.length === 0) {
@@ -22,16 +17,15 @@ export async function startPriceTracking(): Promise<void> {
 
 		console.log(`📊 Found ${clobTokenIds.length} active clob_token_ids to track`)
 
-		// Initialize price tracker
-		priceTracker = PriceTracker.getInstance()
+		// Get singleton instance directly
+		const priceTracker = PriceTracker.getInstance()
 
-		// Initialize WebSocket client with callbacks
 		wsClient = new PolymarketWebSocketClient({
 			onPriceChange: (message): void => {
-				priceTracker?.updateFromPriceChange(message)
+				PriceTracker.getInstance().updateFromPriceChange(message)
 			},
 			onLastTradePrice: (message): void => {
-				priceTracker?.updateFromLastTradePrice(message)
+				PriceTracker.getInstance().updateFromLastTradePrice(message)
 			},
 			onError: (error): void => {
 				console.error("WebSocket error:", error)
@@ -41,10 +35,7 @@ export async function startPriceTracking(): Promise<void> {
 			}
 		})
 
-		// Connect to WebSocket
 		await wsClient.connect(clobTokenIds)
-
-		// Start minute timer for saving snapshots
 		priceTracker.startMinuteTimer()
 
 		console.log("✅ Price tracking system started successfully")
@@ -54,17 +45,13 @@ export async function startPriceTracking(): Promise<void> {
 	}
 }
 
-/**
- * Stop WebSocket connection and price tracking
- */
 export async function stopPriceTracking(): Promise<void> {
 	console.log("🛑 Stopping price tracking system...")
 
-	if (priceTracker) {
-		priceTracker.stopMinuteTimer()
-		priceTracker.clear()
-		priceTracker = null
-	}
+	// Singleton persists, just stop its timer and clear data
+	const priceTracker = PriceTracker.getInstance()
+	priceTracker.stopMinuteTimer()
+	priceTracker.clear()
 
 	if (wsClient) {
 		await wsClient.disconnect()
@@ -74,22 +61,15 @@ export async function stopPriceTracking(): Promise<void> {
 	console.log("✅ Price tracking system stopped")
 }
 
-/**
- * Restart WebSocket connection with fresh market list
- * Called after market sync to pick up new markets
- */
 export async function restartPriceTracking(): Promise<void> {
 	console.log("🔄 Restarting price tracking with updated market list...")
 	await stopPriceTracking()
 	await startPriceTracking()
 }
 
-/**
- * Get current status (for health checks)
- */
 export function getPriceTrackingStatus(): { connected: boolean; snapshotCount: number } {
 	return {
 		connected: wsClient?.isWebSocketConnected() ?? false,
-		snapshotCount: priceTracker?.getSnapshotCount() ?? 0
+		snapshotCount: PriceTracker.getInstance().getSnapshotCount()
 	}
 }
