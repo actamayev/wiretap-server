@@ -15,9 +15,12 @@ export default async function upsertPolymarketMarket(
 				active: market.active,
 				closed: market.closed,
 				accepting_orders: market.acceptingOrders ?? true,
-				last_trade_price: market.lastTradePrice,
 				volume: market.volumeNum,
 				volume_total: Number(market.volume),
+				best_bid: market.bestBid,
+				best_ask: market.bestAsk,
+				last_trade_price: market.lastTradePrice,
+				spread: market.spread,
 			},
 			create: {
 				condition_id: market.conditionId,
@@ -26,9 +29,12 @@ export default async function upsertPolymarketMarket(
 				active: market.active,
 				closed: market.closed,
 				accepting_orders: market.acceptingOrders ?? true,
-				last_trade_price: market.lastTradePrice,
 				volume: market.volumeNum,
 				volume_total: Number(market.volume),
+				best_bid: market.bestBid,
+				best_ask: market.bestAsk,
+				last_trade_price: market.lastTradePrice,
+				spread: market.spread,
 			}
 		  })
 	  } catch (error) {

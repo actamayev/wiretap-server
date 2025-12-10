@@ -1,7 +1,7 @@
 import axios from "axios"
 import { GAMMA_BASE_URL, MINIMUM_VOLUME } from "../constants"
 
-export async function fetchActiveEvents(): Promise<PolymarketEvent[]> {
+export default async function fetchActiveEvents(): Promise<PolymarketEvent[]> {
 	try {
 		const defaultParams: PolymarketEventsQueryParams = {
 			active: true,

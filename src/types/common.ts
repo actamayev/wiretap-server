@@ -183,8 +183,16 @@ declare global {
 		marketQuestion: string | null
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
+		outcomes: SingleOutcome[]
+		bestBid: number | null
+		bestAsk: number | null
 		lastTradePrice: number | null
-		clobTokens: [ClobTokenId, ClobTokenId]
+		spread: number | null
+	}
+
+	interface SingleOutcome {
+		outcome: OutcomeString
+		clobTokenId: ClobTokenId
 	}
 }
 

@@ -18,7 +18,7 @@ function hasMinimumVolume(event: PolymarketEvent): boolean {
 	return (event.volume ?? 0) >= MINIMUM_VOLUME
 }
 
-export function filterBinaryEvents(events: PolymarketEvent[]): PolymarketEvent[] {
+export default function filterBinaryEvents(events: PolymarketEvent[]): PolymarketEvent[] {
 	return events
 		.filter(hasMinimumVolume)
 		.map(event => ({

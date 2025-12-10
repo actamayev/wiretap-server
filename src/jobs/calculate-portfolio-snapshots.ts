@@ -1,24 +1,22 @@
 /* eslint-disable max-depth */
-import getFundsWithPositions from "../db-operations/read/wiretap-fund/get-funds-with-positions"
+import { isEmpty, isNull } from "lodash"
+import PriceTracker from "../classes/price-tracker"
 import getPositionsForFund from "../db-operations/read/position/get-positions-for-fund"
+import getFundsWithPositions from "../db-operations/read/wiretap-fund/get-funds-with-positions"
 import getMostRecentPrice from "../db-operations/read/polymarket-price-history/get-most-recent-price"
 import createPortfolioSnapshot from "../db-operations/read/portfolio-snapshot/create-portfolio-snapshot"
-import PriceTracker from "../classes/price-tracker"
 
 /**
  * Calculate and save portfolio snapshots for all funds with active positions
  */
-// eslint-disable-next-line max-lines-per-function
-export async function calculatePortfolioSnapshots(): Promise<void> {
+
+export default async function calculatePortfolioSnapshots(): Promise<void> {
 	try {
 		console.log("📊 Calculating portfolio snapshots...")
 
 		const funds = await getFundsWithPositions()
 
-		if (funds.length === 0) {
-			console.log("📊 No funds with positions to snapshot")
-			return
-		}
+		if (isEmpty(funds)) return
 
 		console.log(`📊 Found ${funds.length} funds with positions`)
 
@@ -26,6 +24,7 @@ export async function calculatePortfolioSnapshots(): Promise<void> {
 		let successCount = 0
 		let errorCount = 0
 
+		// TODO 12/10/25: Make more efficient by getting all prices at once
 		for (const fund of funds) {
 			try {
 				const positions = await getPositionsForFund(fund.wiretapFundUuid)
@@ -41,10 +40,7 @@ export async function calculatePortfolioSnapshots(): Promise<void> {
 					}
 
 					// If we still don't have a price, skip this position
-					if (midpoint === null) {
-						console.warn(`⚠️ No price available for ${position.clobTokenId}, skipping position`)
-						continue
-					}
+					if (isNull(midpoint)) continue
 
 					const positionValue = position.numberOfSharesHeld * midpoint
 					totalPositionValue += positionValue
@@ -52,10 +48,7 @@ export async function calculatePortfolioSnapshots(): Promise<void> {
 
 				const totalPortfolioValue = fund.currentAccountBalanceUsd + totalPositionValue
 
-				await createPortfolioSnapshot({
-					wiretap_fund_uuid: fund.wiretapFundUuid,
-					total_value: totalPortfolioValue
-				})
+				await createPortfolioSnapshot(fund.wiretapFundUuid, totalPortfolioValue)
 
 				successCount++
 			} catch (error) {

@@ -4,7 +4,7 @@ import PrismaClientClass from "../../../classes/prisma-client"
  * Insert multiple price snapshots into the database
  * Calculates midpoint as (best_bid + best_ask) / 2
  */
-export default async function insertPriceSnapshots(snapshots: PriceSnapshot[]): Promise<void> {
+export default async function createPriceSnapshots(snapshots: PriceSnapshot[]): Promise<void> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 

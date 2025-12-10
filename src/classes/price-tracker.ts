@@ -1,6 +1,7 @@
 import createPriceSnapshots from "../db-operations/write/polymarket-price-history/create-price-snapshots"
 import Singleton from "./singleton"
-import { calculatePortfolioSnapshots } from "../jobs/calculate-portfolio-snapshots"
+import calculatePortfolioSnapshots from "../jobs/calculate-portfolio-snapshots"
+import { isNull, isUndefined } from "lodash"
 
 /**
  * Manages in-memory price snapshots and periodic saving to database
@@ -64,9 +65,11 @@ export default class PriceTracker extends Singleton {
 	 */
 	public getMidpoint(clobTokenId: ClobTokenId): number | null {
 		const snapshot = this.priceSnapshots.get(clobTokenId)
-		if (!snapshot || snapshot.bestBid === null || snapshot.bestAsk === null) {
-			return null
-		}
+		if (
+			isUndefined(snapshot) ||
+			isNull(snapshot.bestBid) ||
+			isNull(snapshot.bestAsk)
+		) return null
 		return (snapshot.bestBid + snapshot.bestAsk) / 2
 	}
 
@@ -82,11 +85,10 @@ export default class PriceTracker extends Singleton {
 	 * Stop the minute timer
 	 */
 	public stopMinuteTimer(): void {
-		if (this.saveTimer) {
-			clearTimeout(this.saveTimer)
-			this.saveTimer = null
-			console.log("⏰ Stopped minute-interval timer")
-		}
+		if (!this.saveTimer) return
+		clearTimeout(this.saveTimer)
+		this.saveTimer = null
+		console.log("⏰ Stopped minute-interval timer")
 	}
 
 	/**
@@ -112,10 +114,7 @@ export default class PriceTracker extends Singleton {
 	 * NOTE: We don't clear the Map - it acts as a permanent cache
 	 */
 	private async savePriceSnapshots(): Promise<void> {
-		if (this.priceSnapshots.size === 0) {
-			console.log("📊 No price snapshots to save")
-			return
-		}
+		if (this.priceSnapshots.size === 0) return
 
 		try {
 			const snapshots = Array.from(this.priceSnapshots.values())

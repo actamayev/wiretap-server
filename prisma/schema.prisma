@@ -45,6 +45,7 @@ model login_history {
 model email_update_subscriber {
 	email_update_subscriber_id									Int       @id @default(autoincrement())
 	email__encrypted                                            String @unique
+	ip_address													String?
 
 	created_at                                                  DateTime  @default(now())
 }
@@ -116,8 +117,11 @@ model polymarket_market {
 	closed                      								Boolean   @default(false)
 	accepting_orders            								Boolean   @default(true)
 
-	// Aggregate market data (often reflects primary outcome in API)
-	last_trade_price            								Float?
+	// Outcome-specific pricing
+	last_trade_price               								Float?    // From outcomePrices array
+	best_bid													Float?    // From outcomePrices array
+	best_ask													Float?    // From outcomePrices array
+	spread														Float?
 
 	// Volume metrics (market-level)
 	volume                      								Float?
@@ -132,20 +136,16 @@ model polymarket_market {
 	@@index([event_id])
 }
 
-// Outcomes table - one row per tradeable outcome token
+// Outcomes table - one row per tradeable outcome token (ie 2 rows for Yes/No markets, can be more than 2 rows for sports (Team 1, Team 2, Draw))
 model polymarket_outcome {
 	clob_token_id               								String    @id
 	market_id                   								Int
 
-	outcome                     								String    // "Yes", "No", "Trump", "Harris", etc
+	outcome                     								String    // "Yes", "No", "Team 1", "Team 2", "Draw", etc.
 	outcome_index               								Int       // Position in outcomes array (0, 1, 2...)
-
-	// Outcome-specific pricing
-	current_price               								Float?    // From outcomePrices array
 
 	// Resolution
 	winning_outcome             								Boolean   @default(false)
-	payout_per_share            								Float?    // 1.0 if won, 0.0 if lost
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
