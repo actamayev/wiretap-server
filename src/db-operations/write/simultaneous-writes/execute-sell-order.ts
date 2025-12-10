@@ -8,9 +8,9 @@ type TransactionClient = Omit<PrismaClient, runtime.ITXClientDenyList>
 interface ExecuteSellOrderParams {
 	wiretapFundUuid: FundsUUID
 	clobToken: ClobTokenId
-	numberOfContractsSelling: number
-	pricePerContract: number
-	totalCostOfContractsSelling: number
+	numberOfSharesSelling: number
+	pricePerShare: number
+	totalCostOfSharesSelling: number
 }
 
 interface ExecuteSellOrderResult {
@@ -25,7 +25,7 @@ interface ExecuteSellOrderResult {
  * Executes a sell order within a Prisma transaction
  * 1. Increments cash in brokerage account
  * 2. Creates sale order record with realized P&L
- * 3. Updates position (reduces contracts or deletes if fully sold)
+ * 3. Updates position (reduces shares or deletes if fully sold)
  */
 // eslint-disable-next-line max-lines-per-function
 export default async function executeSellOrder(params: ExecuteSellOrderParams): Promise<ExecuteSellOrderResult> {
@@ -33,13 +33,13 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 		const {
 			wiretapFundUuid,
 			clobToken,
-			numberOfContractsSelling,
-			pricePerContract,
-			totalCostOfContractsSelling
+			numberOfSharesSelling,
+			pricePerShare,
+			totalCostOfSharesSelling
 		} = params
 
-		const totalProceeds = pricePerContract * numberOfContractsSelling
-		const realizedPnl = totalProceeds - totalCostOfContractsSelling
+		const totalProceeds = pricePerShare * numberOfSharesSelling
+		const realizedPnl = totalProceeds - totalCostOfSharesSelling
 
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
@@ -77,8 +77,8 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 				data: {
 					wiretap_fund_uuid: wiretapFundUuid,
 					clob_token_id: clobToken,
-					number_of_contracts: numberOfContractsSelling,
-					price_per_contract: pricePerContract,
+					number_of_shares: numberOfSharesSelling,
+					price_per_share: pricePerShare,
 					total_proceeds: totalProceeds,
 					realized_pnl: realizedPnl
 				}
@@ -103,21 +103,21 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 			}
 
 			// Apply FIFO: sell from oldest positions first
-			let contractsRemainingToSell = numberOfContractsSelling
+			let sharesRemainingToSell = numberOfSharesSelling
 			let positionClosed = false
 
 			for (const position of positions) {
-				if (contractsRemainingToSell <= 0) break
+				if (sharesRemainingToSell <= 0) break
 
-				const contractsToSellFromThisPosition = Math.min(
-					position.number_contracts_held,
-					contractsRemainingToSell
+				const sharesToSellFromThisPosition = Math.min(
+					position.number_shares_held,
+					sharesRemainingToSell
 				)
 
-				const remainingContracts = position.number_contracts_held - contractsToSellFromThisPosition
+				const remainingShares = position.number_shares_held - sharesToSellFromThisPosition
 
-				if (remainingContracts <= 0) {
-					// Selling all contracts from this position - delete it
+				if (remainingShares <= 0) {
+					// Selling all shares from this position - delete it
 					await tx.position.delete({
 						where: {
 							position_id: position.position_id
@@ -126,20 +126,20 @@ export default async function executeSellOrder(params: ExecuteSellOrderParams): 
 					positionClosed = true
 				} else {
 					// Partial sale - update this position
-					const newTotalCost = position.average_cost_per_contract * remainingContracts
+					const newTotalCost = position.average_cost_per_share * remainingShares
 
 					await tx.position.update({
 						where: {
 							position_id: position.position_id
 						},
 						data: {
-							number_contracts_held: remainingContracts,
+							number_shares_held: remainingShares,
 							total_cost: newTotalCost
 						}
 					})
 				}
 
-				contractsRemainingToSell -= contractsToSellFromThisPosition
+				sharesRemainingToSell -= sharesToSellFromThisPosition
 			}
 
 			return {

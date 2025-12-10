@@ -275,9 +275,8 @@ declare global {
 
 	interface ParsedOutcome {
 		clobTokenId: ClobTokenId
-		outcome: string
+		outcome: OutcomeString
 		outcomeIndex: number
-		currentPrice: number | null
 	}
 }
 

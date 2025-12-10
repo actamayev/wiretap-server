@@ -2,40 +2,40 @@ import express from "express"
 
 import confirmWiretapFundIdExistsAndValidId
 	from "../middleware/confirm/confirm-wiretap-fund-id-exists-and-valid-id"
-import validateBuyContract from "../middleware/request-validation/trade/validate-buy-contract"
 import validateOutcomeValid from "../middleware/request-validation/trade/validate-outcome-valid"
-import validateSellContract from "../middleware/request-validation/trade/validate-sell-contract"
+import validateBuyShares from "../middleware/request-validation/trade/validate-buy-shares"
+import validateSellShares from "../middleware/request-validation/trade/validate-sell-shares"
 import validateBuyOrderAndFetchPrice from "../middleware/request-validation/trade/validate-buy-order-and-fetch-price"
 import validateSellOrderAndFetchPrice from "../middleware/request-validation/trade/validate-sell-order-and-fetch-price"
 import validateWiretapFundUuidInParams from "../middleware/request-validation/validate-wiretap-brokerage-account-id-in-params"
-import confirmUserHasSufficientFundsToPurchaseContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-funds"
-import confirmWiretapBrokerageHasSufficientContracts from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-contracts"
+import confirmUserHasSufficientFundsToPurchaseShares from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-funds"
+import confirmWiretapBrokerageHasSufficientShares from "../middleware/confirm/confirm-wiretap-brokerage-has-sufficient-shares"
 
-import buyContract from "../controllers/trade/buy-contract"
-import sellContract from "../controllers/trade/sell-contract"
+import buyShares from "../controllers/trade/buy-shares"
+import sellShares from "../controllers/trade/sell-shares"
 
 const tradeRoutes = express.Router()
 
 tradeRoutes.post(
 	"/buy/:wiretapFundUuid",
 	validateWiretapFundUuidInParams,
-	validateBuyContract,
+	validateBuyShares,
 	confirmWiretapFundIdExistsAndValidId,
 	validateOutcomeValid,
 	validateBuyOrderAndFetchPrice,
-	confirmUserHasSufficientFundsToPurchaseContracts,
-	buyContract
+	confirmUserHasSufficientFundsToPurchaseShares,
+	buyShares
 )
 
 tradeRoutes.post(
 	"/sell/:wiretapFundUuid",
 	validateWiretapFundUuidInParams,
-	validateSellContract,
+	validateSellShares,
 	confirmWiretapFundIdExistsAndValidId,
 	validateOutcomeValid,
 	validateSellOrderAndFetchPrice,
-	confirmWiretapBrokerageHasSufficientContracts,
-	sellContract
+	confirmWiretapBrokerageHasSufficientShares,
+	sellShares
 )
 
 export default tradeRoutes

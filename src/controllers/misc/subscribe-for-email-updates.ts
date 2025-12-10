@@ -4,9 +4,11 @@ import sendNewUserEmail from "../../utils/emails/send-new-user-email"
 
 export default async function subscribeForEmailUpdates (req: Request, res: Response): Promise<void> {
 	try {
+		const { ip } = req
 		const { email } = req.body as { email: string }
+		const userAgent = req.headers["user-agent"]
 
-		await addEmailUpdateSubscriber(email)
+		await addEmailUpdateSubscriber(email, ip, userAgent)
 
 		await sendNewUserEmail(email)
 

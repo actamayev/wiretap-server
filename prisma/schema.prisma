@@ -45,6 +45,8 @@ model login_history {
 model email_update_subscriber {
 	email_update_subscriber_id									Int       @id @default(autoincrement())
 	email__encrypted                                            String @unique
+	ip_address													String?
+	user_agent                   								String?   // Helps identify bots vs real browsers
 
 	created_at                                                  DateTime  @default(now())
 }
@@ -116,8 +118,11 @@ model polymarket_market {
 	closed                      								Boolean   @default(false)
 	accepting_orders            								Boolean   @default(true)
 
-	// Aggregate market data (often reflects primary outcome in API)
-	last_trade_price            								Float?
+	// Outcome-specific pricing
+	last_trade_price               								Float?    // From outcomePrices array
+	best_bid													Float?    // From outcomePrices array
+	best_ask													Float?    // From outcomePrices array
+	spread														Float?
 
 	// Volume metrics (market-level)
 	volume                      								Float?
@@ -132,20 +137,16 @@ model polymarket_market {
 	@@index([event_id])
 }
 
-// Outcomes table - one row per tradeable outcome token
+// Outcomes table - one row per tradeable outcome token (ie 2 rows for Yes/No markets, can be more than 2 rows for sports (Team 1, Team 2, Draw))
 model polymarket_outcome {
 	clob_token_id               								String    @id
 	market_id                   								Int
 
-	outcome                     								String    // "Yes", "No", "Trump", "Harris", etc
+	outcome                     								String    // "Yes", "No", "Team 1", "Team 2", "Draw", etc.
 	outcome_index               								Int       // Position in outcomes array (0, 1, 2...)
-
-	// Outcome-specific pricing
-	current_price               								Float?    // From outcomePrices array
 
 	// Resolution
 	winning_outcome             								Boolean   @default(false)
-	payout_per_share            								Float?    // 1.0 if won, 0.0 if lost
 
 	created_at                  								DateTime  @default(now())
 	updated_at                  								DateTime  @default(now()) @updatedAt
@@ -155,6 +156,7 @@ model polymarket_outcome {
 	purchase_orders             								purchase_order[]
 	sale_orders                 								sale_order[]
 	positions                   								position[]
+	price_history               								polymarket_price_history[]  // ✅ New relation
 
 	@@unique([market_id, outcome_index])
 	@@index([market_id])
@@ -165,8 +167,8 @@ model position {
 	position_id                 								Int       @id @default(autoincrement())
 	clob_token_id                  								String
 
-	number_contracts_held       								Float
-	average_cost_per_contract   								Float
+	number_shares_held       									Float
+	average_cost_per_share   									Float
 	total_cost                  								Float
 
 	wiretap_fund_uuid 											String
@@ -184,13 +186,9 @@ model purchase_order {
 	purchase_id                 								Int       @id @default(autoincrement())
 	clob_token_id                  								String
 
-	number_of_contracts         								Float
-	price_per_contract          								Float
+	number_of_shares         									Float
+	price_per_share          									Float
 	total_cost                  								Float
-
-	// Snapshot of market state at execution
-	market_best_bid             								Float?
-	market_best_ask             								Float?
 
 	wiretap_fund_uuid 											String
 
@@ -209,14 +207,10 @@ model sale_order {
 	sale_id                     								Int       @id @default(autoincrement())
 	clob_token_id                  								String
 
-	number_of_contracts         								Float
-	price_per_contract          								Float
+	number_of_shares         									Float
+	price_per_share          									Float
 	total_proceeds              								Float
 	realized_pnl                								Float
-
-	// Snapshot of market state at execution
-	market_best_bid             								Float?
-	market_best_ask             								Float?
 
 	wiretap_fund_uuid 											String
 
@@ -253,4 +247,23 @@ model user_feedback {
 	user                                                        credentials @relation(fields: [user_id], references: [user_id])
 
 	@@index([user_id])
+}
+
+model polymarket_price_history {
+	price_history_id            								Int       @id @default(autoincrement())
+	clob_token_id               								String
+
+	// Pricing data
+	best_bid                    								Float?
+	best_ask                    								Float?
+	midpoint                    								Float?    // Calculated as (best_bid + best_ask) / 2
+	last_trade_price            								Float?
+
+	timestamp                   								DateTime  @default(now())
+
+	outcome                     								polymarket_outcome @relation(fields: [clob_token_id], references: [clob_token_id], onDelete: Cascade)
+
+	@@index([clob_token_id])
+	@@index([timestamp])
+	@@index([clob_token_id, timestamp]) // Composite index for time-series queries
 }

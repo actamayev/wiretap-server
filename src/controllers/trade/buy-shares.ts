@@ -4,16 +4,16 @@ import retrievePolymarketOutcomeDataForTrade
 	from "../../db-operations/read/polymarket-outcome/retrieve-polymarket-outcome-data-for-trade"
 
 // eslint-disable-next-line max-lines-per-function
-export default async function buyContract(req: Request, res: Response): Promise<void> {
+export default async function buyShares(req: Request, res: Response): Promise<void> {
 	try {
-		const { wiretapFundUuid, clobToken, numberOfContractsPurchasing, currentPrice } = req.validatedBuyOrder
+		const { wiretapFundUuid, clobToken, numberOfSharesPurchasing, currentPrice } = req.validatedBuyOrder
 
 		// Execute buy order in database transaction
 		const { position, newAccountCashBalance } = await executeBuyOrder({
 			wiretapFundUuid,
 			clobToken,
-			numberOfContracts: numberOfContractsPurchasing,
-			pricePerContract: currentPrice
+			numberOfSharesPurchasing,
+			pricePerShare: currentPrice
 		})
 
 		const outcomeData = await retrievePolymarketOutcomeDataForTrade(clobToken)
@@ -24,9 +24,9 @@ export default async function buyContract(req: Request, res: Response): Promise<
 				clobToken: position.clob_token_id as ClobTokenId,
 				outcome: outcomeData.outcome,
 				marketQuestion: outcomeData.marketQuestion,
-				numberOfContractsHeld: position.number_contracts_held,
-				costBasisPerContractUsd: position.average_cost_per_contract,
-				currentMarketPricePerContractUsd: currentPrice,
+				numberOfSharesHeld: position.number_shares_held,
+				costBasisPerShareUsd: position.average_cost_per_share,
+				currentMarketPricePerShareUsd: currentPrice,
 				positionCreatedAt: position.created_at,
 				polymarketSlug: outcomeData.polymarketSlug,
 				polymarketImageUrl: outcomeData.polymarketImageUrl
@@ -50,7 +50,7 @@ export default async function buyContract(req: Request, res: Response): Promise<
 			}
 		}
 
-		res.status(500).json({ error: "Internal Server Error: Unable to buy contract" } satisfies ErrorResponse)
+		res.status(500).json({ error: "Internal Server Error: Unable to buy shares" } satisfies ErrorResponse)
 		return
 	}
 }
