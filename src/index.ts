@@ -1,10 +1,9 @@
-import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
 import { isUndefined } from "lodash"
 
 import getEnvPath from "./utils/config/get-env-path"
-import { configureAppMiddleware, corsOptions } from "./middleware/init-config"
+import { configureAppMiddleware } from "./middleware/init-config"
 
 import setupRoutes from "./utils/config/setup-routes"
 import startBackgroundJobs from "./jobs/start-background-jobs"
@@ -24,7 +23,7 @@ process.on("uncaughtException", (error) => {
 dotenv.config({ path: getEnvPath() })
 
 const app = express()
-app.use(cors(corsOptions))
+app.set("trust proxy", 1)
 
 console.info(`🚀 Server starting - PM2 Instance: ${process.env.PM2_INSTANCE_ID || "standalone"}`)
 console.info(`💾 Memory usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`)
