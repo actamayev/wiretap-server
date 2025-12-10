@@ -1,4 +1,5 @@
 import axios from "axios"
+import { CLOB_BASE_URL } from "../constants"
 
 interface PolymarketMidpointResponse {
 	mid?: string
@@ -8,7 +9,7 @@ interface PolymarketMidpointResponse {
 // TODO 12/9/25: Use https://docs.polymarket.com/api-reference/pricing/get-multiple-market-prices for multiple clob token ids
 export default async function fetchPolymarketPrice(clobTokenId: ClobTokenId): Promise<number | null> {
 	try {
-		const midpointUrl = `https://clob.polymarket.com/midpoint?token_id=${clobTokenId}`
+		const midpointUrl = `${CLOB_BASE_URL}/midpoint?token_id=${clobTokenId}`
 
 		const { data } = await axios.get<PolymarketMidpointResponse>(midpointUrl, {
 			headers: {

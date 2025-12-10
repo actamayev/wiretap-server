@@ -7,7 +7,7 @@ export default async function startBackgroundJobs(): Promise<void> {
 	// Run market sync immediately on startup
 	await syncMarkets()
 
-	// Then run every 5 minutes
+	// Then run market sync every 5 minutes
 	setInterval((): void => {
 		try {
 			void syncMarkets()
