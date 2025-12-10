@@ -1,11 +1,12 @@
 -- SELECT * FROM credentials;
 -- SELECT * from login_history;
 -- SELECT * from wiretap_fund;
--- Select * from email_update_subscriber order by email_update_subscriber_id;
+Select * from email_update_subscriber order by email_update_subscriber_id;
 -- SELECT * FROM polymarket_event;
 -- SELECT * FROM polymarket_market ORDER BY market_id;
--- SELECT * FROM polymarket_outcome order by outcome_id;
--- SELECT * FROM "position";
+-- SELECT * FROM polymarket_outcome order by market_id;
 -- SELECT * FROM purchase_order;
 -- SELECT * FROM sale_order;
+-- SELECT * FROM FROM "position";
 -- SELECT * FROM portfolio_snapshot;
+-- SELECT * FROM polymarket_price_history;
