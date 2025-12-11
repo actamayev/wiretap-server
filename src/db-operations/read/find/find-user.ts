@@ -1,6 +1,5 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
-import { validateExtendedCredentials } from "../../../utils/type-helpers/type-guards"
 
 export async function findUserById(userId: number): Promise<ExtendedCredentials | null> {
 	try {
@@ -17,15 +16,15 @@ export async function findUserById(userId: number): Promise<ExtendedCredentials 
 				password: true,
 				is_active: true,
 				auth_method: true,
-				email__encrypted: true,
+				email: true,
 				created_at: true,
 				updated_at: true,
 			}
 		})
 
-		if (isNull(user) || !validateExtendedCredentials(user)) return null
+		if (isNull(user)) return null
 
-		return user
+		return user as ExtendedCredentials
 	} catch (error) {
 		console.error("Error finding user by Id:", error)
 		throw error
@@ -35,7 +34,7 @@ export async function findUserById(userId: number): Promise<ExtendedCredentials 
 export async function findUserByWhereCondition(
 	whereCondition:
 		{ username?: { equals: string, mode: "insensitive" } } |
-		{ email__encrypted?: { equals: DeterministicEncryptedString } }
+		{ email?: { equals: string } }
 ): Promise<ExtendedCredentials | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
@@ -51,15 +50,15 @@ export async function findUserByWhereCondition(
 				password: true,
 				is_active: true,
 				auth_method: true,
-				email__encrypted: true,
+				email: true,
 				created_at: true,
 				updated_at: true,
 			}
 		})
 
-		if (isNull(user) || !validateExtendedCredentials(user)) return null
+		if (isNull(user)) return null
 
-		return user
+		return user as ExtendedCredentials
 	} catch (error) {
 		console.error("Error finding user:", error)
 		throw error

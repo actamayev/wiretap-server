@@ -1,7 +1,6 @@
 import { Response, Request } from "express"
 import createUserFeedback from "../../db-operations/write/feedback/create-user-feedback"
 import { findUserById } from "../../db-operations/read/find/find-user"
-import Encryptor from "../../classes/encryptor"
 import sendFeedbackEmail from "../../utils/emails/send-feedback-email"
 
 export default async function addUserFeedback (req: Request, res: Response): Promise<void> {
@@ -15,12 +14,9 @@ export default async function addUserFeedback (req: Request, res: Response): Pro
 		try {
 			const user = await findUserById(userId)
 			if (user) {
-				const encryptor = new Encryptor()
-				const userEmail = await encryptor.deterministicDecrypt(user.email__encrypted, "EMAIL_ENCRYPTION_KEY")
-
 				await sendFeedbackEmail({
 					username: user.username,
-					userEmail,
+					userEmail: user.email,
 					feedback
 				})
 			}

@@ -1,15 +1,13 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
 
-export default async function retrieveUserIdByEmail(encryptedEmail: DeterministicEncryptedString): Promise<number | null | undefined> {
+export default async function retrieveUserIdByEmail(email: string): Promise<number | null | undefined> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
 		const user = await prismaClient.credentials.findFirst({
 			where: {
-				email__encrypted: {
-					equals: encryptedEmail
-				}
+				email
 			},
 			select: {
 				user_id: true,

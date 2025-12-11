@@ -1,7 +1,7 @@
--- SELECT * FROM credentials;
+-- SELECT username, email FROM credentials;
 -- SELECT * from login_history;
 -- SELECT * from wiretap_fund;
--- Select * from email_update_subscriber order by email_update_subscriber_id;
+Select * from email_update_subscriber order by email_update_subscriber_id;
 -- SELECT * FROM polymarket_event;
 -- SELECT * FROM polymarket_market ORDER BY market_id;
 -- SELECT * FROM polymarket_outcome order by market_id;
