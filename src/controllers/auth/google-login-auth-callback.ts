@@ -1,6 +1,5 @@
 import { Request, Response } from "express"
 import { isNull, isUndefined } from "lodash"
-import Encryptor from "../../classes/encryptor"
 import signJWT from "../../utils/auth-helpers/jwt/sign-jwt"
 import SecretsManager from "../../classes/aws/secrets-manager"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
@@ -31,9 +30,7 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 			return
 		}
 
-		const encryptor = new Encryptor()
-		const encryptedEmail = await encryptor.deterministicEncrypt(payload.email, "EMAIL_ENCRYPTION_KEY")
-		let userId = await retrieveUserIdByEmail(encryptedEmail)
+		let userId = await retrieveUserIdByEmail(payload.email)
 		let accessToken: string
 		let isNewUser = false
 		let personalInfo: BasicPersonalInfoResponse | undefined = undefined
@@ -42,7 +39,7 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 			res.status(500).json({ error: "Unable to login with this email. Account offline." } satisfies ErrorResponse)
 			return
 		} else if (isNull(userId)) {
-			userId = await addGoogleUser(encryptedEmail)
+			userId = await addGoogleUser(payload.email)
 			accessToken = await signJWT({ userId, username: null, isActive: true })
 			isNewUser = true
 		} else {

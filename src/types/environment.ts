@@ -2,7 +2,6 @@
 declare namespace NodeJS {
 	interface ProcessEnv {
 		// Encryption:
-		EMAIL_ENCRYPTION_KEY: DeterministicEncryptionKeys
 		RESEND_API_KEY: string
 
 		DATABASE_URL: string

@@ -1,12 +1,10 @@
 import { Response, Request } from "express"
 import Hash from "../../classes/hash"
-import Encryptor from "../../classes/encryptor"
 import signJWT from "../../utils/auth-helpers/jwt/sign-jwt"
 import { addLocalUser } from "../../db-operations/write/credentials/add-user"
 import doesEmailExist from "../../db-operations/read/does-x-exist/does-email-exist"
 import doesUsernameExist from "../../db-operations/read/does-x-exist/does-username-exist"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
-import constructLocalUserFields from "../../utils/auth-helpers/register/construct-local-user-fields"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
 import createStartingFundForUser from "../../db-operations/read/wiretap-fund/create-starting-fund-for-user"
 
@@ -14,9 +12,7 @@ export default async function register(req: Request, res: Response): Promise<voi
 	try {
 		const registerInformation = req.body.registerInformation as IncomingRegisterRequest
 
-		const encryptor = new Encryptor()
-		const encryptedEmail = await encryptor.deterministicEncrypt(registerInformation.email, "EMAIL_ENCRYPTION_KEY")
-		const emailExists = await doesEmailExist(encryptedEmail)
+		const emailExists = await doesEmailExist(registerInformation.email)
 		if (emailExists === true) {
 			res.status(400).json({ message: "Email already taken" } satisfies MessageResponse)
 			return
@@ -30,7 +26,12 @@ export default async function register(req: Request, res: Response): Promise<voi
 
 		const hashedPassword = await Hash.hashCredentials(registerInformation.password)
 
-		const userData = await constructLocalUserFields(registerInformation, hashedPassword)
+		const userData: NewLocalUserFields = {
+			username: registerInformation.username,
+			password: hashedPassword,
+			auth_method: "WIRETAP",
+			email: registerInformation.email
+		}
 
 		const userId = await addLocalUser(userData)
 

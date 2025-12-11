@@ -61,17 +61,3 @@ export const tradingRateLimiter = rateLimit({
 		})
 	}
 })
-
-export const strictRateLimiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 5, // 5 requests per 15 minutes
-	message: { error: "Too many requests, please try again later." },
-	standardHeaders: true,
-	legacyHeaders: false,
-	handler: (req, res) => {
-		console.warn(`Rate limit exceeded for IP: ${req.ip} on ${req.path}`)
-		res.status(429).json({
-			error: "Too many requests from this IP, please try again later."
-		})
-	}
-})
