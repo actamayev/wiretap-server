@@ -80,7 +80,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 					clobTokenId: outcome.clob_token_id as ClobTokenId,
 					priceHistory: outcome.price_history.map((price) => ({
 						timestamp: price.timestamp,
-						price: price.last_trade_price || 0,
+						price: price.best_ask || 0,
 					})),
 				})),
 			})),
