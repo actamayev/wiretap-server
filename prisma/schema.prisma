@@ -23,6 +23,7 @@ model credentials {
 	auth_method                                                 AuthMethods
 
 	email__encrypted                                            String @unique
+	email                                                       String @unique
 
 	created_at                                                  DateTime @default(now())
 	updated_at                                                  DateTime @default(now()) @updatedAt

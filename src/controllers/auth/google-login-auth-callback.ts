@@ -42,7 +42,7 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 			res.status(500).json({ error: "Unable to login with this email. Account offline." } satisfies ErrorResponse)
 			return
 		} else if (isNull(userId)) {
-			userId = await addGoogleUser(encryptedEmail)
+			userId = await addGoogleUser(encryptedEmail, payload.email)
 			accessToken = await signJWT({ userId, username: null, isActive: true })
 			isNewUser = true
 		} else {

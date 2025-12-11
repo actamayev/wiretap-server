@@ -12,7 +12,8 @@ export default async function constructLocalUserFields(
 			username: registerInformation.username,
 			password: hashedPassword,
 			auth_method: "WIRETAP",
-			email__encrypted: encryptedEmail
+			email__encrypted: encryptedEmail,
+			email: registerInformation.email
 		}
 	} catch (error) {
 		console.error("Error adding user", error)

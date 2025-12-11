@@ -6,6 +6,7 @@ import validateSubscribeForEmailUpdates from "../middleware/request-validation/m
 import sendTestEmail from "../controllers/internal/send-test-email"
 import decodeEmailSubscriber from "../controllers/internal/decode-email-subscriber"
 import sendLaunchEmailToAllSubscribers from "../controllers/internal/send-launch-email-to-all-subscribers"
+import migrateEncryptedEmails from "../controllers/internal/migrate-encrypted-emails"
 
 const internalRoutes = express.Router()
 
@@ -14,5 +15,7 @@ internalRoutes.post("/decode-email-subscriber", validateDecodeEmailSubscriber, d
 internalRoutes.post("/send-test-email", validateSubscribeForEmailUpdates, sendTestEmail)
 
 internalRoutes.post("/send-email-to-all-subscribers", sendLaunchEmailToAllSubscribers)
+
+internalRoutes.post("/migrate-encrypted-emails", migrateEncryptedEmails)
 
 export default internalRoutes

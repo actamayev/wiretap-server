@@ -6,6 +6,7 @@ declare global {
 		password: HashedString
 		auth_method: AuthMethods
 		email__encrypted: DeterministicEncryptedString
+		email: string
 	}
 
 	type DeterministicEncryptedString = string & { __type: "DeterministicEncryptedString" }

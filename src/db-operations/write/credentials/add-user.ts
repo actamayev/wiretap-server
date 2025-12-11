@@ -15,13 +15,14 @@ export async function addLocalUser(data: NewLocalUserFields): Promise<number> {
 	}
 }
 
-export async function addGoogleUser(encryptedEmail: DeterministicEncryptedString): Promise<number> {
+export async function addGoogleUser(encryptedEmail: DeterministicEncryptedString, plainEmail: string): Promise<number> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
 		const user = await prismaClient.credentials.create({
 			data: {
 				email__encrypted: encryptedEmail,
+				email: plainEmail,
 				auth_method: "GOOGLE"
 			}
 		})
