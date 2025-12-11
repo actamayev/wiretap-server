@@ -1,4 +1,3 @@
-import Encryptor from "../../../classes/encryptor"
 import PrismaClientClass from "../../../classes/prisma-client"
 
 export default async function addEmailUpdateSubscriber(
@@ -7,15 +6,11 @@ export default async function addEmailUpdateSubscriber(
 	userAgent: string | undefined
 ): Promise<void> {
 	try {
-		const encryptor = new Encryptor()
-		const encryptedEmail = await encryptor.deterministicEncrypt(email, "EMAIL_ENCRYPTION_KEY")
-
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
 		await prismaClient.email_update_subscriber.create({
 			data: {
 				email,
-				email__encrypted: encryptedEmail,
 				ip_address: ipAddress,
 				user_agent: userAgent
 			}
