@@ -10,6 +10,7 @@ import ClientWebSocketManager from "./client-websocket-manager"
 export default class PriceTracker extends Singleton {
 	private priceSnapshots: Map<ClobTokenId, PriceSnapshot> = new Map()
 	private saveTimer: NodeJS.Timeout | null = null
+	private readonly SNAPSHOT_INTERVAL_MS = 60000
 
 	private constructor() {
 		super()
@@ -68,38 +69,38 @@ export default class PriceTracker extends Singleton {
 	}
 
 	/**
-	 * Start the minute-interval timer for saving snapshots
+	 * Start the interval timer for saving snapshots
 	 */
 	public startMinuteTimer(): void {
-		console.log("⏰ Starting minute-interval price snapshot timer")
+		console.log(`⏰ Starting price snapshot timer (interval: ${this.SNAPSHOT_INTERVAL_MS / 1000}s)`)
 		this.scheduleNextMinute()
 	}
 
 	/**
-	 * Stop the minute timer
+	 * Stop the interval timer
 	 */
 	public stopMinuteTimer(): void {
 		if (!this.saveTimer) return
 		clearTimeout(this.saveTimer)
 		this.saveTimer = null
-		console.log("⏰ Stopped minute-interval timer")
+		console.log("⏰ Stopped price snapshot timer")
 	}
 
 	/**
-	 * Schedule the next save at the exact minute boundary
+	 * Schedule the next save at the exact interval boundary
 	 */
 	private scheduleNextMinute(): void {
 		const now = Date.now()
-		const nextMinute = Math.ceil(now / 60000) * 60000
-		const delay = nextMinute - now
+		const nextInterval = Math.ceil(now / this.SNAPSHOT_INTERVAL_MS) * this.SNAPSHOT_INTERVAL_MS
+		const delay = nextInterval - now
 
 		this.saveTimer = setTimeout(() => {
 			this.savePriceSnapshots()
 				.then(() => this.scheduleNextMinute())
-				.catch(error => console.error("Error in minute timer:", error))
+				.catch(error => console.error("Error in price snapshot timer:", error))
 		}, delay)
 
-		const nextTime = new Date(nextMinute).toISOString()
+		const nextTime = new Date(nextInterval).toISOString()
 		console.log(`⏰ Next price snapshot save scheduled for ${nextTime} (in ${Math.round(delay / 1000)}s)`)
 	}
 
