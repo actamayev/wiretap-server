@@ -7,10 +7,11 @@ export const eventsRateLimiter = rateLimit({
 	message: { error: "Too many requests." },
 	standardHeaders: true,
 	legacyHeaders: false,
-	keyGenerator: (req: Request) => {
-		const userId = req.userId
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return userId.toString() || ipKeyGenerator(req.ip!)
+	handler: (req, res) => {
+		console.warn(`Auth rate limit exceeded for IP: ${req.ip}`)
+		res.status(429).json({
+			error: "Too many authentication attempts, please try again."
+		})
 	}
 })
 

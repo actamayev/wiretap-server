@@ -13,7 +13,7 @@ import { authRateLimiter, eventsRateLimiter, tradingRateLimiter } from "../../mi
 export default function setupRoutes(app: Express): void {
 	app.use("/auth", authRateLimiter, authRoutes)
 
-	app.use("/events", jwtVerifyAttachUserId, eventsRateLimiter, eventsRoutes)
+	app.use("/events", eventsRateLimiter, eventsRoutes)
 	app.use("/personal-info", personalInfoRoutes)
 	app.use("/trade", jwtVerifyAttachUserId, tradingRateLimiter, tradeRoutes)
 	app.use("/funds", jwtVerifyAttachUserId, tradingRateLimiter, fundsRoutes)
