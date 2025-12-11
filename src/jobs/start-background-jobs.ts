@@ -1,6 +1,7 @@
 import syncMarkets from "./sync-market"
 import { SYNC_INTERVAL_MS } from "../utils/constants"
 import { startPriceTracking } from "./start-price-tracking"
+import EventsCache from "../classes/events-cache"
 
 export default async function startBackgroundJobs(): Promise<void> {
 	console.log("🚀 Starting background jobs...")
@@ -9,6 +10,9 @@ export default async function startBackgroundJobs(): Promise<void> {
 	await syncMarkets()
 
 	await startPriceTracking()
+
+	// Start events cache refresh timer
+	EventsCache.getInstance().startRefreshTimer()
 
 	// Then run market sync every 5 minutes
 	setInterval((): void => {
