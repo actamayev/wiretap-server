@@ -1,6 +1,5 @@
 import { Response, Request } from "express"
 import Hash from "../../classes/hash"
-import Encryptor from "../../classes/encryptor"
 import signJWT from "../../utils/auth-helpers/jwt/sign-jwt"
 import { addLocalUser } from "../../db-operations/write/credentials/add-user"
 import doesEmailExist from "../../db-operations/read/does-x-exist/does-email-exist"
@@ -14,9 +13,7 @@ export default async function register(req: Request, res: Response): Promise<voi
 	try {
 		const registerInformation = req.body.registerInformation as IncomingRegisterRequest
 
-		const encryptor = new Encryptor()
-		const encryptedEmail = await encryptor.deterministicEncrypt(registerInformation.email, "EMAIL_ENCRYPTION_KEY")
-		const emailExists = await doesEmailExist(encryptedEmail)
+		const emailExists = await doesEmailExist(registerInformation.email)
 		if (emailExists === true) {
 			res.status(400).json({ message: "Email already taken" } satisfies MessageResponse)
 			return

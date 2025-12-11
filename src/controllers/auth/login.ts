@@ -1,7 +1,6 @@
 import isNull from "lodash/isNull"
 import { Response, Request } from "express"
 import Hash from "../../classes/hash"
-import Encryptor from "../../classes/encryptor"
 import signJWT from "../../utils/auth-helpers/jwt/sign-jwt"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
 import determineLoginContactType from "../../utils/auth-helpers/determine-contact-type"
@@ -39,16 +38,13 @@ export default async function login(req: Request, res: Response): Promise<void> 
 			isActive: true // Optional: add user status
 		})
 
-		const encryptor = new Encryptor()
-		const email = await encryptor.deterministicDecrypt(credentialsResult.email__encrypted, "EMAIL_ENCRYPTION_KEY")
-
 		setAuthCookie(res, accessToken)
 		const funds = await retrieveMyFunds(credentialsResult.user_id)
 
 		res.status(200).json({
 			personalInfo: {
 				username: credentialsResult.username as string,
-				email,
+				email: credentialsResult.email,
 				isGoogleUser: false
 			},
 			funds

@@ -14,6 +14,7 @@ export default async function addEmailUpdateSubscriber(
 
 		await prismaClient.email_update_subscriber.create({
 			data: {
+				email,
 				email__encrypted: encryptedEmail,
 				ip_address: ipAddress,
 				user_agent: userAgent

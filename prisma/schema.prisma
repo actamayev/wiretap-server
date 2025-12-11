@@ -22,7 +22,6 @@ model credentials {
 
 	auth_method                                                 AuthMethods
 
-	email__encrypted                                            String @unique
 	email                                                       String @unique
 
 	created_at                                                  DateTime @default(now())
@@ -45,7 +44,7 @@ model login_history {
 
 model email_update_subscriber {
 	email_update_subscriber_id									Int       @id @default(autoincrement())
-	email__encrypted                                            String @unique
+	email														String @unique
 	ip_address													String?
 	user_agent                   								String?   // Helps identify bots vs real browsers
 

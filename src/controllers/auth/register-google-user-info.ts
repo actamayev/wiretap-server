@@ -1,6 +1,5 @@
 import isNull from "lodash/isNull"
 import { Response, Request } from "express"
-import Encryptor from "../../classes/encryptor"
 import signJWT from "../../utils/auth-helpers/jwt/sign-jwt"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
 import doesUsernameExist from "../../db-operations/read/does-x-exist/does-username-exist"
@@ -31,11 +30,8 @@ export default async function registerGoogleInfo(req: Request, res: Response): P
 		// ✅ ADD: Update the cookie with new JWT
 		setAuthCookie(res, newAccessToken)
 
-		const encryptor = new Encryptor()
-		const email = await encryptor.deterministicDecrypt(user.email__encrypted, "EMAIL_ENCRYPTION_KEY")
-
 		const fund = await createStartingFundForUser(user.user_id)
-		res.status(200).json({ email, fund } satisfies NewGoogleUserResponse)
+		res.status(200).json({ email: user.email, fund } satisfies NewGoogleUserResponse)
 		return
 	} catch (error) {
 		console.error(error)

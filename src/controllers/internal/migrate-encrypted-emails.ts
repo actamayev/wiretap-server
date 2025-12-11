@@ -8,12 +8,12 @@ export default async function migrateEncryptedEmails(_req: Request, res: Respons
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 		const encryptor = new Encryptor()
 
-		const users = await prismaClient.credentials.findMany({
+		const users = await prismaClient.email_update_subscriber.findMany({
 			where: {
 				email: null
 			},
 			select: {
-				user_id: true,
+				email_update_subscriber_id: true,
 				email__encrypted: true
 			}
 		})
@@ -22,7 +22,7 @@ export default async function migrateEncryptedEmails(_req: Request, res: Respons
 
 		let successCount = 0
 		let failedCount = 0
-		const errors: Array<{ user_id: number; error: string }> = []
+		const errors: Array<{ email_update_subscriber_id: number; error: string }> = []
 
 		for (const user of users) {
 			try {
@@ -31,17 +31,17 @@ export default async function migrateEncryptedEmails(_req: Request, res: Respons
 					"EMAIL_ENCRYPTION_KEY"
 				)
 
-				await prismaClient.credentials.update({
-					where: { user_id: user.user_id },
+				await prismaClient.email_update_subscriber.update({
+					where: { email_update_subscriber_id: user.email_update_subscriber_id },
 					data: { email: decryptedEmail }
 				})
 
 				successCount++
 			} catch (error) {
-				console.error(`Failed to migrate user ${user.user_id}:`, error)
+				console.error(`Failed to migrate user ${user.email_update_subscriber_id}:`, error)
 				failedCount++
 				errors.push({
-					user_id: user.user_id,
+					email_update_subscriber_id: user.email_update_subscriber_id,
 					error: error instanceof Error ? error.message : "Unknown error"
 				})
 			}
