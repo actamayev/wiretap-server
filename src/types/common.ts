@@ -73,6 +73,12 @@ declare global {
 		positionsValueUsd: number
 		positions: SinglePosition[]
 		transactions: TransactionResponse
+		portfolioHistory: SinglePortfolioHistory[]
+	}
+
+	interface SinglePortfolioHistory {
+		timestamp: Date
+		portfolioValueUsd: number
 	}
 
 	interface AllMyFundsResponse {

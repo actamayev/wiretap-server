@@ -31,7 +31,8 @@ export default async function createStartingFundForUser(userId: number): Promise
 			transactions: {
 				purchaseOrders: [],
 				saleOrders: []
-			}
+			},
+			portfolioHistory: []
 		} satisfies SingleFund
 	} catch (error) {
 		console.error(error)
