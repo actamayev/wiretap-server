@@ -87,6 +87,12 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 							}
 						}
 					}
+				},
+				portfolio_snapshot: {
+					select: {
+						timestamp: true,
+						total_value: true,
+					}
 				}
 			}
 		})
@@ -144,7 +150,11 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 							polymarketImageUrl: saleOrder.outcome.market.event.image_url as string,
 							totalProceeds: saleOrder.total_proceeds,
 						}))
-					}
+					},
+					portfolioHistory: fund.portfolio_snapshot.map((snapshot) => ({
+						timestamp: snapshot.timestamp,
+						portfolioValueUsd: snapshot.total_value,
+					}))
 				}
 			})
 		)
