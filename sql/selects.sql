@@ -5,7 +5,7 @@
 -- SELECT * FROM polymarket_event;
 -- SELECT * FROM polymarket_market ORDER BY market_id;
 -- SELECT * FROM polymarket_outcome order by market_id;
--- SELECT * FROM purchase_order;
+-- SELECT * FROM sale_order where wiretap_fund_uuid = 'eaf4100d-8fb2-48e4-b967-45ec1b5be050';
 -- SELECT * FROM sale_order;
 -- SELECT * FROM "position" where wiretap_fund_uuid = 'eaf4100d-8fb2-48e4-b967-45ec1b5be050';
 -- SELECT * FROM portfolio_snapshot where wiretap_fund_uuid = 'eaf4100d-8fb2-48e4-b967-45ec1b5be050';
