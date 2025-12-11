@@ -5,9 +5,10 @@
 -- SELECT * FROM polymarket_event;
 -- SELECT * FROM polymarket_market ORDER BY market_id;
 -- SELECT * FROM polymarket_outcome order by market_id;
--- SELECT * FROM sale_order where wiretap_fund_uuid = 'eaf4100d-8fb2-48e4-b967-45ec1b5be050';
+-- SELECT * FROM purchase_order;
 -- SELECT * FROM sale_order;
--- SELECT * FROM "position" where wiretap_fund_uuid = 'eaf4100d-8fb2-48e4-b967-45ec1b5be050';
--- SELECT * FROM portfolio_snapshot where wiretap_fund_uuid = 'eaf4100d-8fb2-48e4-b967-45ec1b5be050';
+-- SELECT * FROM "position";
+-- SELECT * FROM portfolio_snapshot;
 -- SELECT * FROM polymarket_price_history;
--- SELECT * FROM _prisma_migrations;
+-- SELECT * FROM _prisma_migrations order by started_at;
+-- SELECT * FROM user_feedback;

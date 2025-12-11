@@ -1,5 +1,8 @@
 import { Response, Request } from "express"
 import createUserFeedback from "../../db-operations/write/feedback/create-user-feedback"
+import { findUserById } from "../../db-operations/read/find/find-user"
+import Encryptor from "../../classes/encryptor"
+import sendFeedbackEmail from "../../utils/emails/send-feedback-email"
 
 export default async function addUserFeedback (req: Request, res: Response): Promise<void> {
 	try {
@@ -7,6 +10,24 @@ export default async function addUserFeedback (req: Request, res: Response): Pro
 		const { feedback } = req.body as { feedback: string }
 
 		await createUserFeedback(userId, feedback)
+
+		// Send email notification (don't block response if email fails)
+		try {
+			const user = await findUserById(userId)
+			if (user) {
+				const encryptor = new Encryptor()
+				const userEmail = await encryptor.deterministicDecrypt(user.email__encrypted, "EMAIL_ENCRYPTION_KEY")
+
+				await sendFeedbackEmail({
+					username: user.username,
+					userEmail,
+					feedback
+				})
+			}
+		} catch (emailError) {
+			console.error("Failed to send feedback email notification:", emailError)
+			// Don't fail the request if email fails
+		}
 
 		res.status(200).json({ success: "" } satisfies SuccessResponse)
 		return
