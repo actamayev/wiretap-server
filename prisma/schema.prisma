@@ -105,7 +105,7 @@ model polymarket_event {
 	markets                     								polymarket_market[]
 }
 
-// Markets table - one row per condition_id (the tradeable market itself)
+// Markets table - one row per condition_id (the tradeable market itself), an event can have multiple markets (ie Presidential nominee)
 model polymarket_market {
 	market_id                   								Int       @id @default(autoincrement())
 	condition_id                								String    @unique // Polymarket's condition ID
@@ -137,7 +137,7 @@ model polymarket_market {
 	@@index([event_id])
 }
 
-// Outcomes table - one row per tradeable outcome token (ie 2 rows for Yes/No markets, can be more than 2 rows for sports (Team 1, Team 2, Draw))
+// Outcomes table - ALWAYS 2 outcomes: Yes, No
 model polymarket_outcome {
 	clob_token_id               								String    @id
 	market_id                   								Int

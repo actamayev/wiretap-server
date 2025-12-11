@@ -49,7 +49,6 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 				const totalPortfolioValue = fund.currentAccountBalanceUsd + totalPositionValue
 
 				await createPortfolioSnapshot(fund.wiretapFundUuid, totalPortfolioValue)
-
 				successCount++
 			} catch (error) {
 				console.error(`Failed to calculate portfolio for fund ${fund.wiretapFundUuid}:`, error)
