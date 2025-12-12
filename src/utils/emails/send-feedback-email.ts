@@ -30,7 +30,7 @@ export default async function sendFeedbackEmail(data: FeedbackEmailData): Promis
 			throw new Error("Failed to send email")
 		}
 
-		console.log("✅ Sent feedback email to hello@wiretap.pro")
+		console.info("✅ Sent feedback email to hello@wiretap.pro")
 	} catch (error) {
 		console.error("Error sending feedback email:", error)
 		throw error

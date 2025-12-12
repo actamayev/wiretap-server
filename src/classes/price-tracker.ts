@@ -1,7 +1,7 @@
 import createPriceSnapshots from "../db-operations/write/polymarket-price-history/create-price-snapshots"
 import Singleton from "./singleton"
 import calculatePortfolioSnapshots from "../jobs/calculate-portfolio-snapshots"
-import { isNull, isUndefined } from "lodash"
+import { isUndefined } from "lodash"
 import ClientWebSocketManager from "./client-websocket-manager"
 
 /**
@@ -86,19 +86,14 @@ export default class PriceTracker extends Singleton {
 	 */
 	public getMidpoint(clobTokenId: ClobTokenId): number | null {
 		const snapshot = this.priceSnapshots.get(clobTokenId)
-		if (
-			isUndefined(snapshot) ||
-			isNull(snapshot.bestBid) ||
-			isNull(snapshot.bestAsk)
-		) return null
-		return (snapshot.bestBid + snapshot.bestAsk) / 2
+		return snapshot?.midpointPrice ?? null
 	}
 
 	/**
 	 * Start the interval timer for saving snapshots
 	 */
 	public startMinuteTimer(): void {
-		console.log(`⏰ Starting price snapshot timer (interval: ${this.SNAPSHOT_INTERVAL_MS / 1000}s)`)
+		console.info(`⏰ Starting price snapshot timer (interval: ${this.SNAPSHOT_INTERVAL_MS / 1000}s)`)
 		this.scheduleNextMinute()
 	}
 
@@ -109,7 +104,7 @@ export default class PriceTracker extends Singleton {
 		if (!this.saveTimer) return
 		clearTimeout(this.saveTimer)
 		this.saveTimer = null
-		console.log("⏰ Stopped price snapshot timer")
+		console.info("⏰ Stopped price snapshot timer")
 	}
 
 	/**
@@ -127,7 +122,7 @@ export default class PriceTracker extends Singleton {
 		}, delay)
 
 		const nextTime = new Date(nextInterval).toISOString()
-		console.log(`⏰ Next price snapshot save scheduled for ${nextTime} (in ${Math.round(delay / 1000)}s)`)
+		console.info(`⏰ Next price snapshot save scheduled for ${nextTime} (in ${Math.round(delay / 1000)}s)`)
 	}
 
 	/**
@@ -139,10 +134,10 @@ export default class PriceTracker extends Singleton {
 
 		try {
 			const snapshots = Array.from(this.priceSnapshots.values())
-			console.log(`💾 Saving ${snapshots.length} price snapshots to database...`)
+			console.info(`💾 Saving ${snapshots.length} price snapshots to database...`)
 
 			await createPriceSnapshots(snapshots)
-			console.log(`✅ Saved ${snapshots.length} price snapshots`)
+			console.info(`✅ Saved ${snapshots.length} price snapshots`)
 
 			ClientWebSocketManager.getInstance().broadcastPriceUpdates(snapshots)
 

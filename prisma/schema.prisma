@@ -122,6 +122,7 @@ model polymarket_market {
 	last_trade_price               								Float?    // From outcomePrices array
 	best_bid													Float?    // From outcomePrices array
 	best_ask													Float?    // From outcomePrices array
+	midpoint_price												Float?
 	spread														Float?
 
 	// Volume metrics (market-level)

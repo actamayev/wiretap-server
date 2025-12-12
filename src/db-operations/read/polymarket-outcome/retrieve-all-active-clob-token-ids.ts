@@ -22,7 +22,7 @@ export default async function getAllActiveClobTokenIds(): Promise<ClobTokenId[]>
 
 		const clobTokenIds = outcomes.map((outcome) => outcome.clob_token_id as ClobTokenId)
 
-		console.log(`📋 Retrieved ${clobTokenIds.length} active clob_token_ids from database`)
+		console.info(`📋 Retrieved ${clobTokenIds.length} active clob_token_ids from database`)
 
 		return clobTokenIds
 	} catch (error) {

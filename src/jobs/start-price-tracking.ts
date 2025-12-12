@@ -6,7 +6,7 @@ let wsClient: PolymarketWebSocketClient | null = null
 
 export async function startPriceTracking(): Promise<void> {
 	try {
-		console.log("🚀 Starting price tracking system...")
+		console.info("🚀 Starting price tracking system...")
 
 		const clobTokenIds = await getAllActiveClobTokenIds()
 
@@ -15,7 +15,7 @@ export async function startPriceTracking(): Promise<void> {
 			return
 		}
 
-		console.log(`📊 Found ${clobTokenIds.length} active clob_token_ids to track`)
+		console.info(`📊 Found ${clobTokenIds.length} active clob_token_ids to track`)
 
 		// Get singleton instance directly
 		const priceTracker = PriceTracker.getInstance()
@@ -42,7 +42,7 @@ export async function startPriceTracking(): Promise<void> {
 		await wsClient.connect(clobTokenIds)
 		priceTracker.startMinuteTimer()
 
-		console.log("✅ Price tracking system started successfully")
+		console.info("✅ Price tracking system started successfully")
 	} catch (error) {
 		console.error("❌ Failed to start price tracking:", error)
 		throw error
@@ -81,16 +81,16 @@ export async function updatePriceTracking(): Promise<void> {
 			![...currentSet].every(token => newSet.has(token))
 
 		if (!hasChanged) {
-			console.log("✅ Market list unchanged, skipping subscription update")
+			console.info("✅ Market list unchanged, skipping subscription update")
 			return
 		}
 
-		console.log(`🔄 Market list changed: ${currentTokenIds.length} → ${newClobTokenIds.length} tokens`)
+		console.info(`🔄 Market list changed: ${currentTokenIds.length} → ${newClobTokenIds.length} tokens`)
 
 		// Update subscription without disconnecting
 		wsClient.updateSubscription(newClobTokenIds)
 
-		console.log("✅ Price tracking subscription updated")
+		console.info("✅ Price tracking subscription updated")
 	} catch (error) {
 		console.error("❌ Failed to update price tracking:", error)
 		// Don't throw - let existing connection continue
@@ -98,7 +98,7 @@ export async function updatePriceTracking(): Promise<void> {
 }
 
 async function stopPriceTracking(): Promise<void> {
-	console.log("🛑 Stopping price tracking system...")
+	console.info("🛑 Stopping price tracking system...")
 
 	// Singleton persists, just stop its timer and clear data
 	const priceTracker = PriceTracker.getInstance()
@@ -110,11 +110,11 @@ async function stopPriceTracking(): Promise<void> {
 		wsClient = null
 	}
 
-	console.log("✅ Price tracking system stopped")
+	console.info("✅ Price tracking system stopped")
 }
 
 async function restartPriceTracking(): Promise<void> {
-	console.log("🔄 Restarting price tracking with updated market list...")
+	console.info("🔄 Restarting price tracking with updated market list...")
 	await stopPriceTracking()
 	await startPriceTracking()
 }

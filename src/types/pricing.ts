@@ -5,7 +5,7 @@ declare global {
 		bestAsk: number | null
 		midpointPrice: number | null
 		lastTradePrice: number | null
-		timestamp: number // When this snapshot was last updated (Date.now())
+		timestamp: number // Unix timestamp in milliseconds
 	}
 }
 

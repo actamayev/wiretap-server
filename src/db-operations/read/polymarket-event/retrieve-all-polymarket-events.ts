@@ -29,8 +29,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 					select: {
 						market_id: true,
 						question: true,
-						best_bid: true,
-						best_ask: true,
+						midpoint_price: true,
 						last_trade_price: true,
 						spread: true,
 						created_at: true,
@@ -41,8 +40,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 								clob_token_id: true,
 								price_history: {
 									select: {
-										best_bid: true,
-										best_ask: true,
+										midpoint: true,
 										last_trade_price: true,
 										timestamp: true,
 									},
@@ -71,7 +69,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 				marketQuestion: market.question,
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
-				midpointPrice: market.best_bid !== null && market.best_ask !== null ? (market.best_bid + market.best_ask) / 2 : null,
+				midpointPrice: market.midpoint_price,
 				lastTradePrice: market.last_trade_price,
 				spread: market.spread,
 				outcomes: market.outcomes.sort((a) => a.outcome === "YES" ? -1 : 1).map((outcome) => ({
@@ -79,7 +77,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 					clobTokenId: outcome.clob_token_id as ClobTokenId,
 					priceHistory: outcome.price_history.map((price) => ({
 						timestamp: price.timestamp,
-						price: price.best_ask || 0,
+						price: price.midpoint || 0,
 					})),
 				})),
 			})),
