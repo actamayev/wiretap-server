@@ -1,16 +1,16 @@
 import { isNull } from "lodash"
 import { Request, Response, NextFunction } from "express"
-import fetchPolymarketPrice from "../../../utils/polymarket/fetch-current-price"
+import PriceTracker from "../../../classes/price-tracker"
 
-export default async function validateSellOrderAndFetchPrice(
+export default function validateSellOrderAndFetchPrice(
 	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<void> {
+): void {
 	try {
 		const { clobToken, numberOfSharesSelling } = req.body as { clobToken: ClobTokenId, numberOfSharesSelling: number }
 
-		const currentPrice = await fetchPolymarketPrice(clobToken)
+		const currentPrice = PriceTracker.getInstance().getBestBid(clobToken) ?? 0
 
 		if (isNull(currentPrice)) {
 			res.status(500).json({ message: "Unable to fetch current market price. Please try again." } satisfies MessageResponse)

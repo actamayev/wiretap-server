@@ -68,6 +68,23 @@ export default class PriceTracker extends Singleton {
 		return (snapshot.bestBid + snapshot.bestAsk) / 2
 	}
 
+	public getBestAsk(clobTokenId: ClobTokenId): number | null {
+		const snapshot = this.priceSnapshots.get(clobTokenId)
+		if (
+			isUndefined(snapshot) ||
+			isNull(snapshot.bestAsk)
+		) return null
+		return snapshot.bestAsk
+	}
+
+	public getBestBid(clobTokenId: ClobTokenId): number | null {
+		const snapshot = this.priceSnapshots.get(clobTokenId)
+		if (
+			isUndefined(snapshot) ||
+			isNull(snapshot.bestBid)
+		) return null
+		return snapshot.bestBid
+	}
 	/**
 	 * Start the interval timer for saving snapshots
 	 */
@@ -118,14 +135,7 @@ export default class PriceTracker extends Singleton {
 			await createPriceSnapshots(snapshots)
 			console.log(`✅ Saved ${snapshots.length} price snapshots`)
 
-			const priceUpdates: PriceUpdate[] = snapshots.map(snapshot => ({  // ✅ Use snapshots
-				clobTokenId: snapshot.clobTokenId,
-				bestBid: snapshot.bestBid,
-				bestAsk: snapshot.bestAsk,
-				lastTradePrice: snapshot.lastTradePrice
-			}))
-
-			ClientWebSocketManager.getInstance().broadcastPriceUpdates(priceUpdates)
+			ClientWebSocketManager.getInstance().broadcastPriceUpdates(snapshots)
 
 			// Calculate portfolio snapshots immediately after saving prices
 			await calculatePortfolioSnapshots()

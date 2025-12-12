@@ -20,14 +20,19 @@ export default class ClientWebSocketManager extends Singleton {
 	/**
 	 * Broadcast price updates to ALL connected clients
 	 */
-	public broadcastPriceUpdates(prices: PriceUpdate[]): void {
+	public broadcastPriceUpdates(snapshots: PriceSnapshot[]): void {
 		const payload: MarketPricesUpdate = {
-			prices,
+			prices: snapshots.map(snapshot => ({
+				clobTokenId: snapshot.clobTokenId,
+				bestBid: snapshot.bestBid,
+				bestAsk: snapshot.bestAsk,
+				lastTradePrice: snapshot.lastTradePrice
+			})),
 			timestamp: Date.now()
 		}
 
 		this.io.emit("market:prices", payload)
-		console.log(`📊 Broadcast ${prices.length} price updates to ${this.io.sockets.sockets.size} clients`)
+		console.log(`📊 Broadcast ${snapshots.length} price updates to ${this.io.sockets.sockets.size} clients`)
 	}
 
 	/**

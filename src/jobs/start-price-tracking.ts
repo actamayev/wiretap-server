@@ -21,10 +21,10 @@ export async function startPriceTracking(): Promise<void> {
 		const priceTracker = PriceTracker.getInstance()
 
 		wsClient = new PolymarketWebSocketClient({
-			onPriceChange: (message): void => {
+			onPriceChange: (message: PolymarketPriceChangeMessage): void => {
 				PriceTracker.getInstance().updateFromPriceChange(message)
 			},
-			onLastTradePrice: (message): void => {
+			onLastTradePrice: (message: PolymarketLastTradePriceMessage): void => {
 				PriceTracker.getInstance().updateFromLastTradePrice(message)
 			},
 			onError: (error): void => {
