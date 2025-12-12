@@ -24,8 +24,7 @@ export default class ClientWebSocketManager extends Singleton {
 		const payload: MarketPricesUpdate = {
 			prices: snapshots.map(snapshot => ({
 				clobTokenId: snapshot.clobTokenId,
-				bestBid: snapshot.bestBid,
-				bestAsk: snapshot.bestAsk,
+				midpointPrice: snapshot.bestBid !== null && snapshot.bestAsk !== null ? (snapshot.bestBid + snapshot.bestAsk) / 2 : null,
 				lastTradePrice: snapshot.lastTradePrice
 			})),
 			timestamp: Date.now()

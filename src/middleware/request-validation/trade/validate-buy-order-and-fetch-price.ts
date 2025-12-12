@@ -10,7 +10,7 @@ export default function validateBuyOrderAndFetchPrice(
 	try {
 		const { clobToken, valueOfSharesPurchasing } = req.body as { clobToken: ClobTokenId, valueOfSharesPurchasing: number }
 
-		const currentPrice = PriceTracker.getInstance().getBestAsk(clobToken) ?? 0
+		const currentPrice = PriceTracker.getInstance().getMidpoint(clobToken) ?? 0
 
 		if (isNull(currentPrice)) {
 			res.status(500).json({ message: "Unable to fetch current market price. Please try again." } satisfies MessageResponse)

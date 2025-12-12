@@ -71,8 +71,7 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 				marketQuestion: market.question,
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
-				bestBid: market.best_bid,
-				bestAsk: market.best_ask,
+				midpointPrice: market.best_bid !== null && market.best_ask !== null ? (market.best_bid + market.best_ask) / 2 : null,
 				lastTradePrice: market.last_trade_price,
 				spread: market.spread,
 				outcomes: market.outcomes.sort((a) => a.outcome === "YES" ? -1 : 1).map((outcome) => ({

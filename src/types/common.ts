@@ -190,10 +190,7 @@ declare global {
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
 		outcomes: SingleOutcome[]
-		bestBid: number | null
-		bestAsk: number | null
-		lastTradePrice: number | null
-		spread: number | null
+		midpointPrice: number | null
 	}
 
 	interface SingleOutcome {
@@ -224,9 +221,7 @@ declare global {
 
 	interface PriceUpdate {
 		clobTokenId: ClobTokenId
-		bestBid: number | null
-		bestAsk: number | null
-		lastTradePrice: number | null
+		midpointPrice: number | null
 	}
 
 	interface MarketPricesUpdate {

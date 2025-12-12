@@ -10,7 +10,7 @@ import ClientWebSocketManager from "./client-websocket-manager"
 export default class PriceTracker extends Singleton {
 	private priceSnapshots: Map<ClobTokenId, PriceSnapshot> = new Map()
 	private saveTimer: NodeJS.Timeout | null = null
-	private readonly SNAPSHOT_INTERVAL_MS = 60000
+	private readonly SNAPSHOT_INTERVAL_MS = 5000
 
 	private constructor() {
 		super()
@@ -27,15 +27,31 @@ export default class PriceTracker extends Singleton {
 	 * Update price data from a price_change message
 	 */
 	public updateFromPriceChange(message: PolymarketPriceChangeMessage): void {
+		const timestamp = parseInt(message.timestamp, 10)
 		for (const change of message.price_changes) {
 			const existing = this.priceSnapshots.get(change.asset_id)
+			const bestBid = parseFloat(change.best_bid)
+			const bestAsk = parseFloat(change.best_ask)
+			const midpointPrice = (bestBid + bestAsk) / 2
+
+			if (isUndefined(existing)) {
+				this.priceSnapshots.set(change.asset_id, {
+					clobTokenId: change.asset_id,
+					bestBid,
+					bestAsk,
+					midpointPrice,
+					lastTradePrice: null,
+					timestamp
+				})
+				return
+			}
 
 			this.priceSnapshots.set(change.asset_id, {
-				clobTokenId: change.asset_id,
-				bestBid: parseFloat(change.best_bid),
-				bestAsk: parseFloat(change.best_ask),
-				lastTradePrice: existing?.lastTradePrice ?? null,
-				timestamp: Date.now()
+				...existing,
+				bestBid,
+				bestAsk,
+				midpointPrice,
+				timestamp
 			})
 		}
 	}
@@ -44,14 +60,24 @@ export default class PriceTracker extends Singleton {
 	 * Update last trade price from a last_trade_price message
 	 */
 	public updateFromLastTradePrice(message: PolymarketLastTradePriceMessage): void {
+		const timestamp = parseInt(message.timestamp, 10)
 		const existing = this.priceSnapshots.get(message.asset_id)
+		if (isUndefined(existing)) {
+			this.priceSnapshots.set(message.asset_id, {
+				clobTokenId: message.asset_id,
+				bestBid: null,
+				bestAsk: null,
+				midpointPrice: null,
+				lastTradePrice: parseFloat(message.price),
+				timestamp
+			})
+			return
+		}
 
 		this.priceSnapshots.set(message.asset_id, {
-			clobTokenId: message.asset_id,
-			bestBid: existing?.bestBid ?? null,
-			bestAsk: existing?.bestAsk ?? null,
+			...existing,
 			lastTradePrice: parseFloat(message.price),
-			timestamp: Date.now()
+			timestamp
 		})
 	}
 
@@ -68,23 +94,6 @@ export default class PriceTracker extends Singleton {
 		return (snapshot.bestBid + snapshot.bestAsk) / 2
 	}
 
-	public getBestAsk(clobTokenId: ClobTokenId): number | null {
-		const snapshot = this.priceSnapshots.get(clobTokenId)
-		if (
-			isUndefined(snapshot) ||
-			isNull(snapshot.bestAsk)
-		) return null
-		return snapshot.bestAsk
-	}
-
-	public getBestBid(clobTokenId: ClobTokenId): number | null {
-		const snapshot = this.priceSnapshots.get(clobTokenId)
-		if (
-			isUndefined(snapshot) ||
-			isNull(snapshot.bestBid)
-		) return null
-		return snapshot.bestBid
-	}
 	/**
 	 * Start the interval timer for saving snapshots
 	 */
