@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit --project tsconfig.json",
     "validate": "pnpm run lint && pnpm run type-check",
+    "check-unused": "ts-unused-exports tsconfig.json --excludePathsFromReport=\"test|spec|\\.next|proxy\\.ts|src/generated/prisma|prisma\\.config\\.ts|tsup\\.config\\.ts\"",
     "deploy": "pnpm install --prod && pnpm build:prod && pm2 restart 0"
   },
   "ts-node": {
@@ -26,6 +27,12 @@
     ],
     "ext": "ts, tsx",
     "exec": "ts-node --files ./src/index.ts"
+  },
+  "depcheck": {
+    "ignores": [
+      "@react-email/preview-server",
+      "ts-node"
+    ]
   },
   "keywords": [],
   "author": "",

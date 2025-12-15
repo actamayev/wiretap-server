@@ -145,14 +145,14 @@ declare global {
 	}
 
 	interface AllEventsResponse {
-		events: SingleEvent[]
+		events: SingleEventMetadata[]
 	}
 
 	interface SingleEventResponse {
-		event: SingleEvent
+		event: SingleEventMetadata
 	}
 
-	interface SingleEvent {
+	interface SingleEventMetadata {
 		eventId: EventId
 		eventSlug: EventSlug
 		eventTitle: string
@@ -162,29 +162,23 @@ declare global {
 		eventPolymarketUrl: string
 		eventCreatedAt: Date
 		eventUpdatedAt: Date
-		eventMarkets: SingleMarket[]
 		eventTotalVolume: number
 		eventEndDate: Date
+		eventMarkets: SingleMarketMetadata[]
 	}
 
-	interface SingleMarket {
+	interface SingleMarketMetadata {
 		marketId: MarketId
 		marketQuestion: string | null
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
-		outcomes: SingleOutcome[]
+		outcomes: SingleOutcomeMetadata[]
 		midpointPrice: number | null
 	}
 
-	interface SingleOutcome {
+	interface SingleOutcomeMetadata {
 		outcome: OutcomeString
 		clobTokenId: ClobTokenId
-		priceHistory: SinglePriceSnapshot[]
-	}
-
-	interface SinglePriceSnapshot {
-		timestamp: Date
-		price: number
 	}
 
 	// ============================================
