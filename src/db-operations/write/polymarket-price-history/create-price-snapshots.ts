@@ -30,7 +30,7 @@ export default async function createPriceSnapshots(snapshots: PriceSnapshot[]): 
 			skipDuplicates: false // We want all price records, even if timing overlaps
 		})
 
-		console.log(`✅ Inserted ${records.length} price history records`)
+		console.info(`✅ Inserted ${records.length} price history records`)
 	} catch (error) {
 		console.error("Error inserting price snapshots:", error)
 		throw error

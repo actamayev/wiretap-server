@@ -4,7 +4,7 @@ import { startPriceTracking } from "./start-price-tracking"
 import EventsCache from "../classes/events-cache"
 
 export default async function startBackgroundJobs(): Promise<void> {
-	console.log("🚀 Starting background jobs...")
+	console.info("🚀 Starting background jobs...")
 
 	// Run market sync immediately on startup
 	await syncMarkets()

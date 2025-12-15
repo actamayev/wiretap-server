@@ -29,13 +29,13 @@ export default class PolymarketWebSocketClient {
 		}
 
 		this.clobTokenIds = clobTokenIds
-		console.log(`🔌 Connecting to Polymarket WebSocket with ${clobTokenIds.length} assets...`)
+		console.info(`🔌 Connecting to Polymarket WebSocket with ${clobTokenIds.length} assets...`)
 
 		return new Promise((resolve, reject) => {
 			this.ws = new WebSocket(POLYMARKET_WS_URL)
 
 			this.ws.on("open", () => {
-				console.log("✅ WebSocket connected")
+				console.info("✅ WebSocket connected")
 				this.isConnected = true
 
 				// Subscribe to market channel
@@ -45,7 +45,7 @@ export default class PolymarketWebSocketClient {
 				}
 
 				this.ws?.send(JSON.stringify(subscription))
-				console.log(`📡 Subscribed to ${this.clobTokenIds.length} markets`)
+				console.info(`📡 Subscribed to ${this.clobTokenIds.length} markets`)
 
 				// Start ping interval
 				this.startPingInterval()
@@ -63,7 +63,7 @@ export default class PolymarketWebSocketClient {
 			})
 
 			this.ws.on("close", () => {
-				console.log("🔌 WebSocket closed")
+				console.info("🔌 WebSocket closed")
 				this.isConnected = false
 				this.stopPingInterval()
 				this.callbacks.onClose()
@@ -77,7 +77,7 @@ export default class PolymarketWebSocketClient {
 	public disconnect(): Promise<void> {
 		if (!this.ws) return Promise.resolve()
 
-		console.log("🔌 Disconnecting WebSocket...")
+		console.info("🔌 Disconnecting WebSocket...")
 		this.stopPingInterval()
 		this.isConnected = false
 
@@ -183,7 +183,7 @@ export default class PolymarketWebSocketClient {
 		}
 
 		this.clobTokenIds = clobTokenIds
-		console.log(`🔄 Updating subscription to ${clobTokenIds.length} assets...`)
+		console.info(`🔄 Updating subscription to ${clobTokenIds.length} assets...`)
 
 		const subscription: MarketChannelSubscription = {
 			type: "market",
@@ -191,7 +191,7 @@ export default class PolymarketWebSocketClient {
 		}
 
 		this.ws.send(JSON.stringify(subscription))
-		console.log("✅ Subscription updated")
+		console.info("✅ Subscription updated")
 	}
 
 	public getCurrentSubscription(): ClobTokenId[] {

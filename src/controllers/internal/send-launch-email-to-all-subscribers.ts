@@ -6,7 +6,7 @@ export default async function sendLaunchEmailToAllSubscribers(_req: Request, res
 	try {
 		// Retrieve all subscribers from database
 		const emails = await retrieveAllEmailSubscribers()
-		console.log(`📧 Found ${emails.length} email subscribers`)
+		console.info(`📧 Found ${emails.length} email subscribers`)
 
 		// Send response immediately so the request doesn't timeout
 		res.status(200).json({
@@ -32,7 +32,7 @@ export default async function sendLaunchEmailToAllSubscribers(_req: Request, res
 			}
 		}
 
-		console.log(`📧 Launch email campaign complete: ${sentCount} sent, ${failedCount} failed`)
+		console.info(`📧 Launch email campaign complete: ${sentCount} sent, ${failedCount} failed`)
 	} catch (error) {
 		console.error("Error in sendLaunchEmailToAllSubscribers:", error)
 		// Response already sent, so just log the error

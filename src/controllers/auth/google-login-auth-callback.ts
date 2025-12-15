@@ -9,6 +9,7 @@ import createGoogleAuthClient from "../../utils/google/create-google-auth-client
 import retrieveMyFunds from "../../db-operations/read/wiretap-fund/retrieve-my-funds"
 import retrieveUserIdByEmail from "../../db-operations/read/credentials/retrieve-user-id-by-email"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
+import createStartingFundForUser from "../../db-operations/read/wiretap-fund/create-starting-fund-for-user"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function googleLoginAuthCallback(req: Request, res: Response): Promise<void> {
@@ -33,15 +34,20 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 		let userId = await retrieveUserIdByEmail(payload.email)
 		let accessToken: string
 		let isNewUser = false
-		let personalInfo: BasicPersonalInfoResponse | undefined = undefined
+		const personalInfo: BasicPersonalInfoResponse = {
+			email: payload.email,
+			isGoogleUser: true
+		}
 		let funds: SingleFund[] = []
 		if (isUndefined(userId)) {
 			res.status(500).json({ error: "Unable to login with this email. Account offline." } satisfies ErrorResponse)
 			return
 		} else if (isNull(userId)) {
 			userId = await addGoogleUser(payload.email)
-			accessToken = await signJWT({ userId, username: null, isActive: true })
+			accessToken = await signJWT({ userId, isActive: true })
 			isNewUser = true
+			const fund = await createStartingFundForUser(userId)
+			funds = [fund]
 		} else {
 			const credentialsResult = await findUserById(userId)
 			if (isNull(credentialsResult)) {
@@ -49,12 +55,7 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 				res.status(400).json({ message: `There is no Wiretap account associated with ${payload.email}. Please try again.` } satisfies MessageResponse)
 				return
 			}
-			accessToken = await signJWT({ userId, username: credentialsResult.username as string, isActive: true })
-			personalInfo = {
-				username: credentialsResult.username as string,
-				email: payload.email,
-				isGoogleUser: true
-			}
+			accessToken = await signJWT({ userId, isActive: true })
 			funds = await retrieveMyFunds(userId)
 		}
 

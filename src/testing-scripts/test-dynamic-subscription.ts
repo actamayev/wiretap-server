@@ -14,14 +14,14 @@ const TOKEN_1 = "877699910261148941635807777938455231682269800765538146898752382
 const TOKEN_2 = "13411284055273560855537595688801764123705139415061660246624128667183605973730"
 
 async function testDynamicSubscription(): Promise<void> {
-	console.log("🧪 Testing dynamic WebSocket subscription updates...\n")
+	console.info("🧪 Testing dynamic WebSocket subscription updates...\n")
 
 	const ws = new WebSocket(WS_URL)
 	const receivedAssets = new Set<string>()
 
 	ws.on("open", () => {
-		console.log("✅ WebSocket connected")
-		console.log(`📡 Initial subscription: [${TOKEN_1}]\n`)
+		console.info("✅ WebSocket connected")
+		console.info(`📡 Initial subscription: [${TOKEN_1}]\n`)
 
 		// Initial subscription with only TOKEN_1
 		const initialSub = {
@@ -39,7 +39,7 @@ async function testDynamicSubscription(): Promise<void> {
 
 		// After 15 seconds, try to update subscription with both tokens
 		setTimeout(() => {
-			console.log(`\n🔄 Sending updated subscription: [${TOKEN_1}, ${TOKEN_2}]\n`)
+			console.info(`\n🔄 Sending updated subscription: [${TOKEN_1}, ${TOKEN_2}]\n`)
 
 			const updatedSub = {
 				type: "market",
@@ -52,29 +52,29 @@ async function testDynamicSubscription(): Promise<void> {
 		setTimeout(() => {
 			clearInterval(pingInterval)
 
-			console.log("\n" + "=".repeat(80))
-			console.log("📊 TEST RESULTS")
-			console.log("=".repeat(80))
-			console.log("Assets that sent messages:")
+			console.info("\n" + "=".repeat(80))
+			console.info("📊 TEST RESULTS")
+			console.info("=".repeat(80))
+			console.info("Assets that sent messages:")
 			receivedAssets.forEach(asset => {
 				if (asset === TOKEN_1) {
-					console.log(`  ✅ ${asset} (TOKEN_1 - initially subscribed)`)
+					console.info(`  ✅ ${asset} (TOKEN_1 - initially subscribed)`)
 				} else if (asset === TOKEN_2) {
-					console.log(`  ✅ ${asset} (TOKEN_2 - added dynamically)`)
+					console.info(`  ✅ ${asset} (TOKEN_2 - added dynamically)`)
 				} else {
-					console.log(`  ⚠️  ${asset} (unknown token)`)
+					console.info(`  ⚠️  ${asset} (unknown token)`)
 				}
 			})
 
-			console.log("\n" + "=".repeat(80))
+			console.info("\n" + "=".repeat(80))
 			if (receivedAssets.has(TOKEN_2)) {
-				console.log("✅ RESULT: Dynamic subscription update WORKS!")
-				console.log("   We received messages for TOKEN_2 after updating subscription")
+				console.info("✅ RESULT: Dynamic subscription update WORKS!")
+				console.info("   We received messages for TOKEN_2 after updating subscription")
 			} else {
-				console.log("❌ RESULT: Dynamic subscription update DOES NOT WORK")
-				console.log("   We only received messages for TOKEN_1 (initial subscription)")
+				console.info("❌ RESULT: Dynamic subscription update DOES NOT WORK")
+				console.info("   We only received messages for TOKEN_1 (initial subscription)")
 			}
-			console.log("=".repeat(80) + "\n")
+			console.info("=".repeat(80) + "\n")
 
 			ws.close()
 			process.exit(0)
@@ -86,19 +86,19 @@ async function testDynamicSubscription(): Promise<void> {
 
 		// Ignore PONG responses
 		if (messageStr === "PONG") {
-			console.log("📩 Received PONG")
+			console.info("📩 Received PONG")
 			return
 		}
 
 		// Log first 150 chars of raw message to see what we're getting
-		console.log(`📩 Received: ${messageStr.substring(0, 150)}${messageStr.length > 150 ? "..." : ""}`)
+		console.info(`📩 Received: ${messageStr.substring(0, 150)}${messageStr.length > 150 ? "..." : ""}`)
 
 		try {
 			const parsed = JSON.parse(messageStr)
 
 			// Handle arrays (initial book snapshots)
 			if (Array.isArray(parsed)) {
-				console.log(`   📦 Array of ${parsed.length} messages`)
+				console.info(`   📦 Array of ${parsed.length} messages`)
 				for (const message of parsed) {
 					processMessage(message, receivedAssets)
 				}
@@ -106,7 +106,7 @@ async function testDynamicSubscription(): Promise<void> {
 			}
 
 			// Handle single messages
-			console.log(`   📦 Single message: ${parsed.event_type}`)
+			console.info(`   📦 Single message: ${parsed.event_type}`)
 			processMessage(parsed, receivedAssets)
 		} catch (error) {
 			console.error("Failed to parse message:", error)
@@ -119,7 +119,7 @@ async function testDynamicSubscription(): Promise<void> {
 	})
 
 	ws.on("close", () => {
-		console.log("🔌 WebSocket closed")
+		console.info("🔌 WebSocket closed")
 	})
 }
 
@@ -144,7 +144,7 @@ function processMessage(message: any, receivedAssets: Set<string>): void {
 		if (!receivedAssets.has(assetId)) {
 			const tokenLabel = assetId === TOKEN_1 ? "TOKEN_1" :
 			                   assetId === TOKEN_2 ? "TOKEN_2" : "UNKNOWN"
-			console.log(`📨 Received ${message.event_type} message for ${tokenLabel}`)
+			console.info(`📨 Received ${message.event_type} message for ${tokenLabel}`)
 		}
 		receivedAssets.add(assetId)
 	}

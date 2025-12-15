@@ -1,7 +1,7 @@
 import createPriceSnapshots from "../db-operations/write/polymarket-price-history/create-price-snapshots"
 import Singleton from "./singleton"
 import calculatePortfolioSnapshots from "../jobs/calculate-portfolio-snapshots"
-import { isNull, isUndefined } from "lodash"
+import { isUndefined } from "lodash"
 import ClientWebSocketManager from "./client-websocket-manager"
 
 /**
@@ -27,15 +27,31 @@ export default class PriceTracker extends Singleton {
 	 * Update price data from a price_change message
 	 */
 	public updateFromPriceChange(message: PolymarketPriceChangeMessage): void {
+		const timestamp = parseInt(message.timestamp, 10)
 		for (const change of message.price_changes) {
 			const existing = this.priceSnapshots.get(change.asset_id)
+			const bestBid = parseFloat(change.best_bid)
+			const bestAsk = parseFloat(change.best_ask)
+			const midpointPrice = (bestBid + bestAsk) / 2
+
+			if (isUndefined(existing)) {
+				this.priceSnapshots.set(change.asset_id, {
+					clobTokenId: change.asset_id,
+					bestBid,
+					bestAsk,
+					midpointPrice,
+					lastTradePrice: null,
+					timestamp
+				})
+				return
+			}
 
 			this.priceSnapshots.set(change.asset_id, {
-				clobTokenId: change.asset_id,
-				bestBid: parseFloat(change.best_bid),
-				bestAsk: parseFloat(change.best_ask),
-				lastTradePrice: existing?.lastTradePrice ?? null,
-				timestamp: Date.now()
+				...existing,
+				bestBid,
+				bestAsk,
+				midpointPrice,
+				timestamp
 			})
 		}
 	}
@@ -44,14 +60,24 @@ export default class PriceTracker extends Singleton {
 	 * Update last trade price from a last_trade_price message
 	 */
 	public updateFromLastTradePrice(message: PolymarketLastTradePriceMessage): void {
+		const timestamp = parseInt(message.timestamp, 10)
 		const existing = this.priceSnapshots.get(message.asset_id)
+		if (isUndefined(existing)) {
+			this.priceSnapshots.set(message.asset_id, {
+				clobTokenId: message.asset_id,
+				bestBid: null,
+				bestAsk: null,
+				midpointPrice: null,
+				lastTradePrice: parseFloat(message.price),
+				timestamp
+			})
+			return
+		}
 
 		this.priceSnapshots.set(message.asset_id, {
-			clobTokenId: message.asset_id,
-			bestBid: existing?.bestBid ?? null,
-			bestAsk: existing?.bestAsk ?? null,
+			...existing,
 			lastTradePrice: parseFloat(message.price),
-			timestamp: Date.now()
+			timestamp
 		})
 	}
 
@@ -60,19 +86,14 @@ export default class PriceTracker extends Singleton {
 	 */
 	public getMidpoint(clobTokenId: ClobTokenId): number | null {
 		const snapshot = this.priceSnapshots.get(clobTokenId)
-		if (
-			isUndefined(snapshot) ||
-			isNull(snapshot.bestBid) ||
-			isNull(snapshot.bestAsk)
-		) return null
-		return (snapshot.bestBid + snapshot.bestAsk) / 2
+		return snapshot?.midpointPrice ?? null
 	}
 
 	/**
 	 * Start the interval timer for saving snapshots
 	 */
 	public startMinuteTimer(): void {
-		console.log(`⏰ Starting price snapshot timer (interval: ${this.SNAPSHOT_INTERVAL_MS / 1000}s)`)
+		console.info(`⏰ Starting price snapshot timer (interval: ${this.SNAPSHOT_INTERVAL_MS / 1000}s)`)
 		this.scheduleNextMinute()
 	}
 
@@ -83,7 +104,7 @@ export default class PriceTracker extends Singleton {
 		if (!this.saveTimer) return
 		clearTimeout(this.saveTimer)
 		this.saveTimer = null
-		console.log("⏰ Stopped price snapshot timer")
+		console.info("⏰ Stopped price snapshot timer")
 	}
 
 	/**
@@ -101,7 +122,7 @@ export default class PriceTracker extends Singleton {
 		}, delay)
 
 		const nextTime = new Date(nextInterval).toISOString()
-		console.log(`⏰ Next price snapshot save scheduled for ${nextTime} (in ${Math.round(delay / 1000)}s)`)
+		console.info(`⏰ Next price snapshot save scheduled for ${nextTime} (in ${Math.round(delay / 1000)}s)`)
 	}
 
 	/**
@@ -113,19 +134,12 @@ export default class PriceTracker extends Singleton {
 
 		try {
 			const snapshots = Array.from(this.priceSnapshots.values())
-			console.log(`💾 Saving ${snapshots.length} price snapshots to database...`)
+			console.info(`💾 Saving ${snapshots.length} price snapshots to database...`)
 
 			await createPriceSnapshots(snapshots)
-			console.log(`✅ Saved ${snapshots.length} price snapshots`)
+			console.info(`✅ Saved ${snapshots.length} price snapshots`)
 
-			const priceUpdates: PriceUpdate[] = snapshots.map(snapshot => ({  // ✅ Use snapshots
-				clobTokenId: snapshot.clobTokenId,
-				bestBid: snapshot.bestBid,
-				bestAsk: snapshot.bestAsk,
-				lastTradePrice: snapshot.lastTradePrice
-			}))
-
-			ClientWebSocketManager.getInstance().broadcastPriceUpdates(priceUpdates)
+			ClientWebSocketManager.getInstance().broadcastPriceUpdates(snapshots)
 
 			// Calculate portfolio snapshots immediately after saving prices
 			await calculatePortfolioSnapshots()

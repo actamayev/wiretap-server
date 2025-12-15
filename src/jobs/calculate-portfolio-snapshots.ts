@@ -12,13 +12,13 @@ import createPortfolioSnapshot from "../db-operations/read/portfolio-snapshot/cr
 
 export default async function calculatePortfolioSnapshots(): Promise<void> {
 	try {
-		console.log("📊 Calculating portfolio snapshots...")
+		console.info("📊 Calculating portfolio snapshots...")
 
 		const funds = await getFundsWithPositions()
 
 		if (isEmpty(funds)) return
 
-		console.log(`📊 Found ${funds.length} funds with positions`)
+		console.info(`📊 Found ${funds.length} funds with positions`)
 
 		const priceTracker = PriceTracker.getInstance()
 		let successCount = 0
@@ -56,7 +56,7 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 			}
 		}
 
-		console.log(`✅ Portfolio snapshots complete: ${successCount} successful, ${errorCount} errors`)
+		console.info(`✅ Portfolio snapshots complete: ${successCount} successful, ${errorCount} errors`)
 	} catch (error) {
 		console.error("❌ Failed to calculate portfolio snapshots:", error)
 	}

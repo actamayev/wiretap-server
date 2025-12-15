@@ -2,13 +2,11 @@ import Joi from "joi"
 import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 import emailValidator from "../../joi/email-validator"
-import usernameValidator from "../../joi/username-validator"
 import passwordValidatorSchema from "../../joi/password-validator"
 
 const registerInformationSchema = Joi.object({
 	registerInformation: Joi.object({
 		email: emailValidator.required().trim(),
-		username: usernameValidator.required().trim().min(3).max(100),
 		password: passwordValidatorSchema.required(),
 	}).required()
 }).required()

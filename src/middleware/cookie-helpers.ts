@@ -10,14 +10,13 @@ interface CookieOptions {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const AUTH_COOKIE_NAME = "auth_token"
+const AUTH_COOKIE_NAME = "auth_token"
 
 // Default cookie options for auth
 const getAuthCookieOptions = (): CookieOptions => ({
 	httpOnly: true,
 	secure: (process.env.NODE_ENV === "production"), // Only send over HTTPS in production
 	sameSite: "lax", // Allows cross-site navigation while preventing CSRF
-
 	domain: (process.env.NODE_ENV === "production") ? ".wiretap.pro" : undefined, // Subdomain sharing in production
 	maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
 })

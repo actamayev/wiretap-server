@@ -15,7 +15,6 @@ export default async function addUserFeedback (req: Request, res: Response): Pro
 			const user = await findUserById(userId)
 			if (user) {
 				await sendFeedbackEmail({
-					username: user.username,
 					userEmail: user.email,
 					feedback
 				})

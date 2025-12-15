@@ -27,7 +27,7 @@ export default class EventsCache extends Singleton {
 	public startRefreshTimer(): void {
 		if (this.refreshTimer) return // Already started
 
-		console.log("⏰ Starting events cache refresh timer (30s interval)")
+		console.info("⏰ Starting events cache refresh timer (30s interval)")
 		void this.refreshEvents() // Initial fetch
 		this.scheduleNextRefresh()
 	}
@@ -39,7 +39,7 @@ export default class EventsCache extends Singleton {
 		if (!this.refreshTimer) return
 		clearInterval(this.refreshTimer)
 		this.refreshTimer = null
-		console.log("⏰ Stopped events cache refresh timer")
+		console.info("⏰ Stopped events cache refresh timer")
 	}
 
 	/**
@@ -59,9 +59,9 @@ export default class EventsCache extends Singleton {
 
 		this.isRefreshing = true
 		try {
-			console.log("🔄 Refreshing events cache...")
+			console.info("🔄 Refreshing events cache...")
 			this.cachedEvents = await retrieveAllPolymarketEvents()
-			console.log(`✅ Events cache refreshed (${this.cachedEvents.length} events)`)
+			console.info(`✅ Events cache refreshed (${this.cachedEvents.length} events)`)
 		} catch (error) {
 			console.error("❌ Failed to refresh events cache:", error)
 			// Keep existing cache on error

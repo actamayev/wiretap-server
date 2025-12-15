@@ -2,10 +2,11 @@ import Joi from "joi"
 import isUndefined from "lodash/isUndefined"
 import { Request, Response, NextFunction } from "express"
 import passwordValidatorSchema from "../../joi/password-validator"
+import emailValidator from "../../joi/email-validator"
 
 const loginInformationSchema = Joi.object({
 	loginInformation: Joi.object({
-		contact: Joi.string().required().min(3).max(100),
+		email: emailValidator.required().trim(),
 		password: passwordValidatorSchema.required(),
 	}).required()
 }).required()
@@ -19,8 +20,8 @@ export default function validateLogin (req: Request, res: Response, next: NextFu
 			return
 		}
 
-		const trimmedContact = req.body.loginInformation.contact.trimEnd()
-		req.body.loginInformation.contact = trimmedContact
+		const trimmedEmail = req.body.loginInformation.email.trimEnd()
+		req.body.loginInformation.email = trimmedEmail
 
 		next()
 	} catch (error) {

@@ -9,7 +9,7 @@ import { getPriceTrackingStatus, updatePriceTracking } from "./start-price-track
 
 // eslint-disable-next-line max-lines-per-function
 export default async function syncMarkets(): Promise<void> {
-	console.log("🔄 Starting market sync...")
+	console.info("🔄 Starting market sync...")
 
 	try {
 		const events = await fetchActiveEvents()
@@ -48,15 +48,15 @@ export default async function syncMarkets(): Promise<void> {
 			}
 		}
 
-		console.log(`✅ Market sync complete: ${eventCount} events, ${marketCount} markets, ${outcomeCount} outcomes, ${skipCount} skipped`)
+		console.info(`✅ Market sync complete: ${eventCount} events, ${marketCount} markets, ${outcomeCount} outcomes, ${skipCount} skipped`)
 
 		// Restart WebSocket with updated market list
-		console.log("🔄 Updating WebSocket subscription with new markets...")
+		console.info("🔄 Updating WebSocket subscription with new markets...")
 		const status = getPriceTrackingStatus()
 		if (status.connected) {
 			await updatePriceTracking()
 		} else {
-			console.log("⏭️  WebSocket not yet started, skipping subscription update")
+			console.info("⏭️  WebSocket not yet started, skipping subscription update")
 		}
 	} catch (error) {
 		console.error("❌ Market sync failed:", error)

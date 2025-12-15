@@ -10,8 +10,7 @@ export default async function createPortfolioSnapshot(wiretapFundUuid: FundsUUID
 		await prismaClient.portfolio_snapshot.create({
 			data: {
 				wiretap_fund_uuid: wiretapFundUuid,
-				total_value: totalValue,
-				timestamp: new Date()
+				total_value: totalValue
 			}
 		})
 	} catch (error) {
