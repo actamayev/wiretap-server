@@ -5,9 +5,7 @@ import upsertPolymarketEvent from "../db-operations/write/polymarket-event/upser
 import upsertPolymarketMarket from "../db-operations/write/polymarket-market/upsert-polymarket-market"
 import upsertPolymarketOutcome from "../db-operations/write/polymarket-outcome/upsert-polymarket-outcome"
 import parseMarketOutcomes from "../utils/polymarket/parse-market-outcomes"
-import { getPriceTrackingStatus, updatePriceTracking } from "./start-price-tracking"
 
-// eslint-disable-next-line max-lines-per-function
 export default async function syncMarkets(): Promise<void> {
 	console.info("🔄 Starting market sync...")
 
@@ -49,15 +47,6 @@ export default async function syncMarkets(): Promise<void> {
 		}
 
 		console.info(`✅ Market sync complete: ${eventCount} events, ${marketCount} markets, ${outcomeCount} outcomes, ${skipCount} skipped`)
-
-		// Restart WebSocket with updated market list
-		console.info("🔄 Updating WebSocket subscription with new markets...")
-		const status = getPriceTrackingStatus()
-		if (status.connected) {
-			await updatePriceTracking()
-		} else {
-			console.info("⏭️  WebSocket not yet started, skipping subscription update")
-		}
 	} catch (error) {
 		console.error("❌ Market sync failed:", error)
 	}

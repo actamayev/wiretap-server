@@ -7,7 +7,7 @@ import retrieveAllPolymarketEventsMetadata from "../db-operations/read/polymarke
 export default class EventsCache extends Singleton {
 	private cachedEventsMetadata: Map<EventId, SingleEventMetadata> = new Map()
 	private refreshTimer: NodeJS.Timeout | null = null
-	private readonly REFRESH_INTERVAL_MS = 30000 // 30 seconds
+	private readonly REFRESH_INTERVAL_MS = 60000 // 1 minute
 	private isRefreshing = false
 
 	private constructor() {

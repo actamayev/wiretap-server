@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
-import PriceTracker from "../../../classes/price-tracker"
+import fetchCurrentTokenPrice from "../../../utils/polymarket/fetch-current-token-midpoint-price"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function retrieveMyFunds(userId: number): Promise<SingleFund[]> {
@@ -100,18 +100,18 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 		if (isEmpty(funds)) return []
 
 		// eslint-disable-next-line max-lines-per-function
-		const transformedFunds: SingleFund[] = funds.map((fund) => {
-			const positions = fund.positions.map((position) => ({
+		const transformedFunds: SingleFund[] = await Promise.all(funds.map(async (fund) => {
+			const positions = await Promise.all(fund.positions.map(async (position) => ({
 				clobToken: position.clob_token_id as ClobTokenId,
 				outcome: position.outcome.outcome as OutcomeString,
 				marketQuestion: position.outcome.market.question,
 				numberOfSharesHeld: position.number_shares_held,
 				costBasisPerShareUsd: position.average_cost_per_share,
-				currentMarketPricePerShareUsd: PriceTracker.getInstance().getMidpoint(position.clob_token_id as ClobTokenId) ?? 0,
+				currentMarketPricePerShareUsd: await fetchCurrentTokenPrice(position.clob_token_id as ClobTokenId),
 				positionCreatedAt: position.created_at,
 				polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
 				polymarketImageUrl: position.outcome.market.event.image_url as string
-			}))
+			})))
 
 			// Calculate portfolio value: sum of (numberOfSharesHeld * currentMarketPricePerShareUsd)
 			const positionsValueUsd = positions.reduce(
@@ -153,7 +153,7 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 					portfolioValueUsd: snapshot.total_value,
 				}))
 			}
-		})
+		}))
 		return transformedFunds
 	} catch (error) {
 		console.error(error)

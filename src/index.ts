@@ -3,13 +3,10 @@ import express from "express"
 import { isUndefined } from "lodash"
 
 import getEnvPath from "./utils/config/get-env-path"
-import { configureAppMiddleware, corsOptions } from "./middleware/init-config"
+import { configureAppMiddleware } from "./middleware/init-config"
 
 import setupRoutes from "./utils/config/setup-routes"
 import startBackgroundJobs from "./jobs/start-background-jobs"
-import { Server as HttpServer } from "http"
-import { Server as SocketIOServer } from "socket.io"
-import ClientWebSocketManager from "./classes/client-websocket-manager"
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.error("🚨 Unhandled Promise Rejection at:", promise, "reason:", reason)
@@ -26,22 +23,6 @@ process.on("uncaughtException", (error) => {
 dotenv.config({ path: getEnvPath() })
 
 const app = express()
-const httpServer = new HttpServer(app)
-app.set("trust proxy", 1)
-
-// Initialize Socket.IO
-const io = new SocketIOServer(httpServer, {
-	path: "/socketio",
-	cors: corsOptions
-})
-
-// Initialize ClientWebSocketManager singleton
-ClientWebSocketManager.getInstance(io)
-console.info("✅ Socket.IO initialized")
-
-console.info(`🚀 Server starting - PM2 Instance: ${process.env.PM2_INSTANCE_ID || "standalone"}`)
-console.info(`💾 Memory usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`)
-
 configureAppMiddleware(app)
 
 setupRoutes(app)
@@ -67,7 +48,7 @@ if (!isUndefined(process.env.NODE_ENV))  {
 
 // Start the server
 const PORT = 8080
-httpServer.listen(PORT, () => {
+app.listen(PORT, () => {
 	console.info(`Server is listening on port ${PORT}`)
 	void startBackgroundJobs()
 })

@@ -1,12 +1,12 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
-import PriceTracker from "../../../classes/price-tracker"
+import fetchCurrentTokenPrice from "../../../utils/polymarket/fetch-current-token-midpoint-price"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function retrieveSpecificClobPositions(
 	wiretapFundUuid: FundsUUID,
 	clobToken: ClobTokenId
-): Promise<SinglePosition[]| []> {
+): Promise<SinglePosition[]> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
@@ -41,17 +41,17 @@ export default async function retrieveSpecificClobPositions(
 
 		if (isNull(rawUserPositions)) return []
 
-		return rawUserPositions.map((position) => ({
+		return Promise.all(rawUserPositions.map(async (position) => ({
 			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
 			numberOfSharesHeld: position.number_shares_held,
 			costBasisPerShareUsd: position.average_cost_per_share,
-			currentMarketPricePerShareUsd: PriceTracker.getInstance().getMidpoint(position.clob_token_id as ClobTokenId) ?? 0,
+			currentMarketPricePerShareUsd: await fetchCurrentTokenPrice(position.clob_token_id as ClobTokenId),
 			positionCreatedAt: position.created_at,
 			polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: position.outcome.market.event.image_url as string
-		}))
+		})))
 	} catch (error) {
 		console.error(error)
 		throw error
