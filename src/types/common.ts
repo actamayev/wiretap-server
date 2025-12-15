@@ -11,7 +11,6 @@ declare global {
 
 	interface JwtPayload {
 		userId: number
-		username: string | null
 		isActive?: boolean
 		iat?: number
 		exp?: number
@@ -89,19 +88,12 @@ declare global {
 		fundUUID: FundsUUID
 	}
 
-	interface IncomingLoginRequest {
-		contact: string
-		password: string
-	}
-
-	interface IncomingRegisterRequest {
+	interface IncomingAuthRequest {
 		email: string
 		password: string
-		username: string
 	}
 
 	interface BasicPersonalInfoResponse {
-		username: string
 		email: string | null
 		isGoogleUser: boolean
 	}
@@ -110,15 +102,6 @@ declare global {
 		isNewUser: boolean
 		personalInfo?: BasicPersonalInfoResponse
 		funds: SingleFund[]
-	}
-
-	interface NewGoogleInfoRequest {
-		username: string
-	}
-
-	interface NewGoogleUserResponse {
-		email: string
-		fund: SingleFund
 	}
 
 	interface EmailUpdatesRequest {

@@ -12,13 +12,12 @@ import {
 } from "@react-email/components"
 
 interface FeedbackEmailProps {
-	username: string | null
 	userEmail: string
 	feedback: string
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function FeedbackEmail({ username, userEmail, feedback }: FeedbackEmailProps): React.ReactNode {
+export default function FeedbackEmail({ userEmail, feedback }: FeedbackEmailProps): React.ReactNode {
 	return (
 		<Html>
 			<Head>
@@ -39,7 +38,7 @@ export default function FeedbackEmail({ username, userEmail, feedback }: Feedbac
 
 							<Section className="mb-[16px]">
 								<Text className="main-text text-[14px] leading-[18px]" style={{ color: "#00001E" }}>
-									<strong>User:</strong> {username || "No username"} ({userEmail})
+									<strong>User:</strong> {userEmail}
 								</Text>
 							</Section>
 

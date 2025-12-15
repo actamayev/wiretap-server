@@ -40,7 +40,7 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 			return
 		} else if (isNull(userId)) {
 			userId = await addGoogleUser(payload.email)
-			accessToken = await signJWT({ userId, username: null, isActive: true })
+			accessToken = await signJWT({ userId, isActive: true })
 			isNewUser = true
 		} else {
 			const credentialsResult = await findUserById(userId)
@@ -49,9 +49,8 @@ export default async function googleLoginAuthCallback(req: Request, res: Respons
 				res.status(400).json({ message: `There is no Wiretap account associated with ${payload.email}. Please try again.` } satisfies MessageResponse)
 				return
 			}
-			accessToken = await signJWT({ userId, username: credentialsResult.username as string, isActive: true })
+			accessToken = await signJWT({ userId, isActive: true })
 			personalInfo = {
-				username: credentialsResult.username as string,
 				email: payload.email,
 				isGoogleUser: true
 			}

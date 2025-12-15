@@ -17,7 +17,7 @@ export default async function attachEventIdFromEventSlug(
 	} catch (error) {
 		console.error(error)
 		res.status(500).json({
-			error: "Internal Server Error: Unable to confirm if this username is already taken"
+			error: "Internal Server Error: Unable to retrieve if this event slug is valid"
 		} satisfies ErrorResponse)
 		return
 	}

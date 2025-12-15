@@ -4,7 +4,6 @@ import FeedbackEmail from "../../../emails/feedback-email"
 import SecretsManager from "../../classes/aws/secrets-manager"
 
 interface FeedbackEmailData {
-	username: string | null
 	userEmail: string
 	feedback: string
 }
@@ -21,7 +20,7 @@ export default async function sendFeedbackEmail(data: FeedbackEmailData): Promis
 			from: "Wiretap <hello@updates.wiretap.pro>",
 			replyTo: data.userEmail,
 			to: ["hello@wiretap.pro"],
-			subject: `New Wiretap Feedback from ${data.username || data.userEmail}`,
+			subject: `New Wiretap Feedback from ${data.userEmail}`,
 			html: emailHtml
 		})
 

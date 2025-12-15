@@ -12,7 +12,6 @@ export async function findUserById(userId: number): Promise<ExtendedCredentials 
 			},
 			select: {
 				user_id: true,
-				username: true,
 				password: true,
 				is_active: true,
 				auth_method: true,
@@ -31,22 +30,20 @@ export async function findUserById(userId: number): Promise<ExtendedCredentials 
 	}
 }
 
-export async function findUserByWhereCondition(
-	whereCondition:
-		{ username?: { equals: string, mode: "insensitive" } } |
-		{ email?: { equals: string } }
-): Promise<ExtendedCredentials | null> {
+export async function findUserByEmail(email: string): Promise<ExtendedCredentials | null> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
 		const user = await prismaClient.credentials.findFirst({
 			where: {
-				...whereCondition,
+				email: {
+					mode: "insensitive",
+					equals: email
+				},
 				is_active: true,
 			},
 			select: {
 				user_id: true,
-				username: true,
 				password: true,
 				is_active: true,
 				auth_method: true,
