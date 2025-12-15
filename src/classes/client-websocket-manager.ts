@@ -4,7 +4,7 @@ import Singleton from "./singleton"
 export default class ClientWebSocketManager extends Singleton {
 	private constructor(private readonly io: SocketIOServer) {
 		super()
-		console.log("✅ ClientWebSocketManager initialized")
+		console.info("✅ ClientWebSocketManager initialized")
 	}
 
 	public static override getInstance(io?: SocketIOServer): ClientWebSocketManager {
@@ -20,14 +20,18 @@ export default class ClientWebSocketManager extends Singleton {
 	/**
 	 * Broadcast price updates to ALL connected clients
 	 */
-	public broadcastPriceUpdates(prices: PriceUpdate[]): void {
+	public broadcastPriceUpdates(snapshots: PriceSnapshot[]): void {
 		const payload: MarketPricesUpdate = {
-			prices,
+			prices: snapshots.map(snapshot => ({
+				clobTokenId: snapshot.clobTokenId,
+				midpointPrice: snapshot.midpointPrice,
+				lastTradePrice: snapshot.lastTradePrice
+			})),
 			timestamp: Date.now()
 		}
 
 		this.io.emit("market:prices", payload)
-		console.log(`📊 Broadcast ${prices.length} price updates to ${this.io.sockets.sockets.size} clients`)
+		console.info(`📊 Broadcast ${snapshots.length} price updates to ${this.io.sockets.sockets.size} clients`)
 	}
 
 	/**

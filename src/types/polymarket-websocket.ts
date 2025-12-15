@@ -105,22 +105,6 @@ declare global {
 		type: "market"
 		assets_ids: ClobTokenId[] // Array of asset IDs (clob_token_ids) to monitor
 	}
-
-	// ============================================
-	// Internal Types for Price Tracking
-	// ============================================
-
-	/**
-	 * In-memory price data structure
-	 * Stores the latest price data during each minute interval
-	 */
-	interface PriceSnapshot {
-		clobTokenId: ClobTokenId
-		bestBid: number | null
-		bestAsk: number | null
-		lastTradePrice: number | null
-		timestamp: number // When this snapshot was last updated (Date.now())
-	}
 }
 
 export {}

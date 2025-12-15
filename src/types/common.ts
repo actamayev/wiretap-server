@@ -11,7 +11,6 @@ declare global {
 
 	interface JwtPayload {
 		userId: number
-		username: string | null
 		isActive?: boolean
 		iat?: number
 		exp?: number
@@ -89,36 +88,20 @@ declare global {
 		fundUUID: FundsUUID
 	}
 
-	interface IncomingLoginRequest {
-		contact: string
-		password: string
-	}
-
-	interface IncomingRegisterRequest {
+	interface IncomingAuthRequest {
 		email: string
 		password: string
-		username: string
 	}
 
 	interface BasicPersonalInfoResponse {
-		username: string
 		email: string | null
 		isGoogleUser: boolean
 	}
 
 	interface GoogleAuthSuccess {
 		isNewUser: boolean
-		personalInfo?: BasicPersonalInfoResponse
+		personalInfo: BasicPersonalInfoResponse
 		funds: SingleFund[]
-	}
-
-	interface NewGoogleInfoRequest {
-		username: string
-	}
-
-	interface NewGoogleUserResponse {
-		email: string
-		fund: SingleFund
 	}
 
 	interface EmailUpdatesRequest {
@@ -190,10 +173,7 @@ declare global {
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
 		outcomes: SingleOutcome[]
-		bestBid: number | null
-		bestAsk: number | null
-		lastTradePrice: number | null
-		spread: number | null
+		midpointPrice: number | null
 	}
 
 	interface SingleOutcome {
@@ -224,9 +204,7 @@ declare global {
 
 	interface PriceUpdate {
 		clobTokenId: ClobTokenId
-		bestBid: number | null
-		bestAsk: number | null
-		lastTradePrice: number | null
+		midpointPrice: number | null
 	}
 
 	interface MarketPricesUpdate {

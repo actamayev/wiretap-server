@@ -24,7 +24,7 @@ export default async function sendLaunchEmail(email: string): Promise<void> {
 			throw new Error("Failed to send email")
 		}
 
-		console.log(`✅ Sent launch email to ${email}`)
+		console.info(`✅ Sent launch email to ${email}`)
 	} catch (error) {
 		console.error(`Error sending launch email to ${email}:`, error)
 		throw error

@@ -1,6 +1,6 @@
 import isNull from "lodash/isNull"
 import PrismaClientClass from "../../../classes/prisma-client"
-import fetchPolymarketPrice from "../../../utils/polymarket/fetch-current-price"
+import PriceTracker from "../../../classes/price-tracker"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function retrieveSpecificClobPositions(
@@ -41,17 +41,17 @@ export default async function retrieveSpecificClobPositions(
 
 		if (isNull(rawUserPositions)) return []
 
-		return await Promise.all(rawUserPositions.map(async (position) => ({
+		return rawUserPositions.map((position) => ({
 			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
 			numberOfSharesHeld: position.number_shares_held,
 			costBasisPerShareUsd: position.average_cost_per_share,
-			currentMarketPricePerShareUsd: await fetchPolymarketPrice(position.clob_token_id as ClobTokenId) as number,
+			currentMarketPricePerShareUsd: PriceTracker.getInstance().getMidpoint(position.clob_token_id as ClobTokenId) ?? 0,
 			positionCreatedAt: position.created_at,
 			polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: position.outcome.market.event.image_url as string
-		})))
+		}))
 	} catch (error) {
 		console.error(error)
 		throw error
