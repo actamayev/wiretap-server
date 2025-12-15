@@ -10,7 +10,7 @@ import ClientWebSocketManager from "./client-websocket-manager"
 export default class PriceTracker extends Singleton {
 	private priceSnapshots: Map<ClobTokenId, PriceSnapshot> = new Map()
 	private saveTimer: NodeJS.Timeout | null = null
-	private readonly SNAPSHOT_INTERVAL_MS = 5000
+	private readonly SNAPSHOT_INTERVAL_MS = 60000
 
 	private constructor() {
 		super()
