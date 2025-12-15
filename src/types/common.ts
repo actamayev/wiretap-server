@@ -100,7 +100,7 @@ declare global {
 
 	interface GoogleAuthSuccess {
 		isNewUser: boolean
-		personalInfo?: BasicPersonalInfoResponse
+		personalInfo: BasicPersonalInfoResponse
 		funds: SingleFund[]
 	}
 
