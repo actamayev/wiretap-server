@@ -1,7 +1,7 @@
 import PrismaClientClass from "../../../classes/prisma-client"
 
 // eslint-disable-next-line max-lines-per-function
-export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent[]> {
+export default async function retrieveAllPolymarketEventsMetadata(): Promise<SingleEventMetadata[]> {
 	try {
 		const prismaClient = await PrismaClientClass.getPrismaClient()
 
@@ -30,21 +30,12 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 						market_id: true,
 						question: true,
 						midpoint_price: true,
-						last_trade_price: true,
-						spread: true,
 						created_at: true,
 						updated_at: true,
 						outcomes: {
 							select: {
 								outcome: true,
 								clob_token_id: true,
-								price_history: {
-									select: {
-										midpoint: true,
-										last_trade_price: true,
-										timestamp: true,
-									},
-								},
 							},
 						},
 					}
@@ -70,20 +61,14 @@ export default async function retrieveAllPolymarketEvents(): Promise<SingleEvent
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
 				midpointPrice: market.midpoint_price,
-				lastTradePrice: market.last_trade_price,
-				spread: market.spread,
 				outcomes: market.outcomes.sort((a) => a.outcome === "YES" ? -1 : 1).map((outcome) => ({
 					outcome: outcome.outcome as OutcomeString,
 					clobTokenId: outcome.clob_token_id as ClobTokenId,
-					priceHistory: outcome.price_history.map((price) => ({
-						timestamp: price.timestamp,
-						price: price.midpoint || 0,
-					})),
 				})),
 			})),
 			eventTotalVolume: event.total_volume as number,
 			eventEndDate: event.end_date as Date,
-		}))
+		}) satisfies SingleEventMetadata)
 	} catch (error) {
 		console.error(error)
 		throw error

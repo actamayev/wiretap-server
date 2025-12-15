@@ -3,8 +3,7 @@ import EventsCache from "../../classes/events-cache"
 
 export default async function getAllEvents(_req: Request, res: Response): Promise<Response> {
 	try {
-		const eventsCache = EventsCache.getInstance()
-		const events = await eventsCache.getEventsOrFetch()
+		const events = await EventsCache.getInstance().getEventsMetadataOrFetch()
 
 		return res.status(200).json({ events } satisfies AllEventsResponse)
 	} catch (error) {

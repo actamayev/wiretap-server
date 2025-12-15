@@ -1,5 +1,5 @@
 To check for no unused exports:
-	ts-unused-exports tsconfig.json
+	pnpm run check-unused
 To ensure no unused dependencies:
 	depcheck
 

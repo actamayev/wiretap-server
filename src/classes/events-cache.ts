@@ -1,11 +1,11 @@
 import Singleton from "./singleton"
-import retrieveAllPolymarketEvents from "../db-operations/read/polymarket-event/retrieve-all-polymarket-events"
+import retrieveAllPolymarketEventsMetadata from "../db-operations/read/polymarket-event/retrieve-all-polymarket-events-metadata"
 
 /**
  * Manages cached events data and periodic refresh
  */
 export default class EventsCache extends Singleton {
-	private cachedEvents: SingleEvent[] | null = null
+	private cachedEventsMetadata: Map<EventId, SingleEventMetadata> = new Map()
 	private refreshTimer: NodeJS.Timeout | null = null
 	private readonly REFRESH_INTERVAL_MS = 30000 // 30 seconds
 	private isRefreshing = false
@@ -60,8 +60,11 @@ export default class EventsCache extends Singleton {
 		this.isRefreshing = true
 		try {
 			console.info("🔄 Refreshing events cache...")
-			this.cachedEvents = await retrieveAllPolymarketEvents()
-			console.info(`✅ Events cache refreshed (${this.cachedEvents.length} events)`)
+			const eventsMetadata = await retrieveAllPolymarketEventsMetadata()
+			eventsMetadata.forEach(eventMetadata => {
+				this.cachedEventsMetadata.set(eventMetadata.eventId, eventMetadata)
+			})
+			console.info(`✅ Events cache refreshed (${eventsMetadata.length} events)`)
 		} catch (error) {
 			console.error("❌ Failed to refresh events cache:", error)
 			// Keep existing cache on error
@@ -70,19 +73,20 @@ export default class EventsCache extends Singleton {
 		}
 	}
 
-	/**
-	 * Get cached events (returns null if cache hasn't been populated yet)
-	 */
-	public getEvents(): SingleEvent[] | null {
-		return this.cachedEvents
+	public async getSingleEventMetadataOrFetch(eventId: EventId): Promise<SingleEventMetadata | null> {
+		const eventMetadata = this.cachedEventsMetadata.get(eventId)
+		if (eventMetadata) return eventMetadata
+
+		await this.getEventsMetadataOrFetch()
+		return this.cachedEventsMetadata.get(eventId) ?? null
 	}
 
 	/**
 	 * Get cached events or fetch if not available (for initial requests before cache is ready)
 	 */
-	public async getEventsOrFetch(): Promise<SingleEvent[]> {
-		if (this.cachedEvents) {
-			return this.cachedEvents
+	public async getEventsMetadataOrFetch(): Promise<SingleEventMetadata[]> {
+		if (this.cachedEventsMetadata.size > 0) {
+			return Array.from(this.cachedEventsMetadata.values())
 		}
 
 		// If cache is empty, fetch immediately
@@ -97,8 +101,8 @@ export default class EventsCache extends Singleton {
 
 		// Return cached events or empty array if refresh failed
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (this.cachedEvents) {
-			return this.cachedEvents
+		if (this.cachedEventsMetadata) {
+			return Array.from(this.cachedEventsMetadata.values())
 		}
 		return []
 	}
