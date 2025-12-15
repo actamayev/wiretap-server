@@ -1,21 +1,15 @@
-import isNull from "lodash/isNull"
 import { Request, Response, NextFunction } from "express"
-import PriceTracker from "../../../classes/price-tracker"
+import fetchCurrentTokenPrice from "../../../utils/polymarket/fetch-current-token-midpoint-price"
 
-export default function validateBuyOrderAndFetchPrice(
+export default async function validateBuyOrderAndFetchPrice(
 	req: Request,
 	res: Response,
 	next: NextFunction
-): void {
+): Promise<void> {
 	try {
 		const { clobToken, valueOfSharesPurchasing } = req.body as { clobToken: ClobTokenId, valueOfSharesPurchasing: number }
 
-		const currentPrice = PriceTracker.getInstance().getMidpoint(clobToken) ?? 0
-
-		if (isNull(currentPrice)) {
-			res.status(500).json({ message: "Unable to fetch current market price. Please try again." } satisfies MessageResponse)
-			return
-		}
+		const currentPrice = await fetchCurrentTokenPrice(clobToken)
 
 		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
 

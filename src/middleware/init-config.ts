@@ -3,7 +3,7 @@ import express, { Express } from "express"
 import cookieParser from "cookie-parser"
 import allowedOrigins from "../utils/config/get-allowed-origins"
 
-export const corsOptions = {
+const corsOptions = {
 	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
 		if (!origin || allowedOrigins().includes(origin)) return callback(null, true)

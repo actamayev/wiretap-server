@@ -1,10 +1,9 @@
 /* eslint-disable max-depth */
-import { isEmpty, isNull } from "lodash"
-import PriceTracker from "../classes/price-tracker"
+import { isEmpty } from "lodash"
 import getPositionsForFund from "../db-operations/read/position/get-positions-for-fund"
 import getFundsWithPositions from "../db-operations/read/wiretap-fund/get-funds-with-positions"
-import getMostRecentMidpointPrice from "../db-operations/read/polymarket-price-history/get-most-recent-midpoint-price"
 import createPortfolioSnapshot from "../db-operations/read/portfolio-snapshot/create-portfolio-snapshot"
+import fetchCurrentTokenPrice from "../utils/polymarket/fetch-current-token-midpoint-price"
 
 /**
  * Calculate and save portfolio snapshots for all funds with active positions
@@ -20,7 +19,6 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 
 		console.info(`📊 Found ${funds.length} funds with positions`)
 
-		const priceTracker = PriceTracker.getInstance()
 		let successCount = 0
 		let errorCount = 0
 
@@ -32,15 +30,7 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 
 				for (const position of positions) {
 					// Try to get price from in-memory cache first
-					let midpoint = priceTracker.getMidpoint(position.clobTokenId)
-
-					// Fallback to DB if not in cache
-					if (midpoint === null) {
-						midpoint = await getMostRecentMidpointPrice(position.clobTokenId)
-					}
-
-					// If we still don't have a price, skip this position
-					if (isNull(midpoint)) continue
+					const midpoint = await fetchCurrentTokenPrice(position.clobTokenId)
 
 					const positionValue = position.numberOfSharesHeld * midpoint
 					totalPositionValue += positionValue
