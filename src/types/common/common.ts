@@ -1,14 +1,6 @@
 import { UUID } from "crypto"
 
 declare global {
-	type SuccessResponse = { success: string }
-	type MessageResponse = { message: string }
-	type ValidationErrorResponse = { validationError: string }
-	type ErrorResponse = { error: string }
-	type ErrorResponses = ValidationErrorResponse | ErrorResponse
-	type NonSuccessResponse = MessageResponse | ErrorResponses
-	type AllCommonResponses = SuccessResponse | NonSuccessResponse
-
 	interface JwtPayload {
 		userId: number
 		isActive?: boolean
@@ -22,11 +14,6 @@ declare global {
 	type MarketId = number & { readonly __brand: unique symbol }
 	type OutcomeString = string & { readonly __brand: unique symbol }
 	type ClobTokenId = string & { readonly __brand: unique symbol }
-
-	interface TransactionResponse {
-		purchaseOrders: PurchaseOrder[]
-		saleOrders: SaleOrder[]
-	}
 
 	interface CommonTransactionFields {
 		outcome: OutcomeString
@@ -71,47 +58,17 @@ declare global {
 		isPrimaryFund: boolean
 		positionsValueUsd: number
 		positions: SinglePosition[]
-		transactions: TransactionResponse
-		portfolioHistory: SinglePortfolioHistory[]
 	}
 
-	interface SinglePortfolioHistory {
+	interface DetailedSingleFund {
+		fundUUID: FundsUUID
+		transactions: TransactionResponse
+		portfolioHistory: SinglePortfolioSnapshot[]
+	}
+
+	interface SinglePortfolioSnapshot {
 		timestamp: Date
 		portfolioValueUsd: number
-	}
-
-	interface AllMyFundsResponse {
-		funds: SingleFund[]
-	}
-
-	interface CreateFundResponse {
-		fundUUID: FundsUUID
-	}
-
-	interface IncomingAuthRequest {
-		email: string
-		password: string
-	}
-
-	interface BasicPersonalInfoResponse {
-		email: string | null
-		isGoogleUser: boolean
-	}
-
-	interface GoogleAuthSuccess {
-		isNewUser: boolean
-		personalInfo: BasicPersonalInfoResponse
-		funds: SingleFund[]
-	}
-
-	interface EmailUpdatesRequest {
-		email: string
-	}
-
-	interface SuccessBuyOrderResponse {
-		success: "Buy order executed successfully"
-		position: SinglePosition
-		newAccountCashBalance: number
 	}
 
 	interface PolymarketOutcomeDataForTrade {
@@ -119,37 +76,6 @@ declare global {
 		marketQuestion: string | null
 		polymarketSlug: EventSlug
 		polymarketImageUrl: string
-	}
-
-	interface SuccessSellOrderResponse {
-		success: "Sell order executed successfully"
-		saleId: number
-		positionClosed: boolean
-		numberOfSharesSold: number
-		pricePerShare: number
-		totalProceeds: number
-		realizedPnl: number
-		newAccountCashBalance: number
-		remainingPositions: SinglePosition[]
-		outcomeData: PolymarketOutcomeDataForTrade
-	}
-
-	interface LoginSuccess {
-		personalInfo: BasicPersonalInfoResponse
-		funds: SingleFund[]
-	}
-
-	interface IncomingCreateFundRequest {
-		fundName: string
-		startingAccountCashBalanceUsd: number
-	}
-
-	interface AllEventsResponse {
-		events: SingleEventMetadata[]
-	}
-
-	interface SingleEventResponse {
-		event: SingleEventMetadata
 	}
 
 	interface SingleEventMetadata {
@@ -180,6 +106,8 @@ declare global {
 		outcome: OutcomeString
 		clobTokenId: ClobTokenId
 	}
+
+	type TimeWindow = "1H" | "1D" | "1W" | "1M" | "MAX"
 }
 
 export {}

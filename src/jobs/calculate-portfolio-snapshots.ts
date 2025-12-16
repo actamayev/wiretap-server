@@ -2,13 +2,35 @@
 import { isEmpty } from "lodash"
 import getPositionsForFund from "../db-operations/read/position/get-positions-for-fund"
 import getFundsWithPositions from "../db-operations/read/wiretap-fund/get-funds-with-positions"
-import createPortfolioSnapshot from "../db-operations/read/portfolio-snapshot/create-portfolio-snapshot"
+import createPortfolioSnapshot from "../db-operations/write/portfolio-snapshot/create-portfolio-snapshot"
 import fetchCurrentTokenPrice from "../utils/polymarket/fetch-current-token-midpoint-price"
+
+/**
+ * Determine which resolutions should be saved based on current time
+ */
+function getApplicableResolutions(now: Date): number[] {
+	const minute = now.getMinutes()
+	const resolutions: number[] = [1] // Always save 1-min resolution
+
+	if (minute % 5 === 0) {
+		resolutions.push(5)
+	}
+	if (minute % 30 === 0) {
+		resolutions.push(30)
+	}
+	if (minute % 180 === 0) {
+		resolutions.push(180)
+	}
+	if (minute % 720 === 0) {
+		resolutions.push(720)
+	}
+
+	return resolutions
+}
 
 /**
  * Calculate and save portfolio snapshots for all funds with active positions
  */
-
 export default async function calculatePortfolioSnapshots(): Promise<void> {
 	try {
 		console.info("📊 Calculating portfolio snapshots...")
@@ -17,7 +39,11 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 
 		if (isEmpty(funds)) return
 
+		const now = new Date()
+		const applicableResolutions = getApplicableResolutions(now)
+
 		console.info(`📊 Found ${funds.length} funds with positions`)
+		console.info(`📊 Saving resolutions: ${applicableResolutions.join(", ")} minutes`)
 
 		let successCount = 0
 		let errorCount = 0
@@ -38,7 +64,11 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 
 				const totalPortfolioValue = fund.currentAccountBalanceUsd + totalPositionValue
 
-				await createPortfolioSnapshot(fund.wiretapFundUuid, totalPortfolioValue)
+				// Save snapshot for each applicable resolution
+				for (const resolution of applicableResolutions) {
+					await createPortfolioSnapshot(fund.wiretapFundUuid, totalPortfolioValue, resolution, now)
+				}
+
 				successCount++
 			} catch (error) {
 				console.error(`Failed to calculate portfolio for fund ${fund.wiretapFundUuid}:`, error)

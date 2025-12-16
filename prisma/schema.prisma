@@ -228,12 +228,13 @@ model portfolio_snapshot {
 	wiretap_fund_uuid 											String
 	total_value    												Float
 	timestamp      												DateTime @default(now())
+	resolution_minutes 											Int     @default(1)
 
 	wiretap_fund   												wiretap_fund @relation(fields: [wiretap_fund_uuid], references: [wiretap_fund_uuid])
 
-	@@unique([wiretap_fund_uuid, timestamp])
-	@@index([wiretap_fund_uuid])
-	@@index([timestamp])
+	@@unique([wiretap_fund_uuid, timestamp, resolution_minutes])
+	@@index([wiretap_fund_uuid, resolution_minutes, timestamp])
+	@@index([resolution_minutes, timestamp])
 }
 
 model user_feedback {
