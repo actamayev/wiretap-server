@@ -9,7 +9,7 @@ import createGoogleAuthClient from "../../utils/google/create-google-auth-client
 import retrieveMyFunds from "../../db-operations/read/wiretap-fund/retrieve-my-funds"
 import retrieveUserIdByEmail from "../../db-operations/read/credentials/retrieve-user-id-by-email"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
-import createStartingFundForUser from "../../db-operations/read/wiretap-fund/create-starting-fund-for-user"
+import createStartingFundForUser from "../../db-operations/write/wiretap-fund/create-starting-fund-for-user"
 
 // eslint-disable-next-line max-lines-per-function
 export default async function googleLoginAuthCallback(req: Request, res: Response): Promise<void> {
