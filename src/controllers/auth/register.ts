@@ -5,7 +5,7 @@ import { addLocalUser } from "../../db-operations/write/credentials/add-user"
 import doesEmailExist from "../../db-operations/read/does-x-exist/does-email-exist"
 import addLoginHistoryRecord from "../../db-operations/write/login-history/add-login-history-record"
 import { setAuthCookie } from "../../middleware/cookie-helpers"
-import createStartingFundForUser from "../../db-operations/read/wiretap-fund/create-starting-fund-for-user"
+import createStartingFundForUser from "../../db-operations/write/wiretap-fund/create-starting-fund-for-user"
 
 export default async function register(req: Request, res: Response): Promise<void> {
 	try {
