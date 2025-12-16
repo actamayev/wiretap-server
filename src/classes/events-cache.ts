@@ -3,9 +3,10 @@ import retrieveAllPolymarketEventsMetadata from "../db-operations/read/polymarke
 
 /**
  * Manages cached events data and periodic refresh
+ * Events are stored in an array ordered by volume (descending - highest volume first)
  */
 export default class EventsCache extends Singleton {
-	private cachedEventsMetadata: Map<EventId, SingleEventMetadata> = new Map()
+	private cachedEventsMetadata: SingleEventMetadata[] = []
 	private refreshTimer: NodeJS.Timeout | null = null
 	private readonly REFRESH_INTERVAL_MS = 60000 // 1 minute
 	private isRefreshing = false
@@ -61,10 +62,9 @@ export default class EventsCache extends Singleton {
 		try {
 			console.info("🔄 Refreshing events cache...")
 			const eventsMetadata = await retrieveAllPolymarketEventsMetadata()
-			eventsMetadata.forEach(eventMetadata => {
-				this.cachedEventsMetadata.set(eventMetadata.eventId, eventMetadata)
-			})
-			console.info(`✅ Events cache refreshed (${eventsMetadata.length} events)`)
+			// Sort by volume descending (highest volume first)
+			this.cachedEventsMetadata = eventsMetadata.sort((a, b) => b.eventTotalVolume - a.eventTotalVolume)
+			console.info(`✅ Events cache refreshed (${this.cachedEventsMetadata.length} events)`)
 		} catch (error) {
 			console.error("❌ Failed to refresh events cache:", error)
 			// Keep existing cache on error
@@ -74,19 +74,20 @@ export default class EventsCache extends Singleton {
 	}
 
 	public async getSingleEventMetadataOrFetch(eventId: EventId): Promise<SingleEventMetadata | null> {
-		const eventMetadata = this.cachedEventsMetadata.get(eventId)
+		const eventMetadata = this.cachedEventsMetadata.find(event => event.eventId === eventId)
 		if (eventMetadata) return eventMetadata
 
 		await this.getEventsMetadataOrFetch()
-		return this.cachedEventsMetadata.get(eventId) ?? null
+		return this.cachedEventsMetadata.find(event => event.eventId === eventId) ?? null
 	}
 
 	/**
 	 * Get cached events or fetch if not available (for initial requests before cache is ready)
+	 * Returns events ordered by volume (descending - highest volume first)
 	 */
 	public async getEventsMetadataOrFetch(): Promise<SingleEventMetadata[]> {
-		if (this.cachedEventsMetadata.size > 0) {
-			return Array.from(this.cachedEventsMetadata.values())
+		if (this.cachedEventsMetadata.length > 0) {
+			return this.cachedEventsMetadata
 		}
 
 		// If cache is empty, fetch immediately
@@ -100,10 +101,6 @@ export default class EventsCache extends Singleton {
 		}
 
 		// Return cached events or empty array if refresh failed
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (this.cachedEventsMetadata) {
-			return Array.from(this.cachedEventsMetadata.values())
-		}
-		return []
+		return this.cachedEventsMetadata
 	}
 }
