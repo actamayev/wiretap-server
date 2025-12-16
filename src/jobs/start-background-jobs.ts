@@ -1,6 +1,7 @@
 import syncMarkets from "./sync-market"
 import calculatePortfolioSnapshots from "./calculate-portfolio-snapshots"
-import { SYNC_INTERVAL_MS, PORTFOLIO_SNAPSHOT_INTERVAL_MS } from "../utils/constants"
+import cleanupOldSnapshots from "./cleanup-old-snapshots"
+import { SYNC_INTERVAL_MS, PORTFOLIO_SNAPSHOT_INTERVAL_MS, CLEANUP_INTERVAL_MS } from "../utils/constants"
 import EventsCache from "../classes/events-cache"
 
 export default async function startBackgroundJobs(): Promise<void> {
@@ -14,6 +15,9 @@ export default async function startBackgroundJobs(): Promise<void> {
 
 	// Run portfolio snapshot calculation immediately on startup
 	await calculatePortfolioSnapshots()
+
+	// Run cleanup immediately on startup
+	await cleanupOldSnapshots()
 
 	// Then run market sync every 5 minutes
 	setInterval((): void => {
@@ -32,4 +36,13 @@ export default async function startBackgroundJobs(): Promise<void> {
 			console.error("Error calculating portfolio snapshots:", error)
 		}
 	}, PORTFOLIO_SNAPSHOT_INTERVAL_MS)
+
+	// Run cleanup every hour
+	setInterval((): void => {
+		try {
+			void cleanupOldSnapshots()
+		} catch (error) {
+			console.error("Error cleaning up snapshots:", error)
+		}
+	}, CLEANUP_INTERVAL_MS)
 }

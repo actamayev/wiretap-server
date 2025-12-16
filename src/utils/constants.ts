@@ -4,3 +4,4 @@ export const CLOB_BASE_URL = "https://clob.polymarket.com"
 export const MINIMUM_VOLUME = 100_000
 export const SYNC_INTERVAL_MS = 5 * 60 * 1000 // 5 minutes
 export const PORTFOLIO_SNAPSHOT_INTERVAL_MS = 60 * 1000 // 1 minute
+export const CLEANUP_INTERVAL_MS = 60 * 60 * 1000

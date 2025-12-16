@@ -10,7 +10,7 @@ export default async function fetchActiveEvents(): Promise<PolymarketEvent[]> {
 			volume_min: MINIMUM_VOLUME,
 			order: "volume",      // ✅ Just the field name
 			ascending: false,     // ✅ false = descending (highest first)
-			limit: 100,
+			limit: 1000,
 		}
 
 		const response = await axios.get<PolymarketEvent[]>(`${GAMMA_BASE_URL}/events`, {

@@ -1,4 +1,3 @@
-import { isEmpty } from "lodash"
 import PrismaClientClass from "../../../classes/prisma-client"
 import fetchCurrentTokenPrice from "../../../utils/polymarket/fetch-current-token-midpoint-price"
 
@@ -41,66 +40,11 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 							}
 						}
 					}
-				},
-				purchase_orders: {
-					select: {
-						number_of_shares: true,
-						created_at: true,
-						total_cost: true,
-						outcome: {
-							select: {
-								outcome: true,
-								market: {
-									select: {
-										question: true,
-										event: {
-											select: {
-												event_slug: true,
-												image_url: true
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				sales_orders: {
-					select: {
-						number_of_shares: true,
-						created_at: true,
-						total_proceeds: true,
-						outcome: {
-							select: {
-								outcome: true,
-								market: {
-									select: {
-										question: true,
-										event: {
-											select: {
-												event_slug: true,
-												image_url: true
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				portfolio_snapshot: {
-					select: {
-						timestamp: true,
-						total_value: true,
-					}
 				}
 			}
 		})
 
-		if (isEmpty(funds)) return []
-
-		// eslint-disable-next-line max-lines-per-function
-		const transformedFunds: SingleFund[] = await Promise.all(funds.map(async (fund) => {
+		return (await Promise.all(funds.map(async (fund) => {
 			const positions = await Promise.all(fund.positions.map(async (position) => ({
 				clobToken: position.clob_token_id as ClobTokenId,
 				outcome: position.outcome.outcome as OutcomeString,
@@ -127,34 +71,9 @@ export default async function retrieveMyFunds(userId: number): Promise<SingleFun
 				currentAccountCashBalanceUsd: fund.current_account_balance_usd,
 				isPrimaryFund: fund.is_primary_fund,
 				positionsValueUsd,
-				positions,
-				transactions: {
-					purchaseOrders: fund.purchase_orders.map((purchaseOrder) => ({
-						outcome: purchaseOrder.outcome.outcome as OutcomeString,
-						transactionDate: purchaseOrder.created_at,
-						numberOfSharesPurchased: purchaseOrder.number_of_shares,
-						marketQuestion: purchaseOrder.outcome.market.question,
-						polymarketSlug: purchaseOrder.outcome.market.event.event_slug as EventSlug,
-						polymarketImageUrl: purchaseOrder.outcome.market.event.image_url as string,
-						totalCost: purchaseOrder.total_cost,
-					})),
-					saleOrders: fund.sales_orders.map((saleOrder) => ({
-						outcome: saleOrder.outcome.outcome as OutcomeString,
-						transactionDate: saleOrder.created_at,
-						numberOfSharesSold: saleOrder.number_of_shares,
-						marketQuestion: saleOrder.outcome.market.question,
-						polymarketSlug: saleOrder.outcome.market.event.event_slug as EventSlug,
-						polymarketImageUrl: saleOrder.outcome.market.event.image_url as string,
-						totalProceeds: saleOrder.total_proceeds,
-					}))
-				},
-				portfolioHistory: fund.portfolio_snapshot.map((snapshot) => ({
-					timestamp: snapshot.timestamp,
-					portfolioValueUsd: snapshot.total_value,
-				}))
+				positions
 			}
-		}))
-		return transformedFunds
+		})) satisfies SingleFund[])
 	} catch (error) {
 		console.error(error)
 		throw error
