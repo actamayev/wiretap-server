@@ -22,6 +22,7 @@ process.on("uncaughtException", (error) => {
 dotenv.config({ path: process.env.NODE_ENV === "production" ? ".env.production" : ".env.local" })
 
 const app = express()
+app.set("trust proxy", 1)
 configureAppMiddleware(app)
 
 setupRoutes(app)
