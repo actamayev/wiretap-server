@@ -35,6 +35,7 @@ export default async function retrieveAllPolymarketEventsMetadata(): Promise<Sin
 						outcomes: {
 							select: {
 								outcome: true,
+								outcome_index: true,
 								clob_token_id: true,
 							},
 						},
@@ -61,7 +62,7 @@ export default async function retrieveAllPolymarketEventsMetadata(): Promise<Sin
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
 				midpointPrice: market.midpoint_price,
-				outcomes: market.outcomes.sort((a) => a.outcome === "YES" ? -1 : 1).map((outcome) => ({
+				outcomes: market.outcomes.sort((a, b) => a.outcome_index - b.outcome_index).map((outcome) => ({
 					outcome: outcome.outcome as OutcomeString,
 					clobTokenId: outcome.clob_token_id as ClobTokenId,
 				})),

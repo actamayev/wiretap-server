@@ -137,7 +137,7 @@ model polymarket_market {
 	@@index([event_id])
 }
 
-// Outcomes table - ALWAYS 2 outcomes: Yes, No
+// Outcomes table - ALWAYS 2 outcomes: Yes/No, or Up/Down
 model polymarket_outcome {
 	clob_token_id               								String    @id
 	market_id                   								Int

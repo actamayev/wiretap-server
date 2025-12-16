@@ -2,7 +2,6 @@ import dotenv from "dotenv"
 import express from "express"
 import { isUndefined } from "lodash"
 
-import getEnvPath from "./utils/config/get-env-path"
 import { configureAppMiddleware } from "./middleware/init-config"
 
 import setupRoutes from "./utils/config/setup-routes"
@@ -20,7 +19,7 @@ process.on("uncaughtException", (error) => {
 	process.exit(1)
 })
 
-dotenv.config({ path: getEnvPath() })
+dotenv.config({ path: process.env.NODE_ENV === "production" ? ".env.production" : ".env.local" })
 
 const app = express()
 configureAppMiddleware(app)
