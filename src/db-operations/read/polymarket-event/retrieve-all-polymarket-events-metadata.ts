@@ -64,6 +64,7 @@ export default async function retrieveAllPolymarketEventsMetadata(): Promise<Sin
 				midpointPrice: market.midpoint_price,
 				outcomes: market.outcomes.sort((a, b) => a.outcome_index - b.outcome_index).map((outcome) => ({
 					outcome: outcome.outcome as OutcomeString,
+					outcomeIndex: outcome.outcome_index as number,
 					clobTokenId: outcome.clob_token_id as ClobTokenId,
 				})),
 			})),

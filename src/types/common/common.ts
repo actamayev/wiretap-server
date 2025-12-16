@@ -104,6 +104,7 @@ declare global {
 
 	interface SingleOutcomeMetadata {
 		outcome: OutcomeString
+		outcomeIndex: number
 		clobTokenId: ClobTokenId
 	}
 
