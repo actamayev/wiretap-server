@@ -1,4 +1,4 @@
-SELECT username, email, created_at FROM credentials;
+SELECT email, created_at FROM credentials;
 -- SELECT * from login_history;
 -- SELECT * from wiretap_fund;
 -- Select * from email_update_subscriber order by email_update_subscriber_id;
