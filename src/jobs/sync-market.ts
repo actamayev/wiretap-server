@@ -1,33 +1,38 @@
 /* eslint-disable max-depth */
 import fetchActiveEvents from "../utils/polymarket/gamma-client"
-import filterBinaryEvents from "../utils/polymarket/filter-markets"
 import upsertPolymarketEvent from "../db-operations/write/polymarket-event/upsert-polymarket-event"
 import upsertPolymarketMarket from "../db-operations/write/polymarket-market/upsert-polymarket-market"
 import upsertPolymarketOutcome from "../db-operations/write/polymarket-outcome/upsert-polymarket-outcome"
 import parseMarketOutcomes from "../utils/polymarket/parse-market-outcomes"
 
+// eslint-disable-next-line complexity
 export default async function syncMarkets(): Promise<void> {
 	console.info("🔄 Starting market sync...")
 
 	try {
 		const events = await fetchActiveEvents()
-		const binaryEvents = filterBinaryEvents(events)
 
 		let eventCount = 0
 		let marketCount = 0
 		let outcomeCount = 0
 		let skipCount = 0
 
-		for (const event of binaryEvents) {
+		for (const event of events) {
 			try {
 				await upsertPolymarketEvent(event)
 				eventCount++
 
 				for (const market of event.markets) {
+					// Skip markets without a conditionId
+					if (!market.conditionId || market.conditionId.trim() === "") {
+						skipCount++
+						continue
+					}
+
 					try {
-						const parsedOutcomes = parseMarketOutcomes(market)
 						const dbMarket = await upsertPolymarketMarket(market, event.id)
 						marketCount++
+						const parsedOutcomes = parseMarketOutcomes(market)
 
 						for (const outcome of parsedOutcomes) {
 							await upsertPolymarketOutcome(outcome, dbMarket.market_id)

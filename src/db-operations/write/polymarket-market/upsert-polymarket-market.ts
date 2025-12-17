@@ -6,13 +6,13 @@ export default async function upsertPolymarketMarket(
 	market: PolymarketMarket,
 	eventId: EventId
 ): Promise<polymarket_market> {
-	  try {
-		  const prismaClient = await PrismaClientClass.getPrismaClient()
+	try {
+		const prismaClient = await PrismaClientClass.getPrismaClient()
 
-		  let midpointPrice: number | null = null
-		  if (market.bestBid !== undefined && market.bestAsk !== undefined) {
+		let midpointPrice: number | null = null
+		if (market.bestBid !== undefined && market.bestAsk !== undefined) {
 			midpointPrice = (market.bestBid + market.bestAsk) / 2
-		  }
+		}
 
 		return await prismaClient.polymarket_market.upsert({
 			where: { condition_id: market.conditionId },
@@ -44,9 +44,9 @@ export default async function upsertPolymarketMarket(
 				last_trade_price: market.lastTradePrice,
 				spread: market.spread,
 			}
-		  })
-	  } catch (error) {
-		  console.error("Error upserting polymarket market:", error)
-		  throw error
-	  }
+		})
+	} catch (error) {
+		console.error("Error upserting polymarket market:", error)
+		throw error
+	}
 }
