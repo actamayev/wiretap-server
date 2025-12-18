@@ -24,6 +24,7 @@ export default async function buyShares(req: Request, res: Response): Promise<vo
 				clobToken: position.clob_token_id as ClobTokenId,
 				outcome: outcomeData.outcome,
 				marketQuestion: outcomeData.marketQuestion,
+				groupItemTitle: outcomeData.groupItemTitle,
 				numberOfSharesHeld: position.number_shares_held,
 				costBasisPerShareUsd: position.average_cost_per_share,
 				currentMarketPricePerShareUsd: currentPrice,

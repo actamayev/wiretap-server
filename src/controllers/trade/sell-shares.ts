@@ -34,6 +34,7 @@ export default async function sellShares(req: Request, res: Response): Promise<v
 			outcomeData: {
 				outcome: outcomeData.outcome,
 				marketQuestion: outcomeData.marketQuestion,
+				groupItemTitle: outcomeData.groupItemTitle,
 				polymarketSlug: outcomeData.polymarketSlug,
 				polymarketImageUrl: outcomeData.polymarketImageUrl
 			}

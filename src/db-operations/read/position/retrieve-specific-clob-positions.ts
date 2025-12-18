@@ -26,10 +26,11 @@ export default async function retrieveSpecificClobPositions(
 						market: {
 							select: {
 								question: true,
+								group_item_title: true,
 								event: {
 									select: {
 										event_slug: true,
-										image_url: true
+										image_url: true,
 									}
 								}
 							}
@@ -45,6 +46,7 @@ export default async function retrieveSpecificClobPositions(
 			clobToken: position.clob_token_id as ClobTokenId,
 			outcome: position.outcome.outcome as OutcomeString,
 			marketQuestion: position.outcome.market.question,
+			groupItemTitle: position.outcome.market.group_item_title,
 			numberOfSharesHeld: position.number_shares_held,
 			costBasisPerShareUsd: position.average_cost_per_share,
 			currentMarketPricePerShareUsd: await fetchCurrentTokenPrice(position.clob_token_id as ClobTokenId),

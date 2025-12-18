@@ -11,6 +11,7 @@ export default async function retrievePolymarketOutcomeDataForTrade(clobToken: C
 				market: {
 					select: {
 						question: true,
+						group_item_title: true,
 						event: {
 							select: {
 								event_slug: true,
@@ -25,6 +26,7 @@ export default async function retrievePolymarketOutcomeDataForTrade(clobToken: C
 		return {
 			outcome: outcome.outcome as OutcomeString,
 			marketQuestion: outcome.market.question,
+			groupItemTitle: outcome.market.group_item_title,
 			polymarketSlug: outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: outcome.market.event.image_url as string
 		} satisfies PolymarketOutcomeDataForTrade

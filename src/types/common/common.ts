@@ -19,6 +19,7 @@ declare global {
 		outcome: OutcomeString
 		transactionDate: Date
 		marketQuestion: string | null
+		groupItemTitle: string | null
 		polymarketSlug: EventSlug
 		polymarketImageUrl: string
 	}
@@ -27,6 +28,7 @@ declare global {
 		outcome: OutcomeString
 		numberOfSharesPurchased: number
 		marketQuestion: string | null
+		groupItemTitle: string | null
 		totalCost: number
 	}
 
@@ -34,12 +36,14 @@ declare global {
 		outcome: OutcomeString
 		numberOfSharesSold: number
 		marketQuestion: string | null
+		groupItemTitle: string | null
 		totalProceeds: number
 	}
 
 	interface SinglePosition {
 		outcome: OutcomeString
 		marketQuestion: string | null
+		groupItemTitle: string | null
 		numberOfSharesHeld: number
 		clobToken: ClobTokenId
 		costBasisPerShareUsd: number
@@ -74,6 +78,7 @@ declare global {
 	interface PolymarketOutcomeDataForTrade {
 		outcome: OutcomeString
 		marketQuestion: string | null
+		groupItemTitle: string | null
 		polymarketSlug: EventSlug
 		polymarketImageUrl: string
 	}
@@ -96,6 +101,9 @@ declare global {
 	interface SingleMarketMetadata {
 		marketId: MarketId
 		marketQuestion: string | null
+		groupItemTitle: string | null
+		marketImageUrl: string | null
+		marketIconUrl: string | null
 		marketCreatedAt: Date
 		marketUpdatedAt: Date
 		outcomes: SingleOutcomeMetadata[]

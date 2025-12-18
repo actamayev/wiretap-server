@@ -123,6 +123,9 @@ model polymarket_market {
 	best_ask													Float?    // From outcomePrices array
 	midpoint_price												Float?
 	spread														Float?
+	group_item_title											String?
+	image_url													String?
+	icon_url													String?
 
 	// Volume metrics (market-level)
 	volume                      								Float?
