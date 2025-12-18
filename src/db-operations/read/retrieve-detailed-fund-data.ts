@@ -17,6 +17,7 @@ export default async function retrieveDetailedFundData(fundUUID: FundsUUID): Pro
 						market: {
 							select: {
 								question: true,
+								group_item_title: true,
 								event: { select: { event_slug: true, image_url: true } }
 							}
 						}
@@ -35,6 +36,7 @@ export default async function retrieveDetailedFundData(fundUUID: FundsUUID): Pro
 						market: {
 							select: {
 								question: true,
+								group_item_title: true,
 								event: { select: { event_slug: true, image_url: true } }
 							}
 						}
@@ -57,6 +59,7 @@ export default async function retrieveDetailedFundData(fundUUID: FundsUUID): Pro
 			outcome: order.outcome.outcome as OutcomeString,
 			transactionDate: order.created_at,
 			marketQuestion: order.outcome.market.question,
+			groupItemTitle: order.outcome.market.group_item_title,
 			polymarketSlug: order.outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: order.outcome.market.event.image_url as string,
 			numberOfSharesPurchased: order.number_of_shares,
@@ -67,6 +70,7 @@ export default async function retrieveDetailedFundData(fundUUID: FundsUUID): Pro
 			outcome: order.outcome.outcome as OutcomeString,
 			transactionDate: order.created_at,
 			marketQuestion: order.outcome.market.question,
+			groupItemTitle: order.outcome.market.group_item_title as string,
 			polymarketSlug: order.outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: order.outcome.market.event.image_url as string,
 			numberOfSharesSold: order.number_of_shares,

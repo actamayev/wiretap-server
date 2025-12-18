@@ -29,6 +29,9 @@ export default async function retrieveAllPolymarketEventsMetadata(): Promise<Sin
 					select: {
 						market_id: true,
 						question: true,
+						group_item_title: true,
+						image_url: true,
+						icon_url: true,
 						midpoint_price: true,
 						created_at: true,
 						updated_at: true,
@@ -59,6 +62,9 @@ export default async function retrieveAllPolymarketEventsMetadata(): Promise<Sin
 			eventMarkets: event.markets.map((market) => ({
 				marketId: market.market_id as MarketId,
 				marketQuestion: market.question,
+				groupItemTitle: market.group_item_title,
+				marketImageUrl: market.image_url as string,
+				marketIconUrl: market.icon_url as string,
 				marketCreatedAt: market.created_at,
 				marketUpdatedAt: market.updated_at,
 				midpointPrice: market.midpoint_price,

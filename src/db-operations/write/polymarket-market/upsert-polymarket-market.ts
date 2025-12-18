@@ -28,6 +28,9 @@ export default async function upsertPolymarketMarket(
 				midpoint_price: midpointPrice,
 				last_trade_price: market.lastTradePrice,
 				spread: market.spread,
+				group_item_title: market.groupItemTitle,
+				image_url: market.image,
+				icon_url: market.icon
 			},
 			create: {
 				condition_id: market.conditionId,
@@ -43,6 +46,9 @@ export default async function upsertPolymarketMarket(
 				midpoint_price: midpointPrice,
 				last_trade_price: market.lastTradePrice,
 				spread: market.spread,
+				group_item_title: market.groupItemTitle,
+				image_url: market.image,
+				icon_url: market.icon
 			}
 		})
 	} catch (error) {
