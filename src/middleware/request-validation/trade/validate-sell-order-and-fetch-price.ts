@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import fetchCurrentTokenPrice from "../../../utils/polymarket/fetch-current-token-midpoint-price"
+import { isUndefined } from "lodash"
 
 export default async function validateSellOrderAndFetchPrice(
 	req: Request,
@@ -10,6 +11,11 @@ export default async function validateSellOrderAndFetchPrice(
 		const { clobToken, numberOfSharesSelling } = req.body as { clobToken: ClobTokenId, numberOfSharesSelling: number }
 
 		const currentPrice = await fetchCurrentTokenPrice(clobToken)
+
+		if (isUndefined(currentPrice)) {
+			res.status(500).json({ error: "Internal Server Error: Unable to fetch current price" } satisfies ErrorResponse)
+			return
+		}
 
 		const { wiretapFundUuid } = req.params as { wiretapFundUuid: FundsUUID }
 

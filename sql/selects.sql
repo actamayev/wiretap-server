@@ -8,7 +8,7 @@
 -- SELECT * FROM purchase_order;
 -- SELECT * FROM sale_order;
 -- SELECT * FROM "position";
-SELECT * FROM portfolio_snapshot;
+-- SELECT * FROM portfolio_snapshot;
 -- SELECT * FROM polymarket_price_history;
 -- SELECT * FROM _prisma_migrations order by started_at;
 -- SELECT * FROM user_feedback;

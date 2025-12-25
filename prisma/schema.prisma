@@ -80,12 +80,11 @@ model polymarket_event {
 
 	// Market status
 	active                      								Boolean   @default(true)
-	closed                      								Boolean   @default(false)
 	archived                    								Boolean   @default(false)
 
 	// Resolution data
-	resolved                    								Boolean   @default(false)
-	resolution_time             								DateTime?
+	closed              										Boolean   @default(false)
+	closed_time         										DateTime?  // NEW - when it closed
 
 	// Metadata
 	start_date                  								DateTime?
