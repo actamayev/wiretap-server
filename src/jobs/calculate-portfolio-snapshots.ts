@@ -56,7 +56,7 @@ export default async function calculatePortfolioSnapshots(): Promise<void> {
 
 				for (const position of positions) {
 					// Try to get price from in-memory cache first
-					const midpoint = await fetchCurrentTokenPrice(position.clobTokenId)
+					const midpoint = await fetchCurrentTokenPrice(position.clobTokenId) ?? 0
 
 					const positionValue = position.numberOfSharesHeld * midpoint
 					totalPositionValue += positionValue

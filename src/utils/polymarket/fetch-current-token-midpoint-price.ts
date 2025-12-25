@@ -5,7 +5,7 @@ interface MidpointPriceResponse {
 	mid: string
 }
 
-export default async function fetchCurrentTokenPrice(tokenId: ClobTokenId): Promise<number> {
+export default async function fetchCurrentTokenPrice(tokenId: ClobTokenId): Promise<number | undefined> {
 	try {
 		const response = await axios.get<MidpointPriceResponse>(`${CLOB_BASE_URL}/midpoint`, {
 			params: {
@@ -16,7 +16,7 @@ export default async function fetchCurrentTokenPrice(tokenId: ClobTokenId): Prom
 		return parseFloat(response.data.mid)
 	} catch (error) {
 		console.error(`Error fetching midpoint price for token ${tokenId}:`, error)
-		throw error
+		console.error(error)
+		return undefined
 	}
 }
-

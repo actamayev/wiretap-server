@@ -49,7 +49,7 @@ export default async function retrieveSpecificClobPositions(
 			groupItemTitle: position.outcome.market.group_item_title,
 			numberOfSharesHeld: position.number_shares_held,
 			costBasisPerShareUsd: position.average_cost_per_share,
-			currentMarketPricePerShareUsd: await fetchCurrentTokenPrice(position.clob_token_id as ClobTokenId),
+			currentMarketPricePerShareUsd: await fetchCurrentTokenPrice(position.clob_token_id as ClobTokenId) ?? 0,
 			positionCreatedAt: position.created_at,
 			polymarketSlug: position.outcome.market.event.event_slug as EventSlug,
 			polymarketImageUrl: position.outcome.market.event.image_url as string
